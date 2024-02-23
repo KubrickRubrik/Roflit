@@ -2,8 +2,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/config/constants.dart';
+import 'package:roflit/feature/common/observer/provider.dart';
 
-import 'feature/presentation/main/main.dart';
+import 'feature/presentation/main/main_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,13 +12,17 @@ void main() async {
 
   runApp(
     ProviderScope(
-        child: EasyLocalization(
-      supportedLocales: Constants.supportedLocales,
-      path: Constants.supportedLocalesPath,
-      fallbackLocale: Constants.fallackLocale,
-      useOnlyLangCode: true,
-      child: const MainApp(),
-    )),
+      observers: [
+        BlocObserver(),
+      ],
+      child: EasyLocalization(
+        supportedLocales: Constants.supportedLocales,
+        path: Constants.supportedLocalesPath,
+        fallbackLocale: Constants.fallackLocale,
+        useOnlyLangCode: true,
+        child: const MainApp(),
+      ),
+    ),
   );
 }
 
