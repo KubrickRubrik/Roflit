@@ -4,6 +4,9 @@ analyzer:
   language:
     strict-inference: true # https://github.com/dart-lang/language/issues/508
     strict-raw-types: true # https://github.com/dart-lang/language/blob/master/resources/type-system/strict-raw-types.md
+  exclude:
+  - '**/*.g.dart'
+  - '**/*.freezed.dart'
   plugins:
     - custom_lint
   errors:

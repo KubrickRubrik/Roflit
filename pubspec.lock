@@ -348,7 +348,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_riverpod:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_riverpod
       sha256: "4bce556b7ecbfea26109638d5237684538d4abc509d253e6c5c4c5733b360098"

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/config/constants.dart';
 
-import 'generated/locale_keys.g.dart';
+import 'feature/presentation/main/main.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,13 +30,7 @@ class MainApp extends StatelessWidget {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-      home: Scaffold(
-        body: Center(
-          child: Text(
-            LocaleKeys.app_name.tr(),
-          ),
-        ),
-      ),
+      home: const MainScreen(),
     );
   }
 }

@@ -40,6 +40,9 @@ dart run custom_lint
 - Simple service provider riverpod:
 
 ```
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+part 'service.g.dart';
+
 @riverpod
 HelloWorldService helloWorldService(helloWorldServiceRef ref) {
   return HelloWorldService();
