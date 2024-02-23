@@ -5,6 +5,18 @@ Roflit project for test S3 by Yandex Cloud Api
 ## Project settings
 
 - If you are using VS Code, consider using [Flutter Riverpod Snippets](https://riverpod.dev/assets/images/greetingProvider-47179931ef18184e7ab68f4e701ca916.gif)
+- Localizations - [easy_localization ](https://pub.dev/packages/easy_localization/example):
+  - Directory: ```assets/translations```
+  - **Generated** in terminal: ```dart run easy_localization:generate -f keys -S assets/translations -o locale_keys.g.dart```
+  - Change localization: ```context.setLocale(Locale('en', 'US'));```
+  - Translate: 
+  ```
+    LocaleKeys.title.tr() // - preferred use. 
+    context.tr('title');
+    context.plural('money', 10.23);
+    plural('money_args', 10.23, args: ['John', '10.23']);
+    'example.emptyNameError'.tr();
+  ```
 
  - Generate/Regenerate all generated files of the project:
 ```
@@ -14,7 +26,7 @@ Roflit project for test S3 by Yandex Cloud Api
 - dart run build_runner watch
 - dart run build_runner watch --delete-conflicting-outputs
 ```
-
+Directory generated: **lib/generated**
 ## Riverpod
 
 If you want to check those warnings in the CI/terminal, you can run the following:

@@ -1,0 +1,43 @@
+{
+    "app_name": "Roflit",
+    "hour_plural": {
+        "zero": "часов",
+        "one": "час",
+        "two": "часа",
+        "few": "часа",
+        "many": "часов",
+        "other": "часов"
+    },
+    "day_plural": {
+        "zero": "дней",
+        "one": "день",
+        "two": "дня",
+        "few": "дня",
+        "many": "дней",
+        "other": "дней"
+    },
+    "minute_plural": {
+        "zero": "минут",
+        "one": "минута",
+        "two": "минуты",
+        "few": "минуты",
+        "many": "минут",
+        "other": "минут"
+    },
+    "symbol_plural": {
+        "zero": "символов",
+        "one": "символ",
+        "two": "символа",
+        "few": "символа",
+        "many": "символов",
+        "other": "символов"
+    },
+    "errors": {
+        "email_or_password_incorrect": "Неверный email или пароль",
+        "unknown": "Неизвестная ошибка",
+        "required_field": "Обязательное поле",
+        "error": "Ошибка",
+        "no_internet": "Проверьте интернет соединение",
+        "server": "Ошибка сервера"
+    }
+}
