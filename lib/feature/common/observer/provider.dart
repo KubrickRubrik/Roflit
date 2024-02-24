@@ -1,14 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:roflit/middleware/zip_utils.dart';
 
-class BlocObserver extends ProviderObserver {
+final class BlocObserver extends ProviderObserver {
+  final bool isUsed;
+  BlocObserver({required this.isUsed});
   @override
   void didAddProvider(
     ProviderBase<Object?> provider,
     Object? value,
     ProviderContainer container,
   ) {
-    logger.info('Provider $provider was initialized with $value');
+    if (isUsed) {
+      logger.info('Provider $provider was initialized with $value');
+    }
   }
 
   @override
@@ -16,7 +20,9 @@ class BlocObserver extends ProviderObserver {
     ProviderBase<Object?> provider,
     ProviderContainer container,
   ) {
-    logger.info('Provider $provider was disposed');
+    if (isUsed) {
+      logger.info('Provider $provider was disposed');
+    }
   }
 
   @override
@@ -26,7 +32,9 @@ class BlocObserver extends ProviderObserver {
     Object? newValue,
     ProviderContainer container,
   ) {
-    logger.info('Provider $provider updated from $previousValue to $newValue');
+    if (isUsed) {
+      logger.info('Provider $provider updated from $previousValue to $newValue');
+    }
   }
 
   @override
@@ -36,6 +44,8 @@ class BlocObserver extends ProviderObserver {
     StackTrace stackTrace,
     ProviderContainer container,
   ) {
-    logger.error('Provider $provider threw $error at $stackTrace');
+    if (isUsed) {
+      logger.error('Provider $provider threw $error at $stackTrace');
+    }
   }
 }

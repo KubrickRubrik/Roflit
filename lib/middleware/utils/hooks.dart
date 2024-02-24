@@ -21,7 +21,7 @@ void useInitState({
     return () {
       dispose?.call();
     };
-  }, keys ?? []);
+  }, keys ?? const []);
 }
 
 // TextThemes useTextThemeExt() => Theme.of(useContext()).extension<TextThemes>() as TextThemes;
