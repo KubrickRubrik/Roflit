@@ -113,15 +113,15 @@ base class AsyncStateError<T> extends AsyncState<T> {
 ///
 extension EAsyncState<T> on AsyncState<T> {
   R maybeWhen<R>({
-    required R Function(T data)? data,
     required R Function() orElse,
-    R Function(Object error, [StackTrace? stackTrace])? error,
-    R Function()? loading,
+    R Function(T data)? data,
+    R Function(Object error)? error,
+    R Function([Object? value])? loading,
   }) {
     return when(
       data: data ?? (_) => orElse(),
-      error: error ?? (err, [stack]) => orElse(),
-      loading: loading ?? () => orElse(),
+      error: error ?? (err) => orElse(),
+      loading: loading ?? ([Object? value]) => orElse(),
     );
   }
 
@@ -129,15 +129,15 @@ extension EAsyncState<T> on AsyncState<T> {
 
   R when<R>({
     required R Function(T data) data,
-    required R Function(Object error, [StackTrace? stackTrace]) error,
-    required R Function() loading,
+    required R Function(Object error) error,
+    required R Function([Object? value]) loading,
   }) {
     if (isLoading) {
-      return loading();
+      return loading(value);
     }
 
     if (hasError) {
-      return error(this.error!, stackTrace!);
+      return error(this.error!);
     }
 
     return data(this.data as T);

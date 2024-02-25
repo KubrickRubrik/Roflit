@@ -20,7 +20,7 @@ class MainBackgaround extends HookWidget {
 
     useInitState(initState: () {
       final timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-        activeIndex.value = Random().nextInt(fones.length);
+        activeIndex.value = ((activeIndex.value + 1) == fones.length) ? 0 : activeIndex.value + 1;
       });
 
       return timer.cancel;
@@ -32,7 +32,7 @@ class MainBackgaround extends HookWidget {
       decoration: BoxDecoration(
         gradient: RadialGradient(
           center: Alignment.center,
-          radius: 1.2,
+          radius: 1,
           tileMode: TileMode.clamp,
           colors: fones[activeIndex.value].color.map(Color.new).toList(),
         ),

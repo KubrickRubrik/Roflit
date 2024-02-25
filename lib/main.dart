@@ -1,11 +1,13 @@
 import 'dart:io';
+import 'dart:ui';
 
+import 'package:desktop_window/desktop_window.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/config/constants.dart';
 import 'package:roflit/feature/common/observer/provider.dart';
-import 'package:window_manager/window_manager.dart';
+// import 'package:window_manager/window_manager.dart';
 
 import 'feature/presentation/main/main_screen.dart';
 
@@ -14,24 +16,29 @@ void main() async {
   await EasyLocalization.ensureInitialized();
 
   if (Platform.isWindows) {
-    await windowManager.ensureInitialized();
-    const windowOptions = WindowOptions(
-      fullScreen: false,
-      skipTaskbar: true,
-      center: true,
-      minimumSize: Constants.minimumSizeWindow,
-      maximumSize: Constants.maximumSizeWindow,
-      alwaysOnTop: false,
-      backgroundColor: Colors.transparent,
-      titleBarStyle: TitleBarStyle.normal,
-      title: 'Roflit',
-      windowButtonVisibility: false,
-    );
-    await windowManager.waitUntilReadyToShow(windowOptions, () async {
-      await windowManager.show();
-      await windowManager.focus();
-    });
+    await DesktopWindow.setMinWindowSize(Constants.minimumSizeWindow);
+    await DesktopWindow.setMaxWindowSize(Constants.maximumSizeWindow);
+    // DesktopWindow.setFullScreen(true);
   }
+  // if (Platform.isWindows) {
+  //   await windowManager.ensureInitialized();
+  //   const windowOptions = WindowOptions(
+  //     fullScreen: false,
+  //     skipTaskbar: true,
+  //     center: true,
+  //     minimumSize: Constants.minimumSizeWindow,
+  //     maximumSize: Constants.maximumSizeWindow,
+  //     alwaysOnTop: false,
+  //     backgroundColor: Colors.transparent,
+  //     titleBarStyle: TitleBarStyle.normal,
+  //     title: 'Roflit',
+  //     windowButtonVisibility: false,
+  //   );
+  //   await windowManager.waitUntilReadyToShow(windowOptions, () async {
+  //     await windowManager.show();
+  //     await windowManager.focus();
+  //   });
+  // }
   runApp(
     ProviderScope(
       observers: [
@@ -59,6 +66,16 @@ class MainApp extends StatelessWidget {
       supportedLocales: context.supportedLocales,
       locale: context.locale,
       home: const MainScreen(),
+      scrollBehavior: AppScrollBehavior(),
     );
   }
+}
+
+class AppScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.trackpad,
+      };
 }
