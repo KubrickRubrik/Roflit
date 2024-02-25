@@ -1,8 +1,8 @@
+import 'package:easy_debounce/easy_throttle.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:roflit/feature/common/async_state.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/presentation/main/bloc/notifier.dart';
 
@@ -64,8 +64,11 @@ class SelectFilesButton extends HookConsumerWidget {
 
     final isHover = useState(false);
     return InkWell(
-      onTap: () async {
-        // final file = await FilePicker.platform.pickFiles();
+      onTap: () {
+        EasyThrottle.throttle('get-file', const Duration(seconds: 1), () async {
+          // final file = await FilePicker.platform.pickFiles();
+          await bloc.getData();
+        });
       },
       onHover: (value) {
         isHover.value = value;

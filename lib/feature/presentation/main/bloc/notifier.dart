@@ -28,7 +28,8 @@ final class MainNotifier extends _$MainNotifier {
 
   Future<void> getData() async {
     state = const AsyncState.loading();
-    await Await.second(3);
+    await _apiClientService.test();
+    // await Await.second(3);
     state = const AsyncState.error(1);
   }
 
