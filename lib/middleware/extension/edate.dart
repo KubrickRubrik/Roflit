@@ -1,15 +1,22 @@
+// import 'package:flutter/material.dart';
+
 extension EDateTime on DateTime {
   String get yyyyMMdd {
     return '$year${month.toString().padLeft(2, '0')}${day.toString().padLeft(2, '0')}';
   }
 
-  String get inHeader {
-    final now = toUtc();
+  // String get inHeader {
+  //   return '${formatWeekday(weekday)},'
+  //       ' ${day.toString().padLeft(2, '0')} ${formatMonth(month)} $year '
+  //       '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}:'
+  //       '${second.toString().padLeft(2, '0')} GMT';
+  // }
 
-    return '${formatWeekday(now.weekday)},'
-        ' ${now.day.toString().padLeft(2, '0')} ${formatMonth(now.month)} ${now.year} '
-        '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:'
-        '${now.second.toString().padLeft(2, '0')} GMT';
+  String get xAmzDate {
+    final a =
+        '$year${month.toString().padLeft(2, '0')}${day.toString().padLeft(2, '0')}T${hour.toString().padLeft(2, '0')}${minute.toString().padLeft(2, '0')}'
+        '${second.toString().padLeft(2, '0')}Z';
+    return a;
   }
 
   String formatWeekday(int weekday) {

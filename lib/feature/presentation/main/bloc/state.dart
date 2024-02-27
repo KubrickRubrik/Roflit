@@ -2,18 +2,10 @@ part of 'notifier.dart';
 
 @freezed
 class MainState with _$MainState {
-  // const factory MainState.loading() = MainLoadingState;
+  const factory MainState.loading() = MainLoadingState;
 
-  // const factory MainState.loaded({
-  //   @Default(0) int counter,
-  // }) = MainLoadedState;
-  const factory MainState({
+  const factory MainState.loaded({
     @Default(0) int counter,
-  }) = _MainState;
-}
-
-enum DataState {
-  loading,
-  loaded,
-  error,
+    @Default([]) List<int> list,
+  }) = MainLoadedState;
 }
