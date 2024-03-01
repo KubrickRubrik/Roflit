@@ -5,16 +5,10 @@ import 'dart:developer';
 
 import 'package:crypto/crypto.dart' as crypto;
 import 'package:crypto/crypto.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:roflit/core/config/account.dart';
 import 'package:roflit/middleware/extension/zip.dart';
-import 'package:http/http.dart' as http;
-import 'package:xml2json/xml2json.dart';
-import 'package:xml_map_converter/xml_map_converter.dart';
-
-import '../middleware/zip_utils.dart';
 
 part 'service.g.dart';
 
@@ -25,23 +19,19 @@ ApiClientService apiClientService(ApiClientServiceRef ref) {
 
 final class ApiClientService {
   static const host = 'storage.yandexcloud.net';
-  String get accessKey =>
-      'YCAJEZfmQQRot1qExZ_sP97T9'; //ServiceAccount.accessKey; // 'YCAJE9nDIk-aEuQZTRZYWgLzr';
-  String get secretKey =>
-      'YCO_jtQOZUgRY8NMO7zXSxRwidrz8cawQVmfLl2Z'; //ServiceAccount.secretKey; // 'YCNgmm8quibCBF9sM3II4TJM8MBTPgdtbW4kTeDT';
   static const region = 'ru-central1';
   static const bucketName = 'roflit';
-  String get dateYYYYmmDD => DateTime.now().toUtc().yyyyMMdd;
-  // String get dateHeader => DateTime.now().toUtc().inHeader;
-  String get xAmzDateHeader => DateTime.now().toUtc().xAmzDate;
-  String get isoDateHeader => DateTime.now().toUtc().toIso8601String();
+  // Static access keys
+  String get accessKey => ServiceAccount.accessKey;
+  String get secretKey => ServiceAccount.secretKey;
+  String get dateYYYYmmDD => DateTime.now().toUtc().yyyyMMdd; // YYYYMMDD
+  String get xAmzDateHeader => DateTime.now().toUtc().xAmzDate; // 20240301T120357Z
+  //
   String get url => 'https://storage.yandexcloud.net/$bucketName?list-type=2';
+  // String get canonicalRequest => 'GET / HTTP/2';
+  String get canonicalRequest => 'GET /$bucketName?list-type=2 HTTP/2';
 
   Future<void> test() async {
-    // const url = 'https://storage.yandexcloud.net';
-
-    // const canonicalRequest = 'GET / HTTP/2';
-    const canonicalRequest = 'GET /$bucketName?list-type=2 HTTP/2';
     final signetStringSignature = _stringToSign(canonicalRequest);
 
     final headers = <String, String>{
@@ -52,8 +42,7 @@ final class ApiClientService {
           'Signature=$signetStringSignature',
       'X-Amz-Date': xAmzDateHeader,
     };
-    print('>>>> $url');
-    print('>>>> $headers');
+    log('>>>> $url\n$headers');
 
     try {
       final response = await http.get(
@@ -61,13 +50,6 @@ final class ApiClientService {
         headers: headers,
       );
       log(response.statusCode.toString());
-      if (response.statusCode == 200) {
-        final json = (Xml2Json()..parse(response.body)).toOpenRally();
-        log('RESPONSE $json');
-        // final res = await Xml2Map(response.body).transform();
-        // log('RESPONSE ${res.toString()}');
-      }
-      print('>>>> ');
       log(response.body);
     } catch (e) {
       log(e.toString());
@@ -76,7 +58,7 @@ final class ApiClientService {
 
   /// Signing the message.
   String _stringToSign(String message) {
-    return base64Encode(hex(signHMAC(_signingKey, message)));
+    return hex(signHMAC(_signingKey, message));
   }
 
   /// Signing key.
