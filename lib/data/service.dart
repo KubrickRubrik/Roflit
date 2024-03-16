@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:roflit/core/config/account.dart';
 import 'package:roflit/middleware/extension/zip.dart';
+import 'package:s3client/s3client.dart';
 
 part 'service.g.dart';
 
@@ -18,6 +19,15 @@ ApiClientService apiClientService(ApiClientServiceRef ref) {
 }
 
 final class ApiClientService {
+  final yxClient = S3Client.yandex(
+    accessKey: ServiceAccount.accessKey,
+    secretKey: ServiceAccount.secretKey,
+  );
+
+  void abc() {
+    final dto = yxClient.buckets.getListObject(bucketName: bucketName);
+  }
+
   static const host = 'storage.yandexcloud.net';
   static const region = 'ru-central1';
   static const bucketName = 'roflit';
