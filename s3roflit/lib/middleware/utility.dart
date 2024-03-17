@@ -1,4 +1,4 @@
-import 'package:s3client/middleware/zip.dart';
+import 'package:s3roflit/middleware/zip.dart';
 
 abstract final class Utility {
   static String get dateYYYYmmDD => DateTime.now().toUtc().yyyyMMdd; // YYYYMMDD
