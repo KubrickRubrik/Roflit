@@ -1,9 +1,9 @@
-library s3client;
+library s3roflit;
 
 import 'vk_cloud/vk_cloud.dart';
 import 'yandex_cloud/yandex_cloud.dart';
 
-abstract final class S3Client {
+abstract final class S3Roflit {
   static YandexCloud yandex({
     required String accessKey,
     required String secretKey,

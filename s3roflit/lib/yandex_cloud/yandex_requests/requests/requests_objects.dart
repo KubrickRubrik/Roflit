@@ -1,5 +1,6 @@
-import 'package:s3client/yandex_cloud/config/dto.dart';
-import 'package:s3client/yandex_cloud/config/headers.dart';
+import 'package:s3roflit/yandex_cloud/config/constants.dart';
+import 'package:s3roflit/yandex_cloud/config/dto.dart';
+import 'package:s3roflit/yandex_cloud/config/headers.dart';
 
 final class YandexRequestsObject {
   final YandexHeaders _header;
@@ -12,7 +13,7 @@ final class YandexRequestsObject {
   }) {
     return YandexCloudDTO(
       url: '$bucketName?list-type=2$url}',
-      typeRequest: YandexRequestType.get,
+      typeRequest: RequestType.get,
       headers: _header.get(
         canonicalRequest: 'GET /$bucketName?list-type=2 HTTP/2',
         headers: headers,

@@ -9,7 +9,8 @@ import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:roflit/core/config/account.dart';
 import 'package:roflit/middleware/extension/zip.dart';
-import 'package:s3client/s3client.dart';
+import 'package:s3roflit/middleware/utility.dart';
+import 'package:s3roflit/s3roflit.dart';
 
 part 'service.g.dart';
 
@@ -19,23 +20,19 @@ ApiClientService apiClientService(ApiClientServiceRef ref) {
 }
 
 final class ApiClientService {
-  final yxClient = S3Client.yandex(
+  final yxClient = S3Roflit.yandex(
     accessKey: ServiceAccount.accessKey,
     secretKey: ServiceAccount.secretKey,
   );
 
-  void abc() {
-    final dto = yxClient.buckets.getListObject(bucketName: bucketName);
-  }
+  // void abc() {
+  //   final dto = yxClient.buckets.getListObject(bucketName: bucketName);
+  // }
 
   static const host = 'storage.yandexcloud.net';
   static const region = 'ru-central1';
-  static const bucketName = 'roflit';
-  // Static access keys
-  String get accessKey => ServiceAccount.accessKey;
-  String get secretKey => ServiceAccount.secretKey;
-  String get dateYYYYmmDD => DateTime.now().toUtc().yyyyMMdd; // YYYYMMDD
-  String get xAmzDateHeader => DateTime.now().toUtc().xAmzDate; // 20240301T120357Z
+  static const bucketName = 'bucket-u1';
+
   //
   String get url => 'https://storage.yandexcloud.net/$bucketName?list-type=2';
   // String get canonicalRequest => 'GET / HTTP/2';
@@ -43,16 +40,16 @@ final class ApiClientService {
 
   Future<void> test() async {
     final signetStringSignature = _stringToSign(canonicalRequest);
-
+    // final client = yxClient.buckets.getListObject(bucketName: 'bucket-u1');
     final headers = <String, String>{
       'Host': host,
       'Authorization': 'AWS4-HMAC-SHA256' +
-          'Credential=$accessKey/$dateYYYYmmDD/$region/s3/aws4_request,' +
+          'Credential=${ServiceAccount.accessKey}/${Utility.dateYYYYmmDD}/$region/s3/aws4_request,' +
           'SignedHeaders=host;x-amz-date,' +
           'Signature=$signetStringSignature',
-      'X-Amz-Date': xAmzDateHeader,
+      'X-Amz-Date': Utility.xAmzDateHeader,
     };
-    log('>>>> $url\n$headers');
+    log('>>>> ${url}\n${headers}');
 
     try {
       final response = await http.get(
@@ -73,7 +70,7 @@ final class ApiClientService {
 
   /// Signing key.
   String get _signingKey {
-    final dateKey = signHMAC('AWS4$secretKey', dateYYYYmmDD);
+    final dateKey = signHMAC('AWS4${ServiceAccount.secretKey}', Utility.dateYYYYmmDD);
     final regionKey = signHMAC(dateKey, region);
     final serviceKey = signHMAC(regionKey, 's3');
     return signHMAC(serviceKey, 'aws4_request');

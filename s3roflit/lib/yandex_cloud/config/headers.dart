@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_interpolation_to_compose_strings, prefer_adjacent_string_concatenation
 
-import 'package:s3client/middleware/zip.dart';
+import 'package:s3roflit/middleware/zip.dart';
 
 import 'signature.dart';
 
