@@ -15,14 +15,13 @@ final class S3Config with PreparedData {
   final RequestType requestType;
   final Map<String, String> headers;
 
-  S3Config({
-    required this.canonicalRequest,
-    required this.requestType,
-    required this.headers,
-    required this.access,
-    this.canonicalQuerystring = '',
-    this.requestBody = '',
-  });
+  S3Config(
+      {required this.canonicalRequest,
+      required this.requestType,
+      required this.headers,
+      required this.access,
+      this.canonicalQuerystring = '',
+      this.requestBody = ''});
 
   signing() {
     final dateYYYYmmDD = Utility.dateYYYYmmDD;
