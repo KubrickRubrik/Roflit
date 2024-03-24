@@ -56,11 +56,11 @@ final class S3Config with PreparedData {
     );
     log('>>> Header: $s3Headers');
     final queryString = canonicalQuerystring.isNotEmpty ? '?$canonicalQuerystring' : '';
-    return YandexRequestParameters(
-      url: Uri.parse('${YCConstant.url}$canonicalRequest$queryString'),
-      headers: s3Headers,
-      requestType: requestType,
-    );
+    return YandexRequestDto(
+        url: Uri.parse('${YCConstant.url}$canonicalRequest$queryString'),
+        headers: s3Headers,
+        requestType: requestType,
+        body: utf8.encode(requestBody));
   }
 }
 
