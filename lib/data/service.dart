@@ -1,9 +1,10 @@
-import 'dart:developer';
-
-import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:roflit/core/config/account.dart';
+import 'package:roflit/feature/presentation/main/bloc/notifier.dart';
 import 'package:s3roflit/s3roflit.dart';
+import 'package:xml/xml.dart';
+
+import 'remote/client.dart';
 
 part 'service.g.dart';
 
@@ -13,26 +14,62 @@ ApiClientService apiClientService(ApiClientServiceRef ref) {
 }
 
 final class ApiClientService {
+  final client = ApiClient();
   final yxClient = S3Roflit.yandex(
     accessKey: ServiceAccount.accessKey,
     secretKey: ServiceAccount.secretKey,
   );
 
-  Future<void> test() async {
-    final client = yxClient.buckets.getListObject(bucketName: 'bucket-u1');
-    // final client = yxClient.buckets.getListBuckets();
+  Future<List<Bucket>> getBuckets() async {
+    final request = yxClient.buckets.getList();
 
-    log('>>>> ${client.url}\n${client.headers}');
+    final result = await client.smRequest(request);
+    if (result.failed) {
+      return [];
+    }
 
     try {
-      final response = await http.get(
-        client.url,
-        headers: client.headers,
-      );
-      log(response.statusCode.toString());
-      log(response.body);
+      final listBucket = result.success!.findAllElements('Bucket').toList();
+      if (listBucket.isEmpty) return [];
+
+      final buckets = List.generate(listBucket.length, (index) {
+        final bucket = listBucket[index];
+        return Bucket(
+          name: bucket.findElements('Name').single.innerText,
+          creationDate: bucket.findElements('CreationDate').single.innerText,
+        );
+      });
+      buckets.sort((a, b) => a.name.compareTo(b.name));
+      return buckets;
     } catch (e) {
-      log(e.toString());
+      return [];
+    }
+  }
+
+  Future<List<BucketObject>> getBucketObjects({required String bucketName}) async {
+    final request = yxClient.buckets.getListObject(bucketName: bucketName);
+
+    final result = await client.smRequest(request);
+    if (result.failed) {
+      return [];
+    }
+
+    try {
+      final listObjects = result.success!.findAllElements('Contents').toList();
+      if (listObjects.isEmpty) return [];
+
+      final objects = List.generate(listObjects.length, (index) {
+        final object = listObjects[index];
+        return BucketObject(
+          key: object.findElements('Key').single.innerText,
+          size: object.findElements('Size').single.innerText,
+          lastModified: object.findElements('LastModified').single.innerText,
+        );
+      });
+      objects.sort((a, b) => a.key.compareTo(b.key));
+      return objects;
+    } catch (e) {
+      return [];
     }
   }
 }

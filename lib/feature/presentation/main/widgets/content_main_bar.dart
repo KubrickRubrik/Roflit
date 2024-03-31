@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 
 import 'decoration_section.dart';
@@ -21,14 +22,19 @@ class ContentMainBar extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'PC | Локальный репозиторй/каталог',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Color(AppColors.grayText),
-                    fontWeight: FontWeight.w600,
+                Flexible(
+                  child: FittedBox(
+                    child: Text(
+                      'PC | Локальный репозиторй/каталог',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Color(AppColors.grayText),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
+                SizedBox(width: 16),
                 Text(
                   'Фильтр файлов',
                   style: TextStyle(
@@ -46,14 +52,19 @@ class ContentMainBar extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'YC | Удаленный репозиторй/каталог/бакеты',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Color(AppColors.grayText),
-                  fontWeight: FontWeight.w600,
+              Flexible(
+                child: FittedBox(
+                  child: Text(
+                    'YC | Удаленный репозиторй/каталог/бакеты',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Color(AppColors.grayText),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
               ),
+              SizedBox(width: 16),
               Text(
                 'Фильтр файлов',
                 style: TextStyle(
