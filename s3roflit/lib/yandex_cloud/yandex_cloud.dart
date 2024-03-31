@@ -1,34 +1,24 @@
 import 'config/constants.dart';
 
-import 'config/headers.dart';
-import 'yandex_requests/requests/requests_buckets.dart';
-import 'yandex_requests/requests/requests_objects.dart';
-
-part 'yandex_requests/yandex_requests.dart';
+import 'config/s3/dto.dart';
+import 'requests/buckets.dart';
+import 'requests/objects.dart';
 
 final class YandexCloud {
-  final String _accessKey;
-  final String _secretKey;
-  final String _host;
-  final String _region;
+  final YandexAccess _access;
 
   YandexCloud({
     required String accessKey,
     required String secretKey,
     String host = YCConstant.host,
     String region = YCConstant.region,
-  })  : _accessKey = accessKey,
-        _secretKey = secretKey,
-        _host = host,
-        _region = region;
+  }) : _access = YandexAccess(
+          accessKey: accessKey,
+          secretKey: secretKey,
+          host: host,
+          region: region,
+        );
 
-  YandexRequests get _request => YandexRequests(
-        accessKey: _accessKey,
-        secretKey: _secretKey,
-        host: _host,
-        region: _region,
-      );
-
-  YandexRequestsBucket get buckets => _request.buckets;
-  YandexRequestsObject get objects => _request.object;
+  YandexRequestsBucket get buckets => YandexRequestsBucket(_access);
+  YandexRequestsObject get object => YandexRequestsObject(_access);
 }

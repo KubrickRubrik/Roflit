@@ -186,21 +186,13 @@ packages:
     source: hosted
     version: "0.3.4+1"
   crypto:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: crypto
       sha256: ff625774173754681d66daaf4a448684fb04b78f902da9cb3d308c19cc5e8bab
       url: "https://pub.dev"
     source: hosted
     version: "3.0.3"
-  cryptography:
-    dependency: "direct main"
-    description:
-      name: cryptography
-      sha256: d146b76d33d94548cf035233fbc2f4338c1242fa119013bead807d033fc4ae05
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.7.0"
   custom_lint:
     dependency: "direct dev"
     description:
@@ -1090,37 +1082,13 @@ packages:
     source: hosted
     version: "1.0.4"
   xml:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: xml
       sha256: b015a8ad1c488f66851d762d3090a21c600e479dc75e68328c52774040cf9226
       url: "https://pub.dev"
     source: hosted
     version: "6.5.0"
-  xml2json:
-    dependency: "direct main"
-    description:
-      name: xml2json
-      sha256: d97aed12d54193611c442c268155398f4170b52cfc0058aabbd79160c9c8eefb
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.2.2"
-  xml_map_converter:
-    dependency: "direct main"
-    description:
-      name: xml_map_converter
-      sha256: "4ce2cec28b65035d231b8b3a21e091f63b2c0dbcba179a240c95b8d340bf2ed0"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0+1"
-  xmlstream:
-    dependency: transitive
-    description:
-      name: xmlstream
-      sha256: cfc14e3f256997897df9481ae630d94c2d85ada5187ebeb868bb1aabc2c977b4
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.1"
   yaml:
     dependency: transitive
     description:

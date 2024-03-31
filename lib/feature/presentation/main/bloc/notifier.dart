@@ -1,10 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:roflit/data/service.dart';
-import 'package:roflit/feature/common/async_state.dart';
-import 'package:roflit/feature/presentation/main/test/notifier.dart';
-import 'package:roflit/middleware/utils/logger.dart';
-import 'package:roflit/middleware/zip_utils.dart';
 
 part 'notifier.freezed.dart';
 part 'notifier.g.dart';
@@ -21,29 +17,34 @@ final class MainNotifier extends _$MainNotifier {
     //   ref.read(testNotifierProvider.notifier).actionPlus();
     // }
     // });
-    print('>>>> update MainNotifier');
+    // print('>>>> update MainNotifier');
     // return const MainState.loading();
     return const MainState.loaded();
   }
 
   Future<void> getData() async {
-    // state = const AsyncState.loading();
-    await _apiClientService.test();
-    // await Await.second(3);
-    // state = const AsyncState.error(1);
+    state = const MainState.loading();
+    final response = await _apiClientService.getBuckets();
+    state = MainState.loaded(buckets: response, selectedBucket: 0);
   }
 
-  Future<void> setLoading() async {
-    // state = const AsyncState.loading();
-  }
+  Future<void> getBucketObjects(int index) async {
+    final newState = state as MainLoadedState;
+    final list = newState.buckets.toList();
+    final bucket = list[index].copyWith(
+      loading: true,
+      objects: [],
+    );
 
-  Future<void> setStop() async {
-    // state = const AsyncState.error(1);
-    if (state is MainLoadedState) {
-      final a = state as MainLoadedState;
-      state = a.copyWith(
-        list: a.list..firstWhere((e) => e == 5).isEven,
-      );
-    }
+    list[index] = bucket;
+    state = newState.copyWith(buckets: list, selectedBucket: index);
+
+    final bucketName = newState.buckets[index].name;
+    final response = await _apiClientService.getBucketObjects(bucketName: bucketName);
+
+    final newBucket = list[index].copyWith(loading: false, objects: response);
+    list[index] = newBucket;
+
+    state = (state as MainLoadedState).copyWith(buckets: list);
   }
 }

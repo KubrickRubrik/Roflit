@@ -1,10 +1,10 @@
 name: roflit
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
-  sdk: '>=3.3.0 <4.0.0'
+  sdk: ">=3.3.0 <4.0.0"
 
 dependencies:
   # aws_signature_v4: ^0.5.1
@@ -29,13 +29,9 @@ dependencies:
   desktop_window: ^0.4.0
   file_selector: ^1.0.3
   file_picker: ^6.1.1
-  crypto: ^3.0.3
-  cryptography: ^2.7.0
+
   http: ^1.2.1
-  xml_map_converter: ^1.0.0+1
-  xml2json: ^6.2.2
-  # flutter_dropzone: ^3.0.7
-  # flutter_dropzone_platform_interface: ^2.0.6
+  xml: ^6.5.0
   s3roflit:
     path: ./s3roflit
 
@@ -55,8 +51,8 @@ flutter:
   uses-material-design: true
 
   assets:
-  # - assets/app/images/
-  - assets/translations/
+    # - assets/app/images/
+    - assets/translations/
 
   # fonts:
   #   - family: Ubuntu-Regular
@@ -74,4 +70,3 @@ flutter:
 flutter_gen:
   output: lib/generated
   line_length: 120
-
