@@ -8,8 +8,9 @@ abstract final class YCConstant {
 
 enum RequestType {
   get,
+  put,
+  delete,
   post;
-
 
   bool get isGet => this == get;
   bool get isPut => this == put;
