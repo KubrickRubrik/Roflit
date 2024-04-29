@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
-import 'package:roflit/feature/presentation/main/bloc/notifier.dart';
+import 'package:roflit/helper_remove/main/bloc/notifier.dart';
 
 class ContentMainBuckets extends ConsumerWidget {
   const ContentMainBuckets({super.key});

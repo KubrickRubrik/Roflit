@@ -22,7 +22,7 @@ class ItemFile extends HookWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 350),
         curve: Curves.ease,
-        height: 80,
+        height: 72,
         margin: const EdgeInsets.symmetric(horizontal: 8),
         decoration: BoxDecoration(
           color: isHover.value ? const Color(AppColors.bgLightGrayHover) : color,
