@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
+import 'package:roflit/feature/common/themes/text.dart';
 
 class LoadingSectionEmpty extends StatefulWidget {
   const LoadingSectionEmpty({super.key});
@@ -30,14 +31,11 @@ class _LoadingSectionEmptyState extends State<LoadingSectionEmpty> {
             borderRadius: borderRadius4,
             color: const Color(AppColors.bgLightGrayOpacity10),
           ),
-          child: const Center(
+          child: Center(
             child: Text(
               'ОЧЕРЕДЬ\r\nЗАГРУЗКИ',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12,
-                color: Color(AppColors.onLightText),
-              ),
+              style: appTheme.textTheme.title3.bold.onLight1,
             ),
           ),
         ),

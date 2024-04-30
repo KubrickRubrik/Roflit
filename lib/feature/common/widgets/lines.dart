@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 
 class Lines extends StatelessWidget {
   final LinesType type;
-  final widthContentLine = w1;
-  final widthLine = h2;
-  final widthSectionLine = h6;
-  final color = const Color(0xFFC2C2C2);
-  final colorDark = Color(0xFF292929);
+  final widthContentLine = 1.0;
+  final widthLine = 1.6;
+  final widthSectionLine = 6.0;
+  final colorMainLine = const Color(AppColors.borderLineOnDart1);
+  final colorDark = const Color(AppColors.borderLineOnLight1);
 
   Lines.vertical() : type = LinesType.vertical;
   Lines.verticalContent() : type = LinesType.verticalContent;
@@ -16,7 +17,7 @@ class Lines extends StatelessWidget {
 
   double get _centerLinePos => (widthSectionLine - widthLine) / 2;
 
-  double get _moreSideWidth => widthSectionLine / 2 + 72;
+  double get _moreSideWidth => widthSectionLine / 2 + 64;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +40,7 @@ class Lines extends StatelessWidget {
               width: widthSectionLine,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: color,
+                color: colorMainLine,
               ),
             ),
           ),
@@ -50,7 +51,7 @@ class Lines extends StatelessWidget {
             bottom: 0,
             child: Container(
               width: widthLine,
-              color: color,
+              color: colorMainLine,
             ),
           ),
           Positioned(
@@ -60,7 +61,7 @@ class Lines extends StatelessWidget {
               width: widthSectionLine,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: color,
+                color: colorMainLine,
               ),
             ),
           ),
@@ -93,7 +94,7 @@ class Lines extends StatelessWidget {
               width: widthSectionLine,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: color,
+                color: colorMainLine,
               ),
             ),
           ),
@@ -104,7 +105,7 @@ class Lines extends StatelessWidget {
             right: -_moreSideWidth,
             child: Container(
               height: widthLine,
-              color: color,
+              color: colorMainLine,
             ),
           ),
           Positioned(
@@ -114,7 +115,7 @@ class Lines extends StatelessWidget {
               width: widthSectionLine,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: color,
+                color: colorMainLine,
               ),
             ),
           ),

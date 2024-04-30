@@ -23,14 +23,13 @@ class _LoadingSectionConfigButtonState extends State<LoadingSectionConfigButton>
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
         curve: Curves.ease,
-        margin: EdgeInsets.only(left: h10, top: h12),
+        margin: const EdgeInsets.only(left: 10, top: 10),
         height: 40,
         width: 40,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isHover
-              ? const Color(AppColors.bgLightGrayHover)
-              : const Color(AppColors.bgLightGrayButton),
+          color:
+              isHover ? const Color(AppColors.bgDarkGrayHover) : const Color(AppColors.bgDarkGray1),
         ),
       ),
     );

@@ -52,8 +52,8 @@ class ContentMainBuckeTsItem extends HookConsumerWidget {
     final isHover = useState(false);
     final color = useMemoized(() {
       return index.isEven
-          ? const Color(AppColors.bgDarkGray)
-          : const Color(AppColors.bgDarkGray).withOpacity(0.2);
+          ? const Color(AppColors.bgDarkGray1)
+          : const Color(AppColors.bgDarkGray1).withOpacity(0.2);
     });
 
     return InkWell(
@@ -140,8 +140,8 @@ class ContentMainBucketObjectsItem extends HookConsumerWidget {
     final isHover = useState(false);
     final color = useMemoized(() {
       return index.isEven
-          ? const Color(AppColors.bgDarkGray).withOpacity(0.3)
-          : const Color(AppColors.bgDarkGray).withOpacity(0.2);
+          ? const Color(AppColors.bgDarkGray1).withOpacity(0.3)
+          : const Color(AppColors.bgDarkGray1).withOpacity(0.2);
     });
 
     String dateModify(String dateModify) {

@@ -92,12 +92,12 @@ class SelectFilesButton extends HookConsumerWidget {
           style: isHover.value
               ? const TextStyle(
                   fontSize: 18,
-                  color: Color(AppColors.onDarkText),
+                  color: Color(AppColors.textOnLight1),
                   fontWeight: FontWeight.w600,
                 )
               : const TextStyle(
                   fontSize: 18,
-                  color: Color(AppColors.onLightText),
+                  color: Color(AppColors.textOnLight1),
                   fontWeight: FontWeight.w600,
                 ),
           child: const Text(

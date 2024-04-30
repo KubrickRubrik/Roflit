@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:roflit/feature/common/themes/colors.dart';
-import 'package:roflit/feature/common/themes/sizes.dart';
 
+import 'widgets/objects_list.dart';
 import 'widgets/cloud_button.dart';
 import 'widgets/config_button.dart';
 import 'widgets/empty_section.dart';
+import 'widgets/objects_hover.dart';
 
 class DonwloadSection extends StatelessWidget {
   const DonwloadSection({super.key});
@@ -16,18 +16,25 @@ class DonwloadSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Container(
-          height: 72,
-          // color: Colors.orange,
+          height: 64,
           alignment: Alignment.bottomRight,
           child: const DonwloadSectionCloudButton(),
         ),
-        const Flexible(
+        Flexible(
           flex: 8,
-          child: DonwloadSectionEmpty(),
+          child: Padding(
+            padding: const EdgeInsets.only(right: 2, top: 14, bottom: 14),
+            child: DonwloadSectionHoverObjects(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: DonwloadSectionObjectsList(),
+              ),
+            ),
+          ),
+          // DonwloadSectionEmpty(),
         ),
         Container(
-          height: 72,
-          // color: Colors.orange,
+          height: 64,
           alignment: Alignment.topRight,
           child: const DonwloadSectionConfigButton(),
         ),

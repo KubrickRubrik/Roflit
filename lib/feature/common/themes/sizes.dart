@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 final borderRadius4 = BorderRadius.circular(4.r);
+final borderRadius8 = BorderRadius.circular(8.r);
+final borderRadius10 = BorderRadius.circular(10.r);
+final borderRadius12 = BorderRadius.circular(12.r);
 
 double get w1 => 1.w;
 double get w2 => 2.w;

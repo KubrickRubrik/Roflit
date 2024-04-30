@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 
-class DonwloadSectionConfigButton extends StatefulWidget {
-  const DonwloadSectionConfigButton({super.key});
+class ContentSectionHoverObjects extends StatefulWidget {
+  final Widget child;
+  const ContentSectionHoverObjects({required this.child, super.key});
 
   @override
-  State<DonwloadSectionConfigButton> createState() => _DonwloadSectionConfigButtonState();
+  State<ContentSectionHoverObjects> createState() => _ContentSectionHoverObjectsState();
 }
 
-class _DonwloadSectionConfigButtonState extends State<DonwloadSectionConfigButton> {
+class _ContentSectionHoverObjectsState extends State<ContentSectionHoverObjects> {
   bool isHover = false;
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -23,14 +23,11 @@ class _DonwloadSectionConfigButtonState extends State<DonwloadSectionConfigButto
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
         curve: Curves.ease,
-        margin: const EdgeInsets.only(right: 10, top: 10),
-        height: 40,
-        width: 40,
         decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color:
-              isHover ? const Color(AppColors.bgDarkGrayHover) : const Color(AppColors.bgDarkGray1),
+          color: isHover ? const Color(AppColors.bgLightGrayOpacity10) : null,
+          borderRadius: borderRadius12,
         ),
+        child: widget.child,
       ),
     );
   }

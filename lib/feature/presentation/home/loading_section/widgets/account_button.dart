@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
+import 'package:roflit/generated/assets.gen.dart';
 
 class LoadingSectionAccountButton extends StatefulWidget {
   const LoadingSectionAccountButton({super.key});
@@ -23,14 +24,22 @@ class _LoadingSectionAccountButtonState extends State<LoadingSectionAccountButto
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
         curve: Curves.ease,
-        margin: EdgeInsets.only(left: h10, bottom: h10),
+        margin: const EdgeInsets.only(left: 10, bottom: 10),
         height: 40,
         width: 40,
         decoration: BoxDecoration(
-          borderRadius: borderRadius4,
-          color: isHover
-              ? const Color(AppColors.bgLightGrayHover)
-              : const Color(AppColors.bgLightGrayButton),
+          borderRadius: borderRadius8,
+          color:
+              isHover ? const Color(AppColors.bgDarkGrayHover) : const Color(AppColors.bgDarkGray1),
+        ),
+        alignment: Alignment.center,
+        child: Assets.icons.profile.svg(
+          width: 20,
+          height: 20,
+          colorFilter: const ColorFilter.mode(
+            Color(AppColors.textOnDark1),
+            BlendMode.srcIn,
+          ),
         ),
       ),
     );

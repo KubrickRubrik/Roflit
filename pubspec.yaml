@@ -25,11 +25,12 @@ dependencies:
   go_router: ^13.2.0
   permission_handler: ^11.3.0
   flutter_riverpod: ^2.4.10
-  # window_manager: ^0.3.8
+  window_manager: ^0.3.8
   desktop_window: ^0.4.0
   file_selector: ^1.0.3
   file_picker: ^6.1.1
   flutter_screenutil: ^5.9.0
+  flutter_svg: ^2.0.10+1
 
   http: ^1.2.1
   xml: ^6.5.0
@@ -47,6 +48,7 @@ dev_dependencies:
   custom_lint: ^0.6.2
   json_serializable: ^6.7.1
   freezed: ^2.4.7
+  flutter_gen_runner: ^5.4.0 # //$ GOOD
 
 flutter:
   uses-material-design: true
@@ -54,6 +56,7 @@ flutter:
   assets:
     # - assets/app/images/
     - assets/translations/
+    - assets/icons/
 
   # fonts:
   #   - family: Ubuntu-Regular
@@ -71,3 +74,5 @@ flutter:
 flutter_gen:
   output: lib/generated
   line_length: 120
+  integrations:
+    flutter_svg: true
