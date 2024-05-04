@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 abstract final class AppColors {
   // static const textOnLight1 = 0xFFECECEC;
   static const grayText = 0xFFBEBEBE;

@@ -7,11 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/config/constants.dart';
-import 'package:roflit/feature/common/observer/provider.dart';
+import 'package:roflit/feature/common/providers/observer/provider.dart';
 import 'package:roflit/feature/presentation/home/home_screen.dart';
-// import 'package:window_manager/window_manager.dart';
-
-import 'helper_remove/main/main_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -35,21 +35,23 @@ enum DisplayStatus {
 /// Type of toast.
 enum TypeMassage { good, massage, error, warning }
 
-/// Statuses camera
-enum StatusCamera { isDone, isError, isLoading, isNotUsed }
+/// Type of cloud
+enum TypeCloud {
+  yandexCloud,
+  vkCloud;
 
-/// Statuses of camera permission
-enum CameraPermissionStatus {
-  needUpdateOSettings,
-  needRequestPersmission,
-  hasPersmission,
-  noAcces,
+  bool get isYandexCloud => this == yandexCloud;
+  bool get isVkCloud => this == vkCloud;
+
+  const TypeCloud();
 }
 
-/// Statuses of Geolocator permission
-enum GeoPermissionStatus {
-  needUpdateOSettings,
-  needRequestPersmission,
-  hasPersmission,
-  noAcces,
+enum SessionType {
+  guest,
+  authorized;
+
+  bool get isGuest => this == guest;
+  bool get isAuthorized => this == authorized;
+
+  const SessionType();
 }

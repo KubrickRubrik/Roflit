@@ -3,7 +3,7 @@ import 'package:http/http.dart';
 import 'package:s3roflit/yandex_cloud/config/s3/dto.dart';
 import 'package:xml/xml.dart';
 
-final class ApiClient {
+final class ApiRemoteClient {
   Future<Result> smRequest(YandexRequestDto client) async {
     try {
       final response = await http.get(

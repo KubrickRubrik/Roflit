@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'widgets/objects_list.dart';
 import 'widgets/cloud_button.dart';
 import 'widgets/config_button.dart';
-import 'widgets/empty_section.dart';
 import 'widgets/objects_hover.dart';
+import 'widgets/objects_list.dart';
 
 class DonwloadSection extends StatelessWidget {
   const DonwloadSection({super.key});

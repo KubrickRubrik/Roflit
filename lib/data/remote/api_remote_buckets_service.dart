@@ -4,17 +4,17 @@ import 'package:roflit/helper_remove/main/bloc/notifier.dart';
 import 'package:s3roflit/s3roflit.dart';
 import 'package:xml/xml.dart';
 
-import 'remote/client.dart';
+import 'client.dart';
 
-part 'service.g.dart';
+part 'api_remote_buckets_service.g.dart';
 
 @riverpod
-ApiClientService apiClientService(ApiClientServiceRef ref) {
-  return ApiClientService();
+ApiRemoteBucketsService apiRemoteBucketsService(ApiRemoteBucketsServiceRef ref) {
+  return ApiRemoteBucketsService();
 }
 
-final class ApiClientService {
-  final client = ApiClient();
+final class ApiRemoteBucketsService {
+  final client = ApiRemoteClient();
   final yxClient = S3Roflit.yandex(
     accessKey: ServiceAccount.accessKey,
     secretKey: ServiceAccount.secretKey,

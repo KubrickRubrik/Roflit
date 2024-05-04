@@ -32,7 +32,7 @@ class DonwloadSectionObjectsList extends StatelessWidget {
             controller: controller,
             shrinkWrap: true,
             primary: false,
-            itemCount: 20,
+            itemCount: 3,
             padding: const EdgeInsets.only(left: 3, right: 3, bottom: 10),
             itemBuilder: (context, index) {
               return ContenteSectionBucketsListItem(index);

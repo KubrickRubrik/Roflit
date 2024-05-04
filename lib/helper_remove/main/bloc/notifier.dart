@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:roflit/data/service.dart';
+import 'package:roflit/data/remote/api_remote_buckets_service.dart';
 
 part 'notifier.freezed.dart';
 part 'notifier.g.dart';
@@ -8,7 +8,7 @@ part 'state.dart';
 
 @riverpod
 final class MainNotifier extends _$MainNotifier {
-  late final _apiClientService = ref.read(apiClientServiceProvider);
+  late final _apiClientService = ref.read(apiRemoteBucketsServiceProvider);
 
   @override
   MainState build() {
