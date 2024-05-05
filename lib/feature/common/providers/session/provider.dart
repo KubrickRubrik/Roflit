@@ -9,10 +9,13 @@ part 'state.dart';
 
 @riverpod
 final class SessionBloc extends _$SessionBloc {
+  // late final api = ref.read(diProvider).apiRemoteBucketService;
+
   @override
   SessionState build() => const SessionState.init();
 
   Future<void> checkAuthentication() async {
+    // final api = ref.read(diProvider).apiRemoteBucketService;
     state = const SessionState.loading();
   }
 }

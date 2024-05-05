@@ -145,8 +145,7 @@ StatefulWidget  -> ConsumerStatefulWidget -> StatefulHookConsumerWidget (HookSta
 
 #### Rules for using a riverpod provider (good and bad practice):
 - Good
-  - providers should be created globally, not in class methods or fields.
-  - Creating providers as static final variables is acceptable.
+  - providers should be created globally, not in class methods or field of class.
 - Good
   - **read.watch** should only be used at the build stage of Providers - declaratively!.
     **Do not use** imperative for obtaining a state or accessing a method!
@@ -176,7 +175,7 @@ StatefulWidget  -> ConsumerStatefulWidget -> StatefulHookConsumerWidget (HookSta
 - Attention
   - All providers are initialized lazily.
     To initialize a provider right away, you need to listen to it [immediately in the root after ProviderScope](https://riverpod.dev/docs/essentials/eager_initialization).
-  - The provider state is always recreated when it is re-evaluated.
+  - Provider is created when it starts listening (in a widget or other provider) and is deleted when the listener is deleted. 
   - The provider state with arguments is recreated if the arguments passed are not constant.
     `ref.watch(provider([1,2])) != ref.watch(provider([1,2])) - recreated provider([1,2])`.
   - `ref.watch(provider(1))` and `ref.watch(provider(2))` - will create two independent calculations by one or more provider.
