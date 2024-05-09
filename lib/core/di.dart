@@ -1,14 +1,24 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:roflit/data/remote/api_remote_buckets_service.dart';
+import 'package:roflit/data/api_local_client.dart';
+import 'package:roflit/data/api_remote_client.dart';
 
 part 'di.g.dart';
 
-@riverpod
+@Riverpod()
 DiService di(DiRef ref) {
   return DiService(ref);
 }
 
 final class DiService {
-  final ApiRemoteBucketsService apiRemoteBucketService;
-  DiService(DiRef ref) : apiRemoteBucketService = ref.read(apiRemoteBucketsServiceProvider);
+  final ApiRemoteClient apiRemoteClient;
+  final ApiLocalClient apiLocalClient;
+  DiService(DiRef ref)
+      : apiRemoteClient = ref.read(apiRemoteClientProvider),
+        apiLocalClient = ref.read(apiLocalClientProvider) {
+    ref.onCancel(_cansel);
+  }
+
+  Future<void> _cansel() async {
+    await apiLocalClient.closeDb();
+  }
 }

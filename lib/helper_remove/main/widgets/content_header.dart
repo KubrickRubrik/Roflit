@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'decoration_section.dart';
-
 class ContentHeader extends StatelessWidget {
   const ContentHeader({super.key});
 

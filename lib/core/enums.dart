@@ -38,10 +38,12 @@ enum TypeMassage { good, massage, error, warning }
 /// Type of cloud
 enum TypeCloud {
   yandexCloud,
-  vkCloud;
+  vkCloud,
+  none;
 
   bool get isYandexCloud => this == yandexCloud;
   bool get isVkCloud => this == vkCloud;
+  bool get isNone => this == none;
 
   const TypeCloud();
 }

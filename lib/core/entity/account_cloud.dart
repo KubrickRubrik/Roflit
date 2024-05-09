@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:roflit/feature/common/enums.dart';
+import 'package:roflit/core/enums.dart';
 
 part 'account_cloud.freezed.dart';
 

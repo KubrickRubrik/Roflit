@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 
 /// [letterSpacing1] provides -0.16px of letterSpacing, equals to -0.01em

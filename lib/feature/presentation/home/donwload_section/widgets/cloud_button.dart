@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
-import 'package:roflit/generated/assets.gen.dart';
 
 class DonwloadSectionCloudButton extends StatefulWidget {
   const DonwloadSectionCloudButton({super.key});

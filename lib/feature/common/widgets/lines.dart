@@ -11,9 +11,9 @@ class Lines extends StatelessWidget {
   final colorMainLine = const Color(AppColors.borderLineOnDart1);
   final colorDark = const Color(AppColors.borderLineOnLight1);
 
-  Lines.vertical() : type = LinesType.vertical;
-  Lines.verticalContent() : type = LinesType.verticalContent;
-  Lines.horMid() : type = LinesType.horizontalMid;
+  const Lines.vertical() : type = LinesType.vertical;
+  const Lines.verticalContent() : type = LinesType.verticalContent;
+  const Lines.horMid() : type = LinesType.horizontalMid;
 
   double get _centerLinePos => (widthSectionLine - widthLine) / 2;
 

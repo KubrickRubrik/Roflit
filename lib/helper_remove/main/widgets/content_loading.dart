@@ -19,7 +19,7 @@ class ContentLoading extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
-                color: const Color(AppColors.grayText),
+                color: Color(AppColors.grayText),
               ),
             ),
           ),

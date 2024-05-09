@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
-import 'package:roflit/feature/common/themes/sizes.dart';
 
 class LoadingSectionConfigButton extends StatefulWidget {
   const LoadingSectionConfigButton({super.key});

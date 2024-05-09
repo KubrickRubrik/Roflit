@@ -28,22 +28,22 @@ class HomeScreen extends HookConsumerWidget {
         child: Center(
           child: SizedBox(
             height: MediaQuery.of(context).size.height * 0.75,
-            child: AspectRatio(
+            child: const AspectRatio(
               aspectRatio: 1.3,
               child: Flex(
                 direction: Axis.horizontal,
                 children: [
-                  const Flexible(
+                  Flexible(
                     flex: 3,
                     child: DonwloadSection(),
                   ),
                   Lines.vertical(),
-                  const Flexible(
+                  Flexible(
                     flex: 10,
                     child: ContentSection(),
                   ),
                   Lines.vertical(),
-                  const Flexible(
+                  Flexible(
                     flex: 3,
                     child: LoadingSection(),
                   ),

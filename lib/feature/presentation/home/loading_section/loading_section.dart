@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'widgets/account_button.dart';
 import 'widgets/config_button.dart';
-import 'widgets/objects_empty.dart';
 import 'widgets/objects_hover.dart';
 import 'widgets/objects_list.dart';
 

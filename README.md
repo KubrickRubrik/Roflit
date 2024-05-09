@@ -32,13 +32,17 @@ Roflit project for test S3 by Yandex Cloud Api
 
 Directory generated: **lib/generated**
 
-## Riverpod
+## Riverpod and hooks
 
-If you want to check those warnings in the CI/terminal, you can run the following:
+##### Installing packages
 
-```
-dart run custom_lint
-```
+- `flutter pub add hooks_riverpod`
+- `flutter pub add flutter_hooks`
+- `flutter pub add riverpod_annotation`
+- `flutter pub add dev:riverpod_generator`
+- `flutter pub add dev:build_runner`
+- `flutter pub add dev:custom_lint`
+- `flutter pub add dev:riverpod_lint`
 
 ##### Example
 
@@ -144,9 +148,11 @@ StatefulWidget  -> ConsumerStatefulWidget -> StatefulHookConsumerWidget (HookSta
 ```
 
 #### Rules for using a riverpod provider (good and bad practice):
+
 - Good
   - providers should be created globally, not in class methods or field of class.
 - Good
+
   - **read.watch** should only be used at the build stage of Providers - declaratively!.
     **Do not use** imperative for obtaining a state or accessing a method!
     **read.watch** - can be considered as an example of creating a subscription to a stream in initState.
@@ -168,14 +174,14 @@ StatefulWidget  -> ConsumerStatefulWidget -> StatefulHookConsumerWidget (HookSta
   - saving form state in provider.
   - saving state in local variable of provider.
   - saving different controllers in provider.
-- Bad  
-  - [running side effects during provider initialization](https://riverpod.dev/docs/essentials/do_dont).  
-- Bad 
-  - using the providers that come with DI in the build method of the state provider.  
+- Bad
+  - [running side effects during provider initialization](https://riverpod.dev/docs/essentials/do_dont).
+- Bad
+  - using the providers that come with DI in the build method of the state provider.
 - Attention
   - All providers are initialized lazily.
     To initialize a provider right away, you need to listen to it [immediately in the root after ProviderScope](https://riverpod.dev/docs/essentials/eager_initialization).
-  - Provider is created when it starts listening (in a widget or other provider) and is deleted when the listener is deleted. 
+  - Provider is created when it starts listening (in a widget or other provider) and is deleted when the listener is deleted.
   - The provider state with arguments is recreated if the arguments passed are not constant.
     `ref.watch(provider([1,2])) != ref.watch(provider([1,2])) - recreated provider([1,2])`.
   - `ref.watch(provider(1))` and `ref.watch(provider(2))` - will create two independent calculations by one or more provider.
@@ -187,3 +193,16 @@ StatefulWidget  -> ConsumerStatefulWidget -> StatefulHookConsumerWidget (HookSta
   - Instead of comparing state with `==`, providers use `identical` (two object references to the same object.). This behavior can be changed by overriding the updateShouldNotify method in notifications.
   - It is not possible to reset all providers at the same time.
   - Using `ref` in asynchronous widget methods requires checking `context.mounted`.
+
+## Drift
+
+##### Installing packages
+
+- `flutter pub add drift`
+- `flutter pub add sqlite3_flutter_libs`
+- `flutter pub add sqlite3`
+- `flutter pub add path_provider`
+- `flutter pub add path`
+- `flutter pub add dev:build_runner`
+- `flutter pub add dev:drift_dev`
+- `flutter pub add dev:drift_db_viewer`

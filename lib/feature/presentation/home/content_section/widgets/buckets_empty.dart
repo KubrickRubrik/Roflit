@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 
 class ContentSectionEmptyBuckets extends StatelessWidget {

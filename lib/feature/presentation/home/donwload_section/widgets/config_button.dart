@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
-import 'package:roflit/feature/common/themes/sizes.dart';
 
 class DonwloadSectionConfigButton extends StatefulWidget {
   const DonwloadSectionConfigButton({super.key});

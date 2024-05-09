@@ -26,7 +26,7 @@ class _DonwloadSectionEmptyState extends State<DonwloadSectionEmpty> {
         curve: Curves.ease,
         opacity: isHover ? 1 : 0,
         child: Container(
-          margin: EdgeInsets.all(10),
+          margin: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             borderRadius: borderRadius4,
             color: const Color(AppColors.bgLightGrayOpacity10),
