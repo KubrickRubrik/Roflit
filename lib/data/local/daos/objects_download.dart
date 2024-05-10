@@ -12,9 +12,10 @@ class ObjectsDownloadDao extends DatabaseAccessor<ApiDatabase> with _$ObjectsDow
       )
     ]);
 
-    final response = (query..where(objectsDownloadTable.state.equals(true))).watch();
+    query.where(objectsDownloadTable.state.equals(true));
+    query.orderBy([OrderingTerm.asc(objectsDownloadTable.id)]);
 
-    return response.map((rows) {
+    return query.watch().map((rows) {
       return rows.map((row) {
         return ObjectEntity.fromDto(row.readTable(objectsTable));
       }).toList();

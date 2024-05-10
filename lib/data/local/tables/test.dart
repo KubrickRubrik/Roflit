@@ -6,7 +6,7 @@ part of '../api_db.dart';
 // Используется для ускорения поиска и сортировки данных.
 @TableIndex(name: 'val_1', columns: {#val1, #val2})
 @TableIndex(name: 'val_4', columns: {#val4}, unique: true)
-final class TestTable extends Table {
+class TestTable extends Table {
   @override
   String get tableName => 'test'; // название таблицы в БД
 
@@ -42,7 +42,7 @@ final class TestTable extends Table {
       ];
 }
 
-final class TestTodoCategoryTable extends Table {
+class TestTodoCategoryTable extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get description => text()();
 }

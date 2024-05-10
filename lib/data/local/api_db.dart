@@ -20,7 +20,7 @@ part 'tables/objects.dart';
 part 'tables/objects_download.dart';
 part 'tables/objects_load.dart';
 part 'tables/profiles.dart';
-part 'tables/clouds.dart';
+part 'tables/profiles_clouds.dart';
 part 'tables/test.dart';
 
 @DriftDatabase(
@@ -28,7 +28,7 @@ part 'tables/test.dart';
     TestTable,
     TestTodoCategoryTable,
     ProfilesTable,
-    ProfileCloudsTable,
+    ProfilesCloudsTable,
     ObjectsDownloadTable,
     ObjectsLoadTable,
     ObjectsTable,

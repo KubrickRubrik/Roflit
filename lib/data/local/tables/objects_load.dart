@@ -1,7 +1,7 @@
 part of '../api_db.dart';
 
 @DataClassName('ObjectsLoadDto')
-final class ObjectsLoadTable extends Table {
+class ObjectsLoadTable extends Table {
   @override
   String get tableName => 'objects_load';
 

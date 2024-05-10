@@ -1,7 +1,7 @@
 part of '../api_db.dart';
 
 @DataClassName('ObjectsDownloadDto')
-final class ObjectsDownloadTable extends Table {
+class ObjectsDownloadTable extends Table {
   @override
   String get tableName => 'objects_download';
 

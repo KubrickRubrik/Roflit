@@ -10,7 +10,7 @@ class ObjectEntity with _$ObjectEntity {
     required int idObject,
     required String bucket,
     required String title,
-    required String loalPath,
+    required String? localPath,
     required TypeCloud cloudType,
   }) = _ObjectEntity;
 
@@ -19,7 +19,7 @@ class ObjectEntity with _$ObjectEntity {
       idObject: dto.idObject,
       bucket: dto.bucket,
       title: dto.title,
-      loalPath: dto.loalPath,
+      localPath: dto.localPath,
       cloudType: TypeCloud.values.firstWhere(
         (e) => e.name == dto.cloudType,
         orElse: () => TypeCloud.none,

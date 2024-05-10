@@ -9,7 +9,14 @@ ApiLocalClient apiLocalClient(ApiLocalClientRef ref) {
 }
 
 final class ApiLocalClient {
+  static final _instance = ApiLocalClient._();
+
+  factory ApiLocalClient() => _instance;
+  ApiLocalClient._();
+
   final _db = ApiDatabase();
+
+  ApiDatabase get dbInstance => _db;
 
   TestDao get testDao => _db.testDao;
   ProfilesDao get profilesDao => _db.profilesDao;

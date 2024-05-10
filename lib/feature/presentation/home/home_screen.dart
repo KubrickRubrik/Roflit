@@ -1,5 +1,7 @@
+import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:roflit/core/di.dart';
 import 'package:roflit/feature/common/providers/session/provider.dart';
 import 'package:roflit/feature/common/widgets/lines.dart';
 import 'package:roflit/helper_remove/main/widgets/background.dart';
@@ -25,32 +27,56 @@ class HomeScreen extends HookConsumerWidget {
 
     return Material(
       child: MainBackgaround(
-        child: Center(
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.75,
-            child: const AspectRatio(
-              aspectRatio: 1.3,
-              child: Flex(
-                direction: Axis.horizontal,
-                children: [
-                  Flexible(
-                    flex: 3,
-                    child: DonwloadSection(),
+        child: Stack(
+          children: [
+            Center(
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.75,
+                child: const AspectRatio(
+                  aspectRatio: 1.3,
+                  child: Flex(
+                    direction: Axis.horizontal,
+                    children: [
+                      Flexible(
+                        flex: 3,
+                        child: DonwloadSection(),
+                      ),
+                      Lines.vertical(),
+                      Flexible(
+                        flex: 10,
+                        child: ContentSection(),
+                      ),
+                      Lines.vertical(),
+                      Flexible(
+                        flex: 3,
+                        child: LoadingSection(),
+                      ),
+                    ],
                   ),
-                  Lines.vertical(),
-                  Flexible(
-                    flex: 10,
-                    child: ContentSection(),
-                  ),
-                  Lines.vertical(),
-                  Flexible(
-                    flex: 3,
-                    child: LoadingSection(),
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
+            Positioned(
+              bottom: 20,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: GestureDetector(
+                  onTap: () {
+                    final db = ref.read(diProvider).apiLocalClient.dbInstance;
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => DriftDbViewer(db),
+                    ));
+                  },
+                  child: Container(
+                    height: 100,
+                    width: 100,
+                    decoration: BoxDecoration(color: Colors.red),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

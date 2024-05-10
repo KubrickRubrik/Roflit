@@ -1,7 +1,7 @@
 part of '../api_db.dart';
 
 @DataClassName('ProfilesDto')
-final class ProfilesTable extends Table {
+class ProfilesTable extends Table {
   @override
   String get tableName => 'profiles';
 
@@ -11,4 +11,5 @@ final class ProfilesTable extends Table {
   TextColumn get selectedBucket => text().nullable().withLength(min: 6, max: 128)();
   TextColumn get selectedCloudType => text().nullable().withLength(min: 6, max: 16)();
   TextColumn get password => text().nullable().withLength(min: 0, max: 64)();
+  BoolColumn get state => boolean().withDefault(const Constant(true))();
 }

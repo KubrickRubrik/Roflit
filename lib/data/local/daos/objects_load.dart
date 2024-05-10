@@ -11,10 +11,10 @@ class ObjectsLoadDao extends DatabaseAccessor<ApiDatabase> with _$ObjectsLoadDao
         objectsTable.idObject.equalsExp(objectsLoadTable.idObject),
       ),
     ]);
+    query.where(objectsLoadTable.state.equals(true));
+    query.orderBy([OrderingTerm.asc(objectsLoadTable.id)]);
 
-    final response = (query..where(objectsLoadTable.state.equals(true))).watch();
-
-    return response.map((rows) {
+    return query.watch().map((rows) {
       return rows.map((row) {
         return ObjectEntity.fromDto(row.readTable(objectsTable));
       }).toList();
