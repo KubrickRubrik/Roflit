@@ -20,6 +20,7 @@ final class SessionBloc extends _$SessionBloc {
     return const SessionState.init();
   }
 
+  // Removable listeners.
   StreamSubscription<List<ProfileEntity>>? _listener;
 
   Future<void> checkAuthentication() async {
@@ -29,7 +30,7 @@ final class SessionBloc extends _$SessionBloc {
     await _listener?.cancel();
 
     final api = ref.read(diProvider).apiLocalClient.profilesDao;
-    await api.addProfiles();
+    // await api.createProfile();
     _listener = api.watchProfiles().listen((event) {
       state = SessionState.loaded(profiles: event);
     });

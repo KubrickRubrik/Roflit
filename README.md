@@ -194,6 +194,30 @@ StatefulWidget  -> ConsumerStatefulWidget -> StatefulHookConsumerWidget (HookSta
   - It is not possible to reset all providers at the same time.
   - Using `ref` in asynchronous widget methods requires checking `context.mounted`.
 
+#### Use of providers:
+```
+class Example extends ConsumerWidget {
+  const Example({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Access to provider methods. Be sure to use 'watch'
+    final bloc = ref.watch(sessionBlocProvider.notifier);
+    // Access to provider status. Summons the nearest build.
+    // Be sure to use 'watch'
+    final state = ref.watch(sessionBlocProvider);
+
+    return InkWell(
+      onTap: () {
+        // Be sure to use only 'read'
+        ref.read(sessionBlocProvider.notifier).checkAuthentication();
+      },
+      child: Container(),
+    );
+  }
+}
+```
+
 ## Drift
 
 ##### Installing packages

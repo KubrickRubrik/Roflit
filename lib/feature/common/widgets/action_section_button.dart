@@ -1,39 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/generated/assets.gen.dart';
 
-class LoadingSectionAccountButton extends StatefulWidget {
-  const LoadingSectionAccountButton({super.key});
+class ActionSectionButton extends HookWidget {
+  final SvgGenImage icon;
+  final VoidCallback onTap;
 
-  @override
-  State<LoadingSectionAccountButton> createState() => _LoadingSectionAccountButtonState();
-}
-
-class _LoadingSectionAccountButtonState extends State<LoadingSectionAccountButton> {
-  bool isHover = false;
+  const ActionSectionButton({
+    required this.icon,
+    required this.onTap,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final isHover = useState(false);
+
     return InkWell(
-      onTap: () {},
+      onTap: onTap,
       onHover: (value) {
-        isHover = value;
-        setState(() {});
+        isHover.value = value;
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
         curve: Curves.ease,
-        margin: const EdgeInsets.only(left: 10, bottom: 10),
+        margin: const EdgeInsets.all(10),
         height: 40,
         width: 40,
         decoration: BoxDecoration(
           borderRadius: borderRadius8,
-          color:
-              isHover ? const Color(AppColors.bgDarkGrayHover) : const Color(AppColors.bgDarkGray1),
+          color: isHover.value
+              ? const Color(AppColors.bgDarkGrayHover)
+              : const Color(AppColors.bgDarkGray1),
         ),
         alignment: Alignment.center,
-        child: Assets.icons.profile.svg(
+        child: icon.svg(
           width: 20,
           height: 20,
           colorFilter: const ColorFilter.mode(

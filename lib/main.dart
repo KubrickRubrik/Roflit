@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/config/constants.dart';
 import 'package:roflit/core/di.dart';
 import 'package:roflit/feature/common/providers/observer/provider.dart';
+import 'package:roflit/feature/common/providers/ui/provider.dart';
 import 'package:roflit/feature/presentation/home/home_screen.dart';
 
 void main() async {
@@ -86,6 +87,7 @@ class _EagerInitialization extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(diProvider);
+    ref.watch(uiBlocProvider);
     return child;
   }
 }

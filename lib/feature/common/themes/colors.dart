@@ -4,13 +4,19 @@ abstract final class AppColors {
 
   static const bgPlaceholder1 = 0xFF323C53;
 
+  static const bgLight0 = 0xFFFFFFFF;
+
   static const bgDarkGray1 = 0xFF20293F;
   static const bgDarkGray2 = 0x4D20293F;
   static const bgDarkGray3 = 0x2B20293F;
 
+  static const bgDarkBlue1 = 0xFF1D2536;
+
   static const bgDarkGrayHover = 0xFF343B4E;
 
+  static const borderLineOnDart0 = 0xFFFFFFFF;
   static const borderLineOnDart1 = 0xA2DDDDDD;
+  static const borderLineOnLight0 = 0xFF000000;
   static const borderLineOnLight1 = 0xFF292929;
 
   static const bgLightGrayOpacity10 = 0x10FFFFFF;

@@ -6,6 +6,7 @@ part 'account_cloud.freezed.dart';
 @freezed
 class AccountCloudEntity with _$AccountCloudEntity {
   const factory AccountCloudEntity({
+    required String titleLink,
     required TypeCloud typeCloud,
     required String accessKey,
     required String secretKey,

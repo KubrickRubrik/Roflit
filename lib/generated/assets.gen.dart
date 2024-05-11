@@ -14,6 +14,9 @@ import 'package:flutter/services.dart';
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
+  /// File path: assets/icons/cloud.svg
+  SvgGenImage get cloud => const SvgGenImage('assets/icons/cloud.svg');
+
   /// File path: assets/icons/profile.svg
   SvgGenImage get profile => const SvgGenImage('assets/icons/profile.svg');
 
@@ -21,7 +24,7 @@ class $AssetsIconsGen {
   SvgGenImage get search => const SvgGenImage('assets/icons/search.svg');
 
   /// List of all assets
-  List<SvgGenImage> get values => [profile, search];
+  List<SvgGenImage> get values => [cloud, profile, search];
 }
 
 class $AssetsTranslationsGen {

@@ -61,18 +61,55 @@ class HomeScreen extends HookConsumerWidget {
               left: 0,
               right: 0,
               child: Center(
-                child: GestureDetector(
-                  onTap: () {
-                    final db = ref.read(diProvider).apiLocalClient.dbInstance;
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => DriftDbViewer(db),
-                    ));
-                  },
-                  child: Container(
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(color: Colors.red),
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // GestureDetector(
+                    //   onTap: () {
+                    //     final db = ref.read(diProvider).apiLocalClient.
+                    //     Navigator.of(context).push(MaterialPageRoute(
+                    //       builder: (context) => DriftDbViewer(db),
+                    //     ));
+                    //   },
+                    //   child: Container(
+                    //     height: 100,
+                    //     decoration: const BoxDecoration(color: Colors.red),
+                    //     alignment: Alignment.center,
+                    //     child: const Text('Добавить профили'),
+                    //   ),
+                    // ),
+                    // const SizedBox(width: 8),
+                    // GestureDetector(
+                    //   onTap: () {
+                    //     final db = ref.read(diProvider).apiLocalClient.dbInstance;
+                    //     Navigator.of(context).push(MaterialPageRoute(
+                    //       builder: (context) => DriftDbViewer(db),
+                    //     ));
+                    //   },
+                    //   child: Container(
+                    //     height: 100,
+                    //     decoration: const BoxDecoration(color: Colors.red),
+                    //     alignment: Alignment.center,
+                    //     child: const Text('Удалить профили'),
+                    //   ),
+                    // ),
+                    // const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: () {
+                        final db = ref.read(diProvider).apiLocalClient.dbInstance;
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => DriftDbViewer(db),
+                        ));
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        height: 100,
+                        decoration: const BoxDecoration(color: Colors.red),
+                        alignment: Alignment.center,
+                        child: const Text('Смотреть базу'),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

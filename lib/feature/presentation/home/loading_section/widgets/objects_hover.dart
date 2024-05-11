@@ -20,6 +20,7 @@ class _LoadingSectionHoverObjectsState extends State<LoadingSectionHoverObjects>
         isHover = value;
         setState(() {});
       },
+      mouseCursor: MouseCursor.defer,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
         curve: Curves.ease,

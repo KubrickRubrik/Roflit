@@ -5,6 +5,7 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:roflit/core/entity/account_cloud.dart';
 import 'package:roflit/core/entity/object.dart';
 import 'package:roflit/core/entity/profile.dart';
 import 'package:sqlite3/sqlite3.dart';
@@ -51,6 +52,7 @@ LazyDatabase _openConnection() {
   //  LazyDatabase util lets us find the right location for the file async.
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
+    print('>>>> $dbFolder');
     final file = File(p.join(dbFolder.path, 'db.sqlite'));
     // Also work around limitations on old Android versions
     if (Platform.isAndroid) {
