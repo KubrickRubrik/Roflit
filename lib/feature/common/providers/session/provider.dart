@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:roflit/core/entity/profile.dart';
+import 'package:roflit/core/entity/account.dart';
 import 'package:roflit/core/entity/session.dart';
 import 'package:roflit/core/providers/di_service.dart';
 
@@ -21,18 +21,15 @@ final class SessionBloc extends _$SessionBloc {
   }
 
   // Removable listeners.
-  StreamSubscription<List<ProfileEntity>>? _listener;
+  StreamSubscription<List<AccountEntity>>? _listener;
 
   Future<void> checkAuthentication() async {
     // final api = ref.read(diProvider).apiRemoteClient.buckets.getBucketObjects(bucketName: bucketName);
     state = const SessionState.loading();
-
     await _listener?.cancel();
-
-    final api = ref.read(diServiceProvider).apiLocalClient.profilesDao;
-    // await api.createProfile();
+    final api = ref.read(diServiceProvider).apiLocalClient.accountsDao;
     _listener = api.watchProfiles().listen((event) {
-      state = SessionState.loaded(profiles: event);
+      state = SessionState.loaded(accounts: event);
     });
   }
 }

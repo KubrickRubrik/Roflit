@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:roflit/core/extension/estring.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
+import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
+import 'package:roflit/feature/common/widgets/action_menu_button.dart';
 
 class MainMenuAccountStoragesPage extends StatelessWidget {
   const MainMenuAccountStoragesPage({super.key});
@@ -9,7 +12,8 @@ class MainMenuAccountStoragesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      type: MaterialType.transparency,
+      color: const Color(AppColors.bgDarkBlue1),
+      borderRadius: borderRadius12,
       child: Column(
         children: [
           Container(
@@ -23,10 +27,19 @@ class MainMenuAccountStoragesPage extends StatelessWidget {
               ),
             ),
             alignment: Alignment.center,
-            child: Text(
-              'Хранилища'.translate,
-              overflow: TextOverflow.fade,
-              style: appTheme.textTheme.title2.bold.onDark1,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ActionMenuButton(
+                  onTap: () => context.pop(),
+                ),
+                Text(
+                  'Хранилища'.translate,
+                  overflow: TextOverflow.fade,
+                  style: appTheme.textTheme.title2.bold.onDark1,
+                ),
+                const AspectRatio(aspectRatio: 1),
+              ],
             ),
           ),
           Expanded(

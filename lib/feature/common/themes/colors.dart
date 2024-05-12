@@ -9,10 +9,12 @@ abstract final class AppColors {
   static const bgDarkGray1 = 0xFF20293F;
   static const bgDarkGray2 = 0x4D20293F;
   static const bgDarkGray3 = 0x2B20293F;
+  static const bgDarkGray4 = 0xFF585858;
 
   static const bgDarkBlue1 = 0xFF1D2536;
 
   static const bgDarkGrayHover = 0xFF343B4E;
+  static const bgDarkHover = 0xFF12141C;
 
   static const borderLineOnDart0 = 0xFFFFFFFF;
   static const borderLineOnDart1 = 0xA2DDDDDD;
@@ -36,9 +38,10 @@ abstract final class AppColors {
   static const textOnDark1 = 0xFFffffff;
   static const textOnDark2 = 0xFFBEBEBE;
   // static const textOnDark3 = 0x3EFFFFFF;
+  static const textSecondary = 0xFFF5B1AF;
   // static const textSecondary = 0xFFEF7B6E;
   // static const textSecondary2 = 0xFFF5B1AF;
   // static const textPrimary = 0xFFB41866;
   // static const textError = 0xFFEB4664;
-  // static const textSuccess = 0xFF428783;
+  static const textSuccess = 0xFF428783;
 }

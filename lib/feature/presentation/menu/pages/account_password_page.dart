@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:roflit/core/extension/estring.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
+import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 
-class MainMenuProfilePasswordPage extends StatelessWidget {
-  const MainMenuProfilePasswordPage({super.key});
+class MainMenuAccountPasswordPage extends StatelessWidget {
+  const MainMenuAccountPasswordPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      type: MaterialType.transparency,
+      color: const Color(AppColors.bgDarkBlue1),
+      borderRadius: borderRadius12,
       child: Column(
         children: [
           Container(

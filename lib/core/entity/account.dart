@@ -3,25 +3,25 @@ import 'package:roflit/core/entity/account_cloud.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:roflit/data/local/api_db.dart';
 
-part 'profile.freezed.dart';
+part 'account.freezed.dart';
 
 @freezed
-class ProfileEntity with _$ProfileEntity {
-  const factory ProfileEntity({
+class AccountEntity with _$AccountEntity {
+  const factory AccountEntity({
     required String name,
-    required AvailableAppLocale language,
+    required AvailableAppLocale localization,
     String? password,
     @Default([]) List<AccountCloudEntity> clouds,
-  }) = _ProfileEntity;
+  }) = _AccountEntity;
 
-  factory ProfileEntity.fromDto({
-    required ProfilesDto profileDto,
+  factory AccountEntity.fromDto({
+    required AccountsDto profileDto,
     required ProfilesCloudsDto? cloudsDto,
   }) {
-    return ProfileEntity(
+    return AccountEntity(
       name: profileDto.name,
-      language: AvailableAppLocale.values.firstWhere(
-        (e) => e.name == profileDto.language,
+      localization: AvailableAppLocale.values.firstWhere(
+        (e) => e.name == profileDto.localization,
         orElse: () => AvailableAppLocale.ru,
       ),
       password: profileDto.password,

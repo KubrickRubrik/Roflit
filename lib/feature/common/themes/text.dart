@@ -58,6 +58,8 @@ extension TextStyleColor on TextStyle {
 
   // TextStyle get onLight3 => copyWith(color: const Color(AppColors.textOnLight3));
 
+  TextStyle get secondary0 => copyWith(color: const Color(AppColors.textSecondary));
+
   // TextStyle get secondary1 => copyWith(color: const Color(AppColors.textSecondary));
 
   // TextStyle get secondary2 => copyWith(color: const Color(AppColors.textSecondary2));

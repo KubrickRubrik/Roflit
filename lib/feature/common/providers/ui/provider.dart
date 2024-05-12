@@ -86,13 +86,13 @@ final class UiBloc extends _$UiBloc {
         switch (action) {
           case ActionMenu.openClose:
             state = state.copyWith(isDisplayedMainMenu: !state.isDisplayedMainMenu);
-            if (state.isDisplayedMainMenu) {
-              _leaveMainMenu.cancel();
-              _leaveMainMenu = Timer.periodic(const Duration(seconds: 3), (_) {
-                state = state.copyWith(isDisplayedMainMenu: false);
-                _leaveMainMenu.cancel();
-              });
-            }
+            // if (state.isDisplayedMainMenu) {
+            //   _leaveMainMenu.cancel();
+            //   _leaveMainMenu = Timer.periodic(const Duration(seconds: 3), (_) {
+            //     state = state.copyWith(isDisplayedMainMenu: false);
+            //     _leaveMainMenu.cancel();
+            //   });
+            // }
             break;
           case ActionMenu.hoverLeave:
             if (isHover) {

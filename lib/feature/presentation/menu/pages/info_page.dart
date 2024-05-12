@@ -4,12 +4,11 @@ import 'package:roflit/core/extension/estring.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
+import 'package:roflit/feature/common/widgets/action_menu_button.dart';
 import 'package:roflit/feature/presentation/menu/router/router.dart';
-import 'package:roflit/feature/presentation/menu/widgets/account_list.dart';
-import 'package:roflit/feature/presentation/menu/widgets/menu_button.dart';
 
-class MainMenuAccountsPage extends StatelessWidget {
-  const MainMenuAccountsPage({super.key});
+class MainMenuInfoPage extends StatelessWidget {
+  const MainMenuInfoPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,21 +28,27 @@ class MainMenuAccountsPage extends StatelessWidget {
               ),
             ),
             alignment: Alignment.center,
-            //TODO добавить иконку Инфо
-            child: Text(
-              'Аккаунты'.translate,
-              overflow: TextOverflow.fade,
-              style: appTheme.textTheme.title2.bold.onDark1,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const AspectRatio(aspectRatio: 1),
+                Text(
+                  'Инфо'.translate,
+                  overflow: TextOverflow.fade,
+                  style: appTheme.textTheme.title2.bold.onDark1,
+                ),
+                ActionMenuButton(
+                  onTap: () {
+                    context.goNamed(RouteEndPoints.accounts.name);
+                  },
+                ),
+              ],
             ),
           ),
-          const Expanded(
-            child: MainMenuContent(),
-          ),
-          MainMenuButton(
-            title: 'Создать аккаунт'.translate,
-            onTap: () {
-              context.pushNamed(RouteEndPoints.accounts.account.name, extra: true);
-            },
+          Expanded(
+            child: Container(
+              color: Colors.blue,
+            ),
           ),
         ],
       ),

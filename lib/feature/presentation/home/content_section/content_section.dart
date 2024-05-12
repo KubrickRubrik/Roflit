@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:roflit/feature/common/widgets/lines.dart';
+import 'package:roflit/feature/presentation/menu/menu.dart';
 
-import '../../menu/menu.dart';
 import 'widgets/buckets_list.dart';
 import 'widgets/navigation_bottom_bar.dart';
 import 'widgets/navigation_header_bar.dart';

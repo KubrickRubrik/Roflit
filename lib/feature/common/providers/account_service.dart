@@ -1,0 +1,48 @@
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:roflit/core/entity/account.dart';
+import 'package:roflit/core/enums.dart';
+import 'package:roflit/core/providers/di_service.dart';
+import 'package:roflit/data/local/api_db.dart';
+
+part 'account_service.g.dart';
+
+@riverpod
+AccountService accountService(AccountServiceRef ref) {
+  return AccountService(
+    apiLocalClient: ref.read(diServiceProvider).apiLocalClient.accountsDao,
+  );
+}
+
+final class AccountService {
+  final AccountsDao apiLocalClient;
+
+  AccountService({required this.apiLocalClient});
+
+  Future<bool> createAccount({
+    required String name,
+    required AvailableAppLocale localization,
+    required String password,
+  }) async {
+    if (name.isEmpty ||
+        name.isNotEmpty && name.length < 3 ||
+        password.isNotEmpty && password.length < 3) {
+      //TODO snackbar
+      return false;
+    }
+
+    final account = AccountEntity(
+      name: name,
+      localization: localization,
+      password: password.isEmpty ? null : password,
+    );
+
+    final response = await apiLocalClient.createProfile(account: account);
+
+    if (!response) {
+      return false;
+      //TODO snackbar
+    }
+    //TODO snackbar
+    return true;
+  }
+}

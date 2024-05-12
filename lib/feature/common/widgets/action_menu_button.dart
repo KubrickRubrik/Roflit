@@ -3,10 +3,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 
 class ActionMenuButton extends HookWidget {
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   const ActionMenuButton({
-    required this.onTap,
+    this.onTap,
     super.key,
   });
 

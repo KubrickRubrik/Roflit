@@ -5,30 +5,29 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
-import 'package:roflit/core/entity/account_cloud.dart';
+import 'package:roflit/core/entity/account.dart';
 import 'package:roflit/core/entity/object.dart';
-import 'package:roflit/core/entity/profile.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 import 'package:uuid/uuid.dart';
 
 part 'api_db.g.dart';
+part 'daos/account.dart';
 part 'daos/objects_download.dart';
 part 'daos/objects_load.dart';
-part 'daos/profiles.dart';
 part 'daos/test.dart';
+part 'tables/account_clouds.dart';
+part 'tables/accounts.dart';
 part 'tables/objects.dart';
 part 'tables/objects_download.dart';
 part 'tables/objects_load.dart';
-part 'tables/profiles.dart';
-part 'tables/profiles_clouds.dart';
 part 'tables/test.dart';
 
 @DriftDatabase(
   tables: [
     TestTable,
     TestTodoCategoryTable,
-    ProfilesTable,
+    AccountsTable,
     ProfilesCloudsTable,
     ObjectsDownloadTable,
     ObjectsLoadTable,
@@ -36,7 +35,7 @@ part 'tables/test.dart';
   ],
   daos: [
     TestDao,
-    ProfilesDao,
+    AccountsDao,
     ObjectsDownloadDao,
     ObjectsLoadDao,
   ],

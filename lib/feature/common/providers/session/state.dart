@@ -8,6 +8,6 @@ class SessionState with _$SessionState {
 
   const factory SessionState.loaded({
     @Default(SessionEntity()) SessionEntity session,
-    @Default([]) List<ProfileEntity> profiles,
+    @Default([]) List<AccountEntity> accounts,
   }) = SessionLoadedState;
 }
