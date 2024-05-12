@@ -31,7 +31,11 @@ class DownloadSectionStorageMenu extends ConsumerWidget {
       child: InkWell(
         onTap: () {},
         onHover: (value) {
-          bloc.hoverOrLeaveStorageMenu(isHover: value);
+          bloc.menuActivity(
+            typeMenu: TypeMenu.storage,
+            action: ActionMenu.hoverLeave,
+            isHover: value,
+          );
         },
         mouseCursor: MouseCursor.defer,
         child: Container(
@@ -71,7 +75,12 @@ class DownloadSectionStorageMenu extends ConsumerWidget {
                       ),
                     ),
                     ActionMenuButton(
-                      onTap: () {},
+                      onTap: () {
+                        bloc.menuActivity(
+                          typeMenu: TypeMenu.main,
+                          action: ActionMenu.openClose,
+                        );
+                      },
                     ),
                   ],
                 ),

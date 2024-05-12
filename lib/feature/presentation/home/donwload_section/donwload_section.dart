@@ -25,7 +25,12 @@ class DonwloadSection extends ConsumerWidget {
             alignment: Alignment.bottomRight,
             child: ActionSectionButton(
               icon: Assets.icons.cloud,
-              onTap: bloc.toggleStorageMenu,
+              onTap: () {
+                bloc.menuActivity(
+                  typeMenu: TypeMenu.storage,
+                  action: ActionMenu.openClose,
+                );
+              },
             ),
           ),
           Flexible(

@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:roflit/core/di.dart';
 import 'package:roflit/core/entity/profile.dart';
 import 'package:roflit/core/entity/session.dart';
+import 'package:roflit/core/providers/di_service.dart';
 
 part 'provider.freezed.dart';
 part 'provider.g.dart';
@@ -29,7 +29,7 @@ final class SessionBloc extends _$SessionBloc {
 
     await _listener?.cancel();
 
-    final api = ref.read(diProvider).apiLocalClient.profilesDao;
+    final api = ref.read(diServiceProvider).apiLocalClient.profilesDao;
     // await api.createProfile();
     _listener = api.watchProfiles().listen((event) {
       state = SessionState.loaded(profiles: event);

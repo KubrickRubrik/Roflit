@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/config/constants.dart';
-import 'package:roflit/core/di.dart';
+import 'package:roflit/core/providers/di_service.dart';
 import 'package:roflit/feature/common/providers/observer/provider.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
 import 'package:roflit/feature/presentation/home/home_screen.dart';
@@ -86,7 +86,7 @@ class _EagerInitialization extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(diProvider);
+    ref.watch(diServiceProvider);
     ref.watch(uiBlocProvider);
     return child;
   }

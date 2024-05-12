@@ -27,7 +27,11 @@ class LoadingSectionAccountsMenu extends ConsumerWidget {
       child: InkWell(
         onTap: () {},
         onHover: (value) {
-          bloc.hoverOrLeaveAccountMenu(isHover: value);
+          bloc.menuActivity(
+            typeMenu: TypeMenu.account,
+            action: ActionMenu.hoverLeave,
+            isHover: value,
+          );
         },
         mouseCursor: MouseCursor.defer,
         child: Container(
@@ -67,7 +71,12 @@ class LoadingSectionAccountsMenu extends ConsumerWidget {
                       ),
                     ),
                     ActionMenuButton(
-                      onTap: () {},
+                      onTap: () {
+                        bloc.menuActivity(
+                          typeMenu: TypeMenu.main,
+                          action: ActionMenu.openClose,
+                        );
+                      },
                     ),
                   ],
                 ),

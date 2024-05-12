@@ -1,7 +1,7 @@
 import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:roflit/core/di.dart';
+import 'package:roflit/core/providers/di_service.dart';
 import 'package:roflit/feature/common/providers/session/provider.dart';
 import 'package:roflit/feature/common/widgets/lines.dart';
 import 'package:roflit/helper_remove/main/widgets/background.dart';
@@ -96,7 +96,7 @@ class HomeScreen extends HookConsumerWidget {
                     // const SizedBox(width: 8),
                     GestureDetector(
                       onTap: () {
-                        final db = ref.read(diProvider).apiLocalClient.dbInstance;
+                        final db = ref.read(diServiceProvider).apiLocalClient.dbInstance;
                         Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => DriftDbViewer(db),
                         ));

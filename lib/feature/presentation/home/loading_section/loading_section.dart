@@ -26,7 +26,12 @@ class LoadingSection extends ConsumerWidget {
             alignment: Alignment.bottomLeft,
             child: ActionSectionButton(
               icon: Assets.icons.profile,
-              onTap: bloc.toogleAccountMenu,
+              onTap: () {
+                bloc.menuActivity(
+                  typeMenu: TypeMenu.account,
+                  action: ActionMenu.openClose,
+                );
+              },
             ),
           ),
           Flexible(
