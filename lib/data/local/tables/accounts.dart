@@ -5,7 +5,7 @@ class AccountsTable extends Table {
   @override
   String get tableName => 'accounts';
 
-  IntColumn get idProfile => integer().autoIncrement()();
+  IntColumn get idAccount => integer().autoIncrement()();
   TextColumn get name => text().withLength(min: 3, max: 32)();
   TextColumn get localization =>
       text().withDefault(const Constant('ru')).withLength(min: 2, max: 2)();

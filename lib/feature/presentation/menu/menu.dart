@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
@@ -46,17 +46,30 @@ class MainMenu extends ConsumerWidget {
   }
 }
 
-class _Menu extends ConsumerWidget {
+class _Menu extends HookConsumerWidget {
   const _Menu();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bloc = ref.watch(uiBlocProvider.notifier);
+
+    // final redirectToMainMenuPage = ref.watch(uiBlocProvider.select((v) {
+    //   return v.redirectToMainMenuPage;
+    // }));
+    // final redirect = useState<RedirectMainMenuPage?>(RedirectMainMenuPage.accounts);
+
+    // ref.listen(uiBlocProvider.select((v) => v.redirectToMainMenuPage), (previous, next) {
+    //   print('>>>> $next');
+    //   // if (next != null) {
+    //   redirect.value = next;
+    //   // }
+    // });
+
     return InkWell(
       onTap: () {
         bloc.menuActivity(
           typeMenu: TypeMenu.main,
-          action: ActionMenu.openClose,
+          action: ActionMenu.close,
         );
       },
       onHover: (value) {
@@ -85,7 +98,7 @@ class _Menu extends ConsumerWidget {
             ),
             child: MaterialApp.router(
               debugShowCheckedModeBanner: false,
-              routerConfig: MainMenuRouter.getRoute(false),
+              routerConfig: MainMenuRouter.getRoute(),
             ),
           ),
         ),

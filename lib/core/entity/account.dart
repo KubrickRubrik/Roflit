@@ -8,6 +8,7 @@ part 'account.freezed.dart';
 @freezed
 class AccountEntity with _$AccountEntity {
   const factory AccountEntity({
+    required int idAccount,
     required String name,
     required AvailableAppLocale localization,
     String? password,
@@ -15,16 +16,17 @@ class AccountEntity with _$AccountEntity {
   }) = _AccountEntity;
 
   factory AccountEntity.fromDto({
-    required AccountsDto profileDto,
+    required AccountsDto accountDto,
     required ProfilesCloudsDto? cloudsDto,
   }) {
     return AccountEntity(
-      name: profileDto.name,
+      idAccount: accountDto.idAccount,
+      name: accountDto.name,
       localization: AvailableAppLocale.values.firstWhere(
-        (e) => e.name == profileDto.localization,
+        (e) => e.name == accountDto.localization,
         orElse: () => AvailableAppLocale.ru,
       ),
-      password: profileDto.password,
+      password: accountDto.password,
       clouds: [],
     );
   }

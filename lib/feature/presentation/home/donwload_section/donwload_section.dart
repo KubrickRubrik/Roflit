@@ -28,7 +28,7 @@ class DonwloadSection extends ConsumerWidget {
               onTap: () {
                 bloc.menuActivity(
                   typeMenu: TypeMenu.storage,
-                  action: ActionMenu.openClose,
+                  action: ActionMenu.open,
                 );
               },
             ),

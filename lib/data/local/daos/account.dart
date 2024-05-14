@@ -4,17 +4,31 @@ part of '../api_db.dart';
 class AccountsDao extends DatabaseAccessor<ApiDatabase> with _$AccountsDaoMixin {
   AccountsDao(super.db);
 
-  Future<bool> createProfile({
+  Future<bool> createAccount({
     required AccountEntity account,
   }) async {
-    final profileInsert = await into(accountsTable).insertReturningOrNull(
+    final accountInsert = await into(accountsTable).insertReturningOrNull(
       AccountsTableCompanion.insert(
         name: account.name,
         localization: Value(account.localization.name),
         password: Value.absentIfNull(account.password),
       ),
     );
-    if (profileInsert == null) return false;
+    if (accountInsert == null) return false;
+    return true;
+  }
+
+  Future<bool> updateAccount({
+    required AccountEntity account,
+  }) async {
+    final accountUpdate = update(accountsTable);
+    accountUpdate.where((t) => t.idAccount.equals(account.idAccount));
+    await accountUpdate.write(AccountsTableCompanion(
+      name: Value(account.name),
+      localization: Value(account.localization.name),
+      password: Value(account.password),
+    ));
+
     return true;
   }
 
@@ -22,25 +36,25 @@ class AccountsDao extends DatabaseAccessor<ApiDatabase> with _$AccountsDaoMixin 
     final query = select(accountsTable).join([
       leftOuterJoin(
         profilesCloudsTable,
-        profilesCloudsTable.idProfile.equalsExp(accountsTable.idProfile) &
+        profilesCloudsTable.idProfile.equalsExp(accountsTable.idAccount) &
             profilesCloudsTable.state.equals(true),
       )
     ]);
     query.where(accountsTable.state.equals(true));
     query.orderBy([
-      OrderingTerm.asc(accountsTable.idProfile),
+      OrderingTerm.asc(accountsTable.idAccount),
       OrderingTerm.asc(profilesCloudsTable.id),
     ]);
 
     return query.watch().map((rows) {
       print('>>>> ROWS $rows');
       return rows.map((row) {
-        final profile = row.readTable(accountsTable);
+        final account = row.readTable(accountsTable);
         final clouds = row.readTableOrNull(profilesCloudsTable);
         // print(
         //     '>>>> PROFILE: ${profile.idProfile}, ${profile.name} CLOUD: id: ${clouds.id} TYPE ${clouds.cloudType}');
         return AccountEntity.fromDto(
-          profileDto: row.readTable(accountsTable),
+          accountDto: row.readTable(accountsTable),
           cloudsDto: null, // row.readTable(profilesCloudsTable));
         );
       }).toList();

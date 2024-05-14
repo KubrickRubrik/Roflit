@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:roflit/core/extension/estring.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 import 'package:roflit/feature/common/widgets/action_menu_button.dart';
+import 'package:roflit/feature/presentation/menu/router/router.dart';
 
 class DownloadSectionStorageMenu extends ConsumerWidget {
   final double width;
@@ -77,8 +79,13 @@ class DownloadSectionStorageMenu extends ConsumerWidget {
                     ActionMenuButton(
                       onTap: () {
                         bloc.menuActivity(
+                          typeMenu: TypeMenu.storage,
+                          action: ActionMenu.close,
+                        );
+                        rootNavigatorKey.currentContext?.goNamed(RouteEndPoints.accounts.name);
+                        bloc.menuActivity(
                           typeMenu: TypeMenu.main,
-                          action: ActionMenu.openClose,
+                          action: ActionMenu.open,
                         );
                       },
                     ),

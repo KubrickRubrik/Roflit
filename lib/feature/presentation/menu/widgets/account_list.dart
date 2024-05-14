@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:roflit/core/dto/account_page_dto.dart';
 import 'package:roflit/core/extension/estring.dart';
 import 'package:roflit/feature/common/providers/session/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
@@ -23,14 +24,14 @@ class MainMenuContent extends ConsumerWidget {
       orElse: () => const SizedBox.shrink(),
       loading: () => const Loader(),
       loaded: (session, accounts) {
-        return const MainMenuAccountsList();
+        return const MainMenuAccountContentList();
       },
     );
   }
 }
 
-class MainMenuAccountsList extends ConsumerWidget {
-  const MainMenuAccountsList({super.key});
+class MainMenuAccountContentList extends ConsumerWidget {
+  const MainMenuAccountContentList({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -85,16 +86,16 @@ class MainMenuAccountsList extends ConsumerWidget {
         shrinkWrap: true,
         itemCount: state.accounts.length,
         itemBuilder: (context, index) {
-          return MainMenuAccountsListItem(index);
+          return _AccountsListItem(index);
         },
       );
     }
   }
 }
 
-class MainMenuAccountsListItem extends HookConsumerWidget {
+class _AccountsListItem extends HookConsumerWidget {
   final int index;
-  const MainMenuAccountsListItem(this.index);
+  const _AccountsListItem(this.index);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -107,13 +108,19 @@ class MainMenuAccountsListItem extends HookConsumerWidget {
 
     return InkWell(
       onTap: () {
-        context.pushNamed(RouteEndPoints.accounts.account.name, extra: false);
+        rootNavigatorKey.currentContext?.goNamed(
+          RouteEndPoints.accounts.account.name,
+          extra: AccountPageDto(
+            isCreateAccount: false,
+            idAccount: account.idAccount,
+          ),
+        );
       },
       onHover: (value) {
         isHover.value = value;
       },
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 250),
+        duration: const Duration(milliseconds: 250),
         curve: Curves.ease,
         margin: const EdgeInsets.symmetric(horizontal: 4),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),

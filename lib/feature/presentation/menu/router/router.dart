@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:roflit/core/dto/account_page_dto.dart';
 import 'package:roflit/feature/presentation/menu/pages/account_localization_page.dart';
 import 'package:roflit/feature/presentation/menu/pages/account_page.dart';
 import 'package:roflit/feature/presentation/menu/pages/account_password_page.dart';
@@ -11,10 +12,13 @@ import 'package:roflit/feature/presentation/menu/pages/login_page.dart';
 
 part 'end_points.dart';
 
-final class MainMenuRouter {
-  static GoRouter getRoute(bool val) {
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
+
+abstract final class MainMenuRouter {
+  static GoRouter getRoute() {
     return GoRouter(
       debugLogDiagnostics: false,
+      navigatorKey: rootNavigatorKey,
       // initialLocation: RouteEndPoints.accounts.account.go,
       initialLocation: RouteEndPoints.accounts.go,
       routes: [
@@ -48,8 +52,11 @@ final class MainMenuRouter {
               name: RouteEndPoints.accounts.account.name,
               path: RouteEndPoints.accounts.account.path,
               builder: (context, state) {
-                final extra = convert<bool>(value: state.extra, defaul: false);
-                return MainMenuAccountPage(isCreateAccount: extra);
+                final extra = convert<AccountPageDto>(
+                  value: state.extra,
+                  defaul: AccountPageDto.empty(),
+                );
+                return MainMenuAccountPage(accountPageDto: extra);
               },
               routes: [
                 GoRoute(

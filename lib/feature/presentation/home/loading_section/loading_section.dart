@@ -29,7 +29,7 @@ class LoadingSection extends ConsumerWidget {
               onTap: () {
                 bloc.menuActivity(
                   typeMenu: TypeMenu.account,
-                  action: ActionMenu.openClose,
+                  action: ActionMenu.open,
                 );
               },
             ),

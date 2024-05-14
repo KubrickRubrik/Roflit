@@ -31,12 +31,44 @@ final class AccountService {
     }
 
     final account = AccountEntity(
+      idAccount: -1,
       name: name,
       localization: localization,
       password: password.isEmpty ? null : password,
     );
 
-    final response = await apiLocalClient.createProfile(account: account);
+    final response = await apiLocalClient.createAccount(account: account);
+
+    if (!response) {
+      return false;
+      //TODO snackbar
+    }
+    //TODO snackbar
+    return true;
+  }
+
+  Future<bool> updateAccount({
+    required int? idAccount,
+    required String name,
+    required AvailableAppLocale localization,
+    required String password,
+  }) async {
+    if (idAccount == null) return false;
+    if (name.isEmpty ||
+        name.isNotEmpty && name.length < 3 ||
+        password.isNotEmpty && password.length < 3) {
+      //TODO snackbar
+      return false;
+    }
+
+    final account = AccountEntity(
+      idAccount: idAccount,
+      name: name,
+      localization: localization,
+      password: password.isEmpty ? null : password,
+    );
+
+    final response = await apiLocalClient.updateAccount(account: account);
 
     if (!response) {
       return false;

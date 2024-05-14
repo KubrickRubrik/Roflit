@@ -32,15 +32,14 @@ final class UiBloc extends _$UiBloc {
       //! Account menu
       case TypeMenu.account:
         switch (action) {
-          case ActionMenu.openClose:
-            state = state.copyWith(isDisplayedAccountMenu: !state.isDisplayedAccountMenu);
-            if (state.isDisplayedAccountMenu) {
+          case ActionMenu.open:
+            state = state.copyWith(isDisplayedAccountMenu: true);
+            _leaveAccountMenu.cancel();
+            _leaveAccountMenu = Timer.periodic(const Duration(seconds: 3), (_) {
+              state = state.copyWith(isDisplayedAccountMenu: false);
               _leaveAccountMenu.cancel();
-              _leaveAccountMenu = Timer.periodic(const Duration(seconds: 3), (_) {
-                state = state.copyWith(isDisplayedAccountMenu: false);
-                _leaveAccountMenu.cancel();
-              });
-            }
+            });
+
             break;
           case ActionMenu.hoverLeave:
             if (isHover) {
@@ -53,20 +52,24 @@ final class UiBloc extends _$UiBloc {
               });
             }
             break;
+          case ActionMenu.close:
+            state = state.copyWith(isDisplayedAccountMenu: false);
+            _leaveAccountMenu.cancel();
+            break;
         }
         break;
       //! Storage menu
       case TypeMenu.storage:
         switch (action) {
-          case ActionMenu.openClose:
-            state = state.copyWith(isDisplayedStorageMenu: !state.isDisplayedStorageMenu);
-            if (state.isDisplayedStorageMenu) {
+          case ActionMenu.open:
+            state = state.copyWith(isDisplayedStorageMenu: true);
+
+            _leaveStorageMenu.cancel();
+            _leaveStorageMenu = Timer.periodic(const Duration(seconds: 3), (_) {
+              state = state.copyWith(isDisplayedStorageMenu: false);
               _leaveStorageMenu.cancel();
-              _leaveStorageMenu = Timer.periodic(const Duration(seconds: 3), (_) {
-                state = state.copyWith(isDisplayedStorageMenu: false);
-                _leaveStorageMenu.cancel();
-              });
-            }
+            });
+
             break;
           case ActionMenu.hoverLeave:
             if (isHover) {
@@ -79,13 +82,21 @@ final class UiBloc extends _$UiBloc {
               });
             }
             break;
+          case ActionMenu.close:
+            state = state.copyWith(isDisplayedStorageMenu: false);
+            _leaveStorageMenu.cancel();
+            break;
         }
         break;
       //! Main menu
       case TypeMenu.main:
         switch (action) {
-          case ActionMenu.openClose:
-            state = state.copyWith(isDisplayedMainMenu: !state.isDisplayedMainMenu);
+          case ActionMenu.open:
+            state = state.copyWith(isDisplayedMainMenu: true);
+
+            // state = state.copyWith(
+            //   redirectToMainMenuPage: null,
+            // );
             // if (state.isDisplayedMainMenu) {
             //   _leaveMainMenu.cancel();
             //   _leaveMainMenu = Timer.periodic(const Duration(seconds: 3), (_) {
@@ -104,6 +115,12 @@ final class UiBloc extends _$UiBloc {
               //   _leaveMainMenu.cancel();
               // });
             }
+            break;
+          case ActionMenu.close:
+            state = state.copyWith(
+              isDisplayedMainMenu: false,
+            );
+            _leaveMainMenu.cancel();
             break;
         }
         break;
@@ -124,11 +141,13 @@ enum TypeMenu {
 }
 
 enum ActionMenu {
-  openClose,
-  hoverLeave;
+  open,
+  hoverLeave,
+  close;
 
-  bool get isOpen => this == openClose;
+  bool get isOpen => this == open;
   bool get isHoverLeave => this == hoverLeave;
+  bool get isClose => this == close;
 
   const ActionMenu();
 }

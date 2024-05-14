@@ -8,3 +8,9 @@ class UiState with _$UiState {
     @Default(false) bool isDisplayedMainMenu,
   }) = UiActionState;
 }
+
+enum RedirectMainMenuPage {
+  accounts,
+  login,
+  account,
+}
