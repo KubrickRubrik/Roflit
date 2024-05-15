@@ -4,6 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:roflit/core/entity/account.dart';
 import 'package:roflit/core/entity/session.dart';
+import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/providers/di_service.dart';
 
 part 'provider.freezed.dart';
@@ -31,5 +32,28 @@ final class SessionBloc extends _$SessionBloc {
     _listener = api.watchProfiles().listen((event) {
       state = SessionState.loaded(accounts: event);
     });
+  }
+
+  Future<bool> setLocalization({
+    required int idAccount,
+    required AvailableAppLocale localization,
+  }) async {
+    if (state is! SessionLoadedState) return false;
+    final newState = state as SessionLoadedState;
+    final newAccounts = newState.accounts.toList();
+
+    final accountIndex = newAccounts.indexWhere((e) {
+      return e.idAccount == idAccount;
+    });
+
+    if (accountIndex == -1) return false;
+
+    newAccounts[accountIndex] =
+        newAccounts.elementAt(accountIndex).copyWith(localization: localization);
+
+    state = newState.copyWith(
+      accounts: newAccounts,
+    );
+    return true;
   }
 }

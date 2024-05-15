@@ -53,18 +53,6 @@ class _Menu extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final bloc = ref.watch(uiBlocProvider.notifier);
 
-    // final redirectToMainMenuPage = ref.watch(uiBlocProvider.select((v) {
-    //   return v.redirectToMainMenuPage;
-    // }));
-    // final redirect = useState<RedirectMainMenuPage?>(RedirectMainMenuPage.accounts);
-
-    // ref.listen(uiBlocProvider.select((v) => v.redirectToMainMenuPage), (previous, next) {
-    //   print('>>>> $next');
-    //   // if (next != null) {
-    //   redirect.value = next;
-    //   // }
-    // });
-
     return InkWell(
       onTap: () {
         bloc.menuActivity(

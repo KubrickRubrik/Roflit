@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:roflit/core/dto/localization_page_dto.dart';
 import 'package:roflit/core/extension/estring.dart';
+import 'package:roflit/core/localization.dart';
+import 'package:roflit/feature/common/providers/session/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 import 'package:roflit/feature/common/widgets/action_menu_button.dart';
+import 'package:roflit/feature/presentation/menu/widgets/menu_item_button.dart';
 
 class MainMenuAccountLocalizationPage extends StatelessWidget {
-  const MainMenuAccountLocalizationPage({super.key});
+  final LocalizationPageDto localizationPageDto;
+  const MainMenuAccountLocalizationPage({
+    required this.localizationPageDto,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +52,49 @@ class MainMenuAccountLocalizationPage extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Container(
-              color: Colors.orange,
+            child: ListView.builder(
+              itemCount: LocalizationController.defaultLanguage.length,
+              itemBuilder: (context, index) {
+                return MainMenuAccountLocalizationItem(
+                  index,
+                  localizationPageDto: localizationPageDto,
+                );
+              },
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class MainMenuAccountLocalizationItem extends ConsumerWidget {
+  final int index;
+  final LocalizationPageDto localizationPageDto;
+  const MainMenuAccountLocalizationItem(
+    this.index, {
+    required this.localizationPageDto,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bloc = ref.watch(sessionBlocProvider.notifier);
+    final localization = LocalizationController.defaultLanguage.values.elementAt(index);
+
+    return MainMenuItemButton(
+      onTap: () {
+        bloc.setLocalization(
+          idAccount: localizationPageDto.idAccount,
+          localization: LocalizationController.getByName(
+            localization.code,
+          ),
+        );
+        context.pop();
+      },
+      child: Text(
+        localization.title,
+        style: appTheme.textTheme.title2.bold.onDark1,
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/dto/account_page_dto.dart';
+import 'package:roflit/core/dto/localization_page_dto.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/extension/estring.dart';
 import 'package:roflit/feature/common/providers/account_service.dart';
@@ -36,8 +37,13 @@ class MainMenuAccountPage extends HookConsumerWidget {
 
     final accountLocalization = account?.localization.name.toUpperCase();
 
-    final nameController = useTextEditingController(text: account?.name);
-    final passwordController = useTextEditingController();
+    final nameController = useTextEditingController(
+      text: account?.name,
+      keys: [account?.idAccount],
+    );
+    final passwordController = useTextEditingController(
+      keys: [account?.idAccount],
+    );
 
     return Material(
       color: const Color(AppColors.bgDarkBlue1),
@@ -86,7 +92,13 @@ class MainMenuAccountPage extends HookConsumerWidget {
                   ),
                   MainMenuItemButton(
                     onTap: () {
-                      context.pushNamed(RouteEndPoints.accounts.account.localization.name);
+                      context.pushNamed(
+                        RouteEndPoints.accounts.account.localization.name,
+                        extra: LocalizationPageDto(
+                          idAccount: account?.idAccount ?? -1,
+                          localizationType: account?.localization ?? AvailableAppLocale.ru,
+                        ),
+                      );
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -154,7 +166,7 @@ class MainMenuAccountPage extends HookConsumerWidget {
               if (accountPageDto.isCreateAccount) {
                 final response = await bloc.createAccount(
                   name: nameController.text,
-                  localization: AvailableAppLocale.ru,
+                  localization: account?.localization ?? AvailableAppLocale.ru,
                   password: passwordController.text,
                 );
 
@@ -165,7 +177,7 @@ class MainMenuAccountPage extends HookConsumerWidget {
                 await bloc.updateAccount(
                   idAccount: accountPageDto.idAccount,
                   name: nameController.text,
-                  localization: AvailableAppLocale.ru,
+                  localization: account?.localization ?? AvailableAppLocale.ru,
                   password: passwordController.text,
                 );
               }

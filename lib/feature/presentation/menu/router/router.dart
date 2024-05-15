@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:roflit/core/dto/account_page_dto.dart';
+import 'package:roflit/core/dto/localization_page_dto.dart';
 import 'package:roflit/feature/presentation/menu/pages/account_localization_page.dart';
 import 'package:roflit/feature/presentation/menu/pages/account_page.dart';
 import 'package:roflit/feature/presentation/menu/pages/account_password_page.dart';
@@ -63,7 +64,11 @@ abstract final class MainMenuRouter {
                   name: RouteEndPoints.accounts.account.localization.name,
                   path: RouteEndPoints.accounts.account.localization.path,
                   builder: (context, state) {
-                    return const MainMenuAccountLocalizationPage();
+                    final extra = convert<LocalizationPageDto>(
+                      value: state.extra,
+                      defaul: LocalizationPageDto.empty(),
+                    );
+                    return MainMenuAccountLocalizationPage(localizationPageDto: extra);
                   },
                 ),
                 GoRoute(
