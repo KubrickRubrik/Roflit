@@ -35,6 +35,7 @@ final class AccountService {
       name: name,
       localization: localization,
       password: password.isEmpty ? null : password,
+      activeBucket: '',
     );
 
     final response = await apiLocalClient.createAccount(account: account);

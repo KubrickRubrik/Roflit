@@ -1,6 +1,6 @@
 part of '../api_db.dart';
 
-@DriftAccessor(tables: [AccountsTable, ProfilesCloudsTable])
+@DriftAccessor(tables: [AccountsTable, AccountsCloudsTable])
 class AccountsDao extends DatabaseAccessor<ApiDatabase> with _$AccountsDaoMixin {
   AccountsDao(super.db);
 
@@ -32,30 +32,30 @@ class AccountsDao extends DatabaseAccessor<ApiDatabase> with _$AccountsDaoMixin 
     return true;
   }
 
-  Stream<List<AccountEntity>> watchProfiles() {
+  Stream<List<AccountEntity>> watchAccounts() {
     final query = select(accountsTable).join([
       leftOuterJoin(
-        profilesCloudsTable,
-        profilesCloudsTable.idProfile.equalsExp(accountsTable.idAccount) &
-            profilesCloudsTable.state.equals(true),
+        accountsCloudsTable,
+        accountsCloudsTable.idAccount.equalsExp(accountsTable.idAccount) &
+            accountsCloudsTable.state.equals(true),
       )
     ]);
     query.where(accountsTable.state.equals(true));
     query.orderBy([
       OrderingTerm.asc(accountsTable.idAccount),
-      OrderingTerm.asc(profilesCloudsTable.id),
+      OrderingTerm.asc(accountsCloudsTable.id),
     ]);
 
     return query.watch().map((rows) {
       print('>>>> ROWS $rows');
       return rows.map((row) {
         final account = row.readTable(accountsTable);
-        final clouds = row.readTableOrNull(profilesCloudsTable);
+        final clouds = row.readTableOrNull(accountsCloudsTable);
         // print(
         //     '>>>> PROFILE: ${profile.idProfile}, ${profile.name} CLOUD: id: ${clouds.id} TYPE ${clouds.cloudType}');
         return AccountEntity.fromDto(
           accountDto: row.readTable(accountsTable),
-          cloudsDto: null, // row.readTable(profilesCloudsTable));
+          cloudsDto: null, // row.readTable(accountsCloudsTable));
         );
       }).toList();
     });

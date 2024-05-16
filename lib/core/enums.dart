@@ -45,6 +45,14 @@ enum TypeCloud {
   bool get isVkCloud => this == vkCloud;
   bool get isNone => this == none;
 
+  TypeCloud typeCloudFromName(String? val) {
+    return switch (val) {
+      'yandexCloud' => TypeCloud.yandexCloud,
+      'vkCloud' => TypeCloud.vkCloud,
+      _ => TypeCloud.none,
+    };
+  }
+
   const TypeCloud();
 }
 

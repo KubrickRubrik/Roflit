@@ -182,6 +182,7 @@ class _AccountsListItem extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final blocSession = ref.watch(sessionBlocProvider.notifier);
     final bloc = ref.watch(uiBlocProvider.notifier);
 
     final account = ref.watch(sessionBlocProvider.select((v) {
@@ -191,18 +192,27 @@ class _AccountsListItem extends HookConsumerWidget {
     final isHover = useState(false);
 
     return InkWell(
-      onTap: () {
-        rootNavigatorKey.currentContext?.goNamed(
-          RouteEndPoints.accounts.account.name,
-          extra: AccountPageDto(
-            isCreateAccount: false,
-            idAccount: account.idAccount,
-          ),
-        );
-        bloc.menuActivity(
-          typeMenu: TypeMenu.main,
-          action: ActionMenu.open,
-        );
+      onTap: () async {
+        final login = await blocSession.confirmLogin(account.idAccount);
+        switch (login) {
+          case false:
+            rootNavigatorKey.currentContext?.goNamed(
+              RouteEndPoints.accounts.login.name,
+              //TODO add id account login
+            );
+            bloc.menuActivity(
+              typeMenu: TypeMenu.main,
+              action: ActionMenu.open,
+            );
+            break;
+          case true:
+            bloc.menuActivity(
+              typeMenu: TypeMenu.account,
+              action: ActionMenu.close,
+            );
+            break;
+          default:
+        }
       },
       onHover: (value) {
         isHover.value = value;

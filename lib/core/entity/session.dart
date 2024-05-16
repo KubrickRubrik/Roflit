@@ -6,8 +6,7 @@ part 'session.freezed.dart';
 @freezed
 class SessionEntity with _$SessionEntity {
   const factory SessionEntity({
-    @Default(SessionType.guest) sessionType,
-    int? usedIdProfile,
-    TypeCloud? usedTypeCloud,
+    int? activeIdAccount,
+    TypeCloud? activeTypeCloud,
   }) = _SessionEntity;
 }

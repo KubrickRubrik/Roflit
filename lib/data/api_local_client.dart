@@ -20,6 +20,7 @@ final class ApiLocalClient {
 
   TestDao get testDao => _db.testDao;
   AccountsDao get accountsDao => _db.accountsDao;
+  SessionDao get sessionDao => _db.sessionDao;
 
   Future<void> closeDb() async {
     await _db.close();

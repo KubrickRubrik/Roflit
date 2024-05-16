@@ -11,13 +11,15 @@ class AccountEntity with _$AccountEntity {
     required int idAccount,
     required String name,
     required AvailableAppLocale localization,
+    String? activeBucket,
+    TypeCloud? activeTypeCloud,
     String? password,
     @Default([]) List<AccountCloudEntity> clouds,
   }) = _AccountEntity;
 
   factory AccountEntity.fromDto({
     required AccountsDto accountDto,
-    required ProfilesCloudsDto? cloudsDto,
+    required AccountsCloudsDto? cloudsDto,
   }) {
     return AccountEntity(
       idAccount: accountDto.idAccount,
@@ -26,6 +28,8 @@ class AccountEntity with _$AccountEntity {
         (e) => e.name == accountDto.localization,
         orElse: () => AvailableAppLocale.ru,
       ),
+      activeBucket: accountDto.activeBucket,
+      activeTypeCloud: TypeCloud.none.typeCloudFromName(accountDto.activeTypeCloud),
       password: accountDto.password,
       clouds: [],
     );

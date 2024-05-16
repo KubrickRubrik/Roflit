@@ -126,6 +126,10 @@ final class UiBloc extends _$UiBloc {
         break;
     }
   }
+
+  // bool login(){
+  //   // if( )
+  // }
 }
 
 enum TypeMenu {

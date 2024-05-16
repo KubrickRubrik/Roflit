@@ -16,21 +16,38 @@ final class SessionBloc extends _$SessionBloc {
   @override
   SessionState build() {
     ref.onCancel(() async {
-      await _listener?.cancel();
+      await _listenerSession?.cancel();
+      await _listenerAccounts?.cancel();
     });
     return const SessionState.init();
   }
 
   // Removable listeners.
-  StreamSubscription<List<AccountEntity>>? _listener;
+  StreamSubscription<SessionEntity>? _listenerSession;
+  StreamSubscription<List<AccountEntity>>? _listenerAccounts;
 
   Future<void> checkAuthentication() async {
     // final api = ref.read(diProvider).apiRemoteClient.buckets.getBucketObjects(bucketName: bucketName);
     state = const SessionState.loading();
-    await _listener?.cancel();
-    final api = ref.read(diServiceProvider).apiLocalClient.accountsDao;
-    _listener = api.watchProfiles().listen((event) {
-      state = SessionState.loaded(accounts: event);
+    await _listenerAccounts?.cancel();
+
+    final apiSessionDao = ref.read(diServiceProvider).apiLocalClient.sessionDao;
+    final apiAccountsDao = ref.read(diServiceProvider).apiLocalClient.accountsDao;
+
+    _listenerSession = apiSessionDao.watchSession().listen((event) {
+      if (state is SessionLoadedState) {
+        state = (state as SessionLoadedState).copyWith(session: event);
+      } else {
+        state = SessionState.loaded(session: event);
+      }
+    });
+
+    _listenerAccounts = apiAccountsDao.watchAccounts().listen((event) {
+      if (state is SessionLoadedState) {
+        state = (state as SessionLoadedState).copyWith(accounts: event);
+      } else {
+        state = SessionState.loaded(accounts: event);
+      }
     });
   }
 
@@ -55,5 +72,38 @@ final class SessionBloc extends _$SessionBloc {
       accounts: newAccounts,
     );
     return true;
+  }
+
+  Future<bool?> confirmLogin(int idAccount) async {
+    if (state is! SessionLoadedState) return null;
+    final currentState = state as SessionLoadedState;
+    if (idAccount == currentState.session.activeIdAccount) return null;
+
+    final account = currentState.accounts.firstWhere((account) {
+      return account.idAccount == idAccount;
+    });
+
+    if (account.password?.isNotEmpty == true) return false;
+    await login(account);
+    return true;
+  }
+
+  Future<void> login(AccountEntity account) async {
+    if (state is! SessionLoadedState) return;
+    final apiSessionDao = ref.read(diServiceProvider).apiLocalClient.sessionDao;
+    final currentState = state as SessionLoadedState;
+
+    final newSession = SessionEntity(
+      activeIdAccount: account.idAccount,
+      activeTypeCloud: account.activeTypeCloud,
+    );
+
+    final response = await apiSessionDao.updateSession(newSession);
+
+    if (!response) {
+      return null;
+    }
+
+    state = currentState.copyWith(session: newSession);
   }
 }

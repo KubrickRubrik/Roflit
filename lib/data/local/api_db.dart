@@ -7,34 +7,42 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:roflit/core/entity/account.dart';
 import 'package:roflit/core/entity/object.dart';
+import 'package:roflit/core/entity/session.dart';
+import 'package:roflit/core/enums.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 import 'package:uuid/uuid.dart';
 
 part 'api_db.g.dart';
-part 'daos/account.dart';
-part 'daos/objects_download.dart';
-part 'daos/objects_load.dart';
+// Dao
+part 'daos/account_dao.dart';
+part 'daos/objects_download_dao.dart';
+part 'daos/objects_load_dao.dart';
+part 'daos/session_dao.dart';
+// Table
 part 'daos/test.dart';
-part 'tables/account_clouds.dart';
-part 'tables/accounts.dart';
-part 'tables/objects.dart';
-part 'tables/objects_download.dart';
-part 'tables/objects_load.dart';
-part 'tables/test.dart';
+part 'tables/account_clouds_table.dart';
+part 'tables/accounts_table.dart';
+part 'tables/objects_download_table.dart';
+part 'tables/objects_load_table.dart';
+part 'tables/objects_table.dart';
+part 'tables/session_table.dart';
+part 'tables/test_table.dart';
 
 @DriftDatabase(
   tables: [
     TestTable,
     TestTodoCategoryTable,
+    SessionTable,
     AccountsTable,
-    ProfilesCloudsTable,
+    AccountsCloudsTable,
     ObjectsDownloadTable,
     ObjectsLoadTable,
     ObjectsTable,
   ],
   daos: [
     TestDao,
+    SessionDao,
     AccountsDao,
     ObjectsDownloadDao,
     ObjectsLoadDao,
