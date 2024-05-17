@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:roflit/core/dto/account_page_dto.dart';
 import 'package:roflit/core/dto/localization_page_dto.dart';
+import 'package:roflit/core/dto/login_page_dto.dart';
 import 'package:roflit/feature/presentation/menu/pages/account_localization_page.dart';
 import 'package:roflit/feature/presentation/menu/pages/account_page.dart';
-import 'package:roflit/feature/presentation/menu/pages/account_password_page.dart';
 import 'package:roflit/feature/presentation/menu/pages/account_storages_cloud_page.dart';
 import 'package:roflit/feature/presentation/menu/pages/account_storages_page.dart';
 import 'package:roflit/feature/presentation/menu/pages/accounts_page.dart';
@@ -46,7 +46,11 @@ abstract final class MainMenuRouter {
               name: RouteEndPoints.accounts.login.name,
               path: RouteEndPoints.accounts.login.path,
               builder: (context, state) {
-                return const MainMenuLoginPage();
+                final extra = convert<LoginPageDto>(
+                  value: state.extra,
+                  defaul: LoginPageDto.empty(),
+                );
+                return MainMenuLoginPage(loginPageDto: extra);
               },
             ),
             GoRoute(
@@ -71,13 +75,13 @@ abstract final class MainMenuRouter {
                     return MainMenuAccountLocalizationPage(localizationPageDto: extra);
                   },
                 ),
-                GoRoute(
-                  name: RouteEndPoints.accounts.account.password.name,
-                  path: RouteEndPoints.accounts.account.password.path,
-                  builder: (context, state) {
-                    return const MainMenuAccountPasswordPage();
-                  },
-                ),
+                // GoRoute(
+                //   name: RouteEndPoints.accounts.account.password.name,
+                //   path: RouteEndPoints.accounts.account.password.path,
+                //   builder: (context, state) {
+                //     return const MainMenuAccountPasswordPage();
+                //   },
+                // ),
                 GoRoute(
                   name: RouteEndPoints.accounts.account.storages.name,
                   path: RouteEndPoints.accounts.account.storages.path,

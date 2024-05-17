@@ -108,6 +108,7 @@ class _AccountsListItem extends HookConsumerWidget {
 
     return InkWell(
       onTap: () {
+        //TODO: проверка наличия парроля
         rootNavigatorKey.currentContext?.goNamed(
           RouteEndPoints.accounts.account.name,
           extra: AccountPageDto(

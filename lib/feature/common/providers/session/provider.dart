@@ -84,11 +84,11 @@ final class SessionBloc extends _$SessionBloc {
     });
 
     if (account.password?.isNotEmpty == true) return false;
-    await login(account);
+    await loginFreeAccount(account);
     return true;
   }
 
-  Future<void> login(AccountEntity account) async {
+  Future<void> loginFreeAccount(AccountEntity account) async {
     if (state is! SessionLoadedState) return;
     final apiSessionDao = ref.read(diServiceProvider).apiLocalClient.sessionDao;
     final currentState = state as SessionLoadedState;
@@ -101,9 +101,43 @@ final class SessionBloc extends _$SessionBloc {
     final response = await apiSessionDao.updateSession(newSession);
 
     if (!response) {
+      //TODO: добавление снэкбара
       return null;
     }
 
     state = currentState.copyWith(session: newSession);
+  }
+
+  Future<bool> loginLockAccount({
+    required int idAccount,
+    required String password,
+  }) async {
+    if (state is! SessionLoadedState) return false;
+    final apiSessionDao = ref.read(diServiceProvider).apiLocalClient.sessionDao;
+    final currentState = state as SessionLoadedState;
+
+    final account = currentState.accounts.firstWhere((account) {
+      return account.idAccount == idAccount;
+    });
+
+    if (account.password != password) {
+      // TODO: добавить снэкбар - неверный пароль
+      return false;
+    }
+
+    final newSession = SessionEntity(
+      activeIdAccount: account.idAccount,
+      activeTypeCloud: account.activeTypeCloud,
+    );
+
+    final response = await apiSessionDao.updateSession(newSession);
+
+    if (!response) {
+      //TODO: добавление снэкбара
+      return false;
+    }
+
+    state = currentState.copyWith(session: newSession);
+    return true;
   }
 }

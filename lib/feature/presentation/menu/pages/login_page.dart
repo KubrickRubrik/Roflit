@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:roflit/core/dto/login_page_dto.dart';
 import 'package:roflit/core/extension/estring.dart';
+import 'package:roflit/feature/common/providers/session/provider.dart';
+import 'package:roflit/feature/common/providers/ui/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
@@ -12,10 +15,13 @@ import 'package:roflit/feature/presentation/menu/widgets/menu_item_button.dart';
 import 'package:roflit/feature/presentation/menu/widgets/text_field.dart';
 
 class MainMenuLoginPage extends HookConsumerWidget {
-  const MainMenuLoginPage({super.key});
+  final LoginPageDto loginPageDto;
+  const MainMenuLoginPage({required this.loginPageDto, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final blocUi = ref.watch(uiBlocProvider.notifier);
+    final blocSession = ref.watch(sessionBlocProvider.notifier);
     final passwordController = useTextEditingController();
 
     return Material(
@@ -60,15 +66,12 @@ class MainMenuLoginPage extends HookConsumerWidget {
                       controller: passwordController,
                       obscureText: true,
                       prefixIcon: const AspectRatio(aspectRatio: 1),
-                      suffixIcon: AspectRatio(
+                      suffixIcon: const AspectRatio(
                         aspectRatio: 1,
-                        child: IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.remove_red_eye,
-                            color: Color(
-                              AppColors.textOnDark1,
-                            ),
+                        child: Icon(
+                          Icons.remove_red_eye,
+                          color: Color(
+                            AppColors.textOnDark1,
                           ),
                         ),
                       ),
@@ -79,8 +82,20 @@ class MainMenuLoginPage extends HookConsumerWidget {
             ),
           ),
           MainMenuButton(
-            title: 'Сохранить'.translate,
-            onTap: () {},
+            title: 'Войти'.translate,
+            onTap: () async {
+              final response = await blocSession.loginLockAccount(
+                idAccount: loginPageDto.idAccount,
+                password: passwordController.text,
+              );
+
+              if (response) {
+                blocUi.menuActivity(
+                  typeMenu: TypeMenu.main,
+                  action: ActionMenu.close,
+                );
+              }
+            },
           ),
         ],
       ),

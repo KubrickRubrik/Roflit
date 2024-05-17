@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/dto/account_page_dto.dart';
+import 'package:roflit/core/dto/login_page_dto.dart';
 import 'package:roflit/core/extension/estring.dart';
 import 'package:roflit/feature/common/providers/session/provider.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
@@ -198,7 +199,7 @@ class _AccountsListItem extends HookConsumerWidget {
           case false:
             rootNavigatorKey.currentContext?.goNamed(
               RouteEndPoints.accounts.login.name,
-              //TODO add id account login
+              extra: LoginPageDto(idAccount: account.idAccount),
             );
             bloc.menuActivity(
               typeMenu: TypeMenu.main,
