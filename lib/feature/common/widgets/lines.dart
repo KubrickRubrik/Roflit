@@ -8,7 +8,7 @@ class Lines extends StatelessWidget {
   final widthContentLine = 1.0;
   final widthLine = 1.6;
   final widthSectionLine = 6.0;
-  final colorMainLine = const Color(AppColors.borderLineOnDart1);
+  final colorMainLine = const Color(AppColors.borderLineOnDart2);
   final colorDark = const Color(AppColors.borderLineOnLight1);
 
   const Lines.vertical() : type = LinesType.vertical;

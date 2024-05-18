@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:roflit/core/dto/login_page_dto.dart';
 import 'package:roflit/core/extension/estring.dart';
+import 'package:roflit/core/page_dto/login_page_dto.dart';
 import 'package:roflit/feature/common/providers/session/provider.dart';
-import 'package:roflit/feature/common/providers/ui/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
@@ -20,9 +19,19 @@ class MainMenuLoginPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final blocUi = ref.watch(uiBlocProvider.notifier);
     final blocSession = ref.watch(sessionBlocProvider.notifier);
     final passwordController = useTextEditingController();
+
+    void login() async {
+      final response = await blocSession.loginLockAccount(
+        idAccount: loginPageDto.idAccount,
+        password: passwordController.text,
+      );
+
+      if (response && context.mounted) {
+        context.pop();
+      }
+    }
 
     return Material(
       color: const Color(AppColors.bgDarkBlue1),
@@ -75,6 +84,9 @@ class MainMenuLoginPage extends HookConsumerWidget {
                           ),
                         ),
                       ),
+                      onSubmitted: (p0) {
+                        login();
+                      },
                     ),
                   ),
                 ],
@@ -83,19 +95,7 @@ class MainMenuLoginPage extends HookConsumerWidget {
           ),
           MainMenuButton(
             title: 'Войти'.translate,
-            onTap: () async {
-              final response = await blocSession.loginLockAccount(
-                idAccount: loginPageDto.idAccount,
-                password: passwordController.text,
-              );
-
-              if (response) {
-                blocUi.menuActivity(
-                  typeMenu: TypeMenu.main,
-                  action: ActionMenu.close,
-                );
-              }
-            },
+            onTap: login,
           ),
         ],
       ),

@@ -14,7 +14,7 @@ AccountService accountService(AccountServiceRef ref) {
 }
 
 final class AccountService {
-  final AccountsDao apiLocalClient;
+  final AccountDao apiLocalClient;
 
   AccountService({required this.apiLocalClient});
 

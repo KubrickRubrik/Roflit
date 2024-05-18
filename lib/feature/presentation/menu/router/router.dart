@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:roflit/core/dto/account_page_dto.dart';
-import 'package:roflit/core/dto/localization_page_dto.dart';
-import 'package:roflit/core/dto/login_page_dto.dart';
+import 'package:roflit/core/page_dto/account_page_dto.dart';
+import 'package:roflit/core/page_dto/localization_page_dto.dart';
+import 'package:roflit/core/page_dto/login_page_dto.dart';
+import 'package:roflit/core/page_dto/storage_page_dto.dart';
 import 'package:roflit/feature/presentation/menu/pages/account_localization_page.dart';
 import 'package:roflit/feature/presentation/menu/pages/account_page.dart';
 import 'package:roflit/feature/presentation/menu/pages/account_storages_cloud_page.dart';
@@ -20,8 +21,8 @@ abstract final class MainMenuRouter {
     return GoRouter(
       debugLogDiagnostics: false,
       navigatorKey: rootNavigatorKey,
-      // initialLocation: RouteEndPoints.accounts.account.go,
-      initialLocation: RouteEndPoints.accounts.go,
+      initialLocation: RouteEndPoints.accounts.account.storages.go,
+      // initialLocation: RouteEndPoints.accounts.go,
       routes: [
         GoRoute(
           name: RouteEndPoints.info.name,
@@ -75,13 +76,6 @@ abstract final class MainMenuRouter {
                     return MainMenuAccountLocalizationPage(localizationPageDto: extra);
                   },
                 ),
-                // GoRoute(
-                //   name: RouteEndPoints.accounts.account.password.name,
-                //   path: RouteEndPoints.accounts.account.password.path,
-                //   builder: (context, state) {
-                //     return const MainMenuAccountPasswordPage();
-                //   },
-                // ),
                 GoRoute(
                   name: RouteEndPoints.accounts.account.storages.name,
                   path: RouteEndPoints.accounts.account.storages.path,
@@ -90,10 +84,14 @@ abstract final class MainMenuRouter {
                   },
                   routes: [
                     GoRoute(
-                      name: RouteEndPoints.accounts.account.storages.cloud.name,
-                      path: RouteEndPoints.accounts.account.storages.cloud.path,
+                      name: RouteEndPoints.accounts.account.storages.storage.name,
+                      path: RouteEndPoints.accounts.account.storages.storage.path,
                       builder: (context, state) {
-                        return const MainMenuAccountStoragesCloudPage();
+                        final extra = convert<StoragePageDto>(
+                          value: state.extra,
+                          defaul: StoragePageDto.empty(),
+                        );
+                        return MainMenuAccountStoragesCloudPage(storagePageDto: extra);
                       },
                     ),
                   ],

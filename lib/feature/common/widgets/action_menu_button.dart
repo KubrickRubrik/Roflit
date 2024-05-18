@@ -12,20 +12,20 @@ class ActionMenuButton extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isHover = useState(false);
+    final hoverState = useState(false);
 
     return InkWell(
       onTap: onTap,
       onHover: (value) {
-        isHover.value = value;
+        hoverState.value = value;
       },
       child: AspectRatio(
         aspectRatio: 1,
         child: Center(
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            height: isHover.value ? 18 : 12,
-            width: isHover.value ? 18 : 12,
+            height: hoverState.value ? 16 : 10,
+            width: hoverState.value ? 16 : 10,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
@@ -34,8 +34,8 @@ class ActionMenuButton extends HookWidget {
             ),
             alignment: Alignment.center,
             child: Container(
-              height: isHover.value ? 8 : 12,
-              width: isHover.value ? 8 : 12,
+              height: hoverState.value ? 6 : 10,
+              width: hoverState.value ? 6 : 10,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: Color(AppColors.bgLight0),

@@ -14,7 +14,7 @@ class ObjectEntity with _$ObjectEntity {
     required TypeCloud cloudType,
   }) = _ObjectEntity;
 
-  factory ObjectEntity.fromDto(ObjectsDto dto) {
+  factory ObjectEntity.fromDto(ObjectDto dto) {
     return ObjectEntity(
       idObject: dto.idObject,
       bucket: dto.bucket,

@@ -7,10 +7,14 @@ import 'package:roflit/generated/assets.gen.dart';
 class ActionSectionButton extends HookWidget {
   final SvgGenImage icon;
   final VoidCallback onTap;
+  final Color bgColor;
+  final Color bgHoverColor;
 
   const ActionSectionButton({
     required this.icon,
     required this.onTap,
+    this.bgColor = const Color(AppColors.bgDarkGray1),
+    this.bgHoverColor = const Color(AppColors.bgDarkGrayHover),
     super.key,
   });
 
@@ -31,9 +35,7 @@ class ActionSectionButton extends HookWidget {
         width: 40,
         decoration: BoxDecoration(
           borderRadius: borderRadius8,
-          color: isHover.value
-              ? const Color(AppColors.bgDarkGrayHover)
-              : const Color(AppColors.bgDarkGray1),
+          color: isHover.value ? bgHoverColor : bgColor,
         ),
         alignment: Alignment.center,
         child: icon.svg(

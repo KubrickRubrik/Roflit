@@ -8,6 +8,7 @@ class MainMenuTextField extends HookWidget {
   final bool obscureText;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
+  final void Function(String)? onSubmitted;
 
   const MainMenuTextField({
     required this.controller,
@@ -15,6 +16,7 @@ class MainMenuTextField extends HookWidget {
     this.obscureText = false,
     this.prefixIcon,
     this.suffixIcon,
+    this.onSubmitted,
     super.key,
   });
 
@@ -43,6 +45,7 @@ class MainMenuTextField extends HookWidget {
       style: appTheme.textTheme.title1.onDark1,
       textAlign: TextAlign.center,
       obscureText: obscure.value,
+      onSubmitted: onSubmitted,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         prefixIcon: prefixIcon,

@@ -7,7 +7,7 @@ abstract class RouteEndPoints {
   static const _localization = 'localization';
   static const _password = 'password';
   static const _storages = 'storages';
-  static const _cloud = 'cloud';
+  static const _storage = 'storage';
 
   static const _info = 'info';
 
@@ -38,10 +38,10 @@ abstract class RouteEndPoints {
         name: _storages,
         path: _storages,
         go: '/$_account/$_storages',
-        cloud: (
-          name: _cloud,
-          path: _cloud,
-          go: '/$_account/$_storages/$_cloud',
+        storage: (
+          name: _storage,
+          path: _storage,
+          go: '/$_account/$_storages/$_storage',
         ),
       ),
     ),

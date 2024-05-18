@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:roflit/core/dto/localization_page_dto.dart';
 import 'package:roflit/core/extension/estring.dart';
 import 'package:roflit/core/localization.dart';
-import 'package:roflit/feature/common/providers/session/provider.dart';
+import 'package:roflit/core/page_dto/localization_page_dto.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
@@ -79,18 +78,11 @@ class MainMenuAccountLocalizationItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bloc = ref.watch(sessionBlocProvider.notifier);
     final localization = LocalizationController.defaultLanguage.values.elementAt(index);
 
     return MainMenuItemButton(
       onTap: () {
-        bloc.setLocalization(
-          idAccount: localizationPageDto.idAccount,
-          localization: LocalizationController.getByName(
-            localization.code,
-          ),
-        );
-        context.pop();
+        context.pop(localization.code);
       },
       child: Text(
         localization.title,

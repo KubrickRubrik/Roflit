@@ -7,10 +7,12 @@ import 'package:roflit/feature/common/themes/text.dart';
 class CreateAccountButton extends HookWidget {
   final String title;
   final VoidCallback onTap;
+  final VoidCallback? onDoubleTap;
 
   const CreateAccountButton({
     required this.title,
     required this.onTap,
+    this.onDoubleTap,
     super.key,
   });
 
@@ -20,6 +22,7 @@ class CreateAccountButton extends HookWidget {
 
     return InkWell(
       onTap: onTap,
+      onDoubleTap: onDoubleTap,
       onHover: (value) {
         isHover.value = value;
       },

@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:roflit/core/entity/account_cloud.dart';
+import 'package:roflit/core/entity/account_storage.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:roflit/data/local/api_db.dart';
 
@@ -12,14 +12,14 @@ class AccountEntity with _$AccountEntity {
     required String name,
     required AvailableAppLocale localization,
     String? activeBucket,
-    TypeCloud? activeTypeCloud,
+    int? activeIdStorage,
     String? password,
-    @Default([]) List<AccountCloudEntity> clouds,
+    @Default([]) List<AccountStorageEntity> storages,
   }) = _AccountEntity;
 
   factory AccountEntity.fromDto({
-    required AccountsDto accountDto,
-    required AccountsCloudsDto? cloudsDto,
+    required AccountDto accountDto,
+    required AccountStorageDto? storageDto,
   }) {
     return AccountEntity(
       idAccount: accountDto.idAccount,
@@ -29,9 +29,9 @@ class AccountEntity with _$AccountEntity {
         orElse: () => AvailableAppLocale.ru,
       ),
       activeBucket: accountDto.activeBucket,
-      activeTypeCloud: TypeCloud.none.typeCloudFromName(accountDto.activeTypeCloud),
+      activeIdStorage: accountDto.activeIdStorage,
       password: accountDto.password,
-      clouds: [],
+      storages: [],
     );
   }
 }

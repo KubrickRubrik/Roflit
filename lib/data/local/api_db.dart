@@ -21,11 +21,11 @@ part 'daos/objects_load_dao.dart';
 part 'daos/session_dao.dart';
 // Table
 part 'daos/test.dart';
-part 'tables/account_clouds_table.dart';
-part 'tables/accounts_table.dart';
-part 'tables/objects_download_table.dart';
-part 'tables/objects_load_table.dart';
-part 'tables/objects_table.dart';
+part 'tables/account_storage_table.dart';
+part 'tables/account_table.dart';
+part 'tables/object_download_table.dart';
+part 'tables/object_load_table.dart';
+part 'tables/object_table.dart';
 part 'tables/session_table.dart';
 part 'tables/test_table.dart';
 
@@ -34,18 +34,18 @@ part 'tables/test_table.dart';
     TestTable,
     TestTodoCategoryTable,
     SessionTable,
-    AccountsTable,
-    AccountsCloudsTable,
-    ObjectsDownloadTable,
-    ObjectsLoadTable,
-    ObjectsTable,
+    AccountTable,
+    AccountStorageTable,
+    ObjectDownloadTable,
+    ObjectLoadTable,
+    ObjectTable,
   ],
   daos: [
     TestDao,
     SessionDao,
-    AccountsDao,
-    ObjectsDownloadDao,
-    ObjectsLoadDao,
+    AccountDao,
+    ObjectDownloadDao,
+    ObjectLoadDao,
   ],
 )
 class ApiDatabase extends _$ApiDatabase {

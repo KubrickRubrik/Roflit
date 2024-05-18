@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:roflit/core/enums.dart';
 
 part 'session.freezed.dart';
 
@@ -7,6 +6,6 @@ part 'session.freezed.dart';
 class SessionEntity with _$SessionEntity {
   const factory SessionEntity({
     int? activeIdAccount,
-    TypeCloud? activeTypeCloud,
+    int? activeIdStorage,
   }) = _SessionEntity;
 }

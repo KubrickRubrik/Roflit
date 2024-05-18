@@ -5,7 +5,19 @@ enum AppSessionState { isNotAuth, isAuth }
 enum AvailableAppTheme { light, dark }
 
 /// Available languages for selection in the app.
-enum AvailableAppLocale { ru, en }
+enum AvailableAppLocale {
+  ru,
+  en;
+
+  AvailableAppLocale fromName(String? val) {
+    return switch (val) {
+      'en' => AvailableAppLocale.en,
+      _ => AvailableAppLocale.ru,
+    };
+  }
+
+  const AvailableAppLocale();
+}
 
 /// Activity activity status.
 enum ActionStatus { isAction, isDone }
@@ -45,7 +57,7 @@ enum TypeCloud {
   bool get isVkCloud => this == vkCloud;
   bool get isNone => this == none;
 
-  TypeCloud typeCloudFromName(String? val) {
+  TypeCloud fromName(String? val) {
     return switch (val) {
       'yandexCloud' => TypeCloud.yandexCloud,
       'vkCloud' => TypeCloud.vkCloud,

@@ -1,9 +1,9 @@
 part of '../api_db.dart';
 
-@DataClassName('ObjectsDto')
-class ObjectsTable extends Table {
+@DataClassName('ObjectDto')
+class ObjectTable extends Table {
   @override
-  String get tableName => 'objects';
+  String get tableName => 'object';
 
   IntColumn get idObject => integer().autoIncrement()();
   TextColumn get bucket => text().withLength(min: 1, max: 128)();

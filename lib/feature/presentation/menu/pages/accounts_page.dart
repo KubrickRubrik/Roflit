@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:roflit/core/extension/estring.dart';
+import 'package:roflit/core/page_dto/account_page_dto.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
+import 'package:roflit/feature/common/widgets/action_menu_button.dart';
 import 'package:roflit/feature/presentation/menu/router/router.dart';
-import 'package:roflit/feature/presentation/menu/widgets/account_list.dart';
+import 'package:roflit/feature/presentation/menu/widgets/accounts_content.dart';
 import 'package:roflit/feature/presentation/menu/widgets/menu_button.dart';
 
 class MainMenuAccountsPage extends StatelessWidget {
@@ -29,20 +31,33 @@ class MainMenuAccountsPage extends StatelessWidget {
               ),
             ),
             alignment: Alignment.center,
-            //TODO добавить иконку Инфо
-            child: Text(
-              'Аккаунты'.translate,
-              overflow: TextOverflow.fade,
-              style: appTheme.textTheme.title2.bold.onDark1,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ActionMenuButton(
+                  onTap: () {
+                    context.goNamed(RouteEndPoints.info.name);
+                  },
+                ),
+                Text(
+                  'Аккаунты'.translate,
+                  overflow: TextOverflow.fade,
+                  style: appTheme.textTheme.title2.bold.onDark1,
+                ),
+                const AspectRatio(aspectRatio: 1),
+              ],
             ),
           ),
           const Expanded(
-            child: MainMenuContent(),
+            child: MainMenuAccountsContent(),
           ),
           MainMenuButton(
             title: 'Создать аккаунт'.translate,
             onTap: () {
-              context.pushNamed(RouteEndPoints.accounts.account.name, extra: true);
+              context.pushNamed(
+                RouteEndPoints.accounts.account.name,
+                extra: AccountPageDto(isCreateAccount: true),
+              );
             },
           ),
         ],

@@ -1,10 +1,11 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:roflit/core/entity/account.dart';
+import 'package:roflit/core/entity/account_storage.dart';
 import 'package:roflit/core/entity/session.dart';
-import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/providers/di_service.dart';
 
 part 'provider.freezed.dart';
@@ -25,6 +26,60 @@ final class SessionBloc extends _$SessionBloc {
   // Removable listeners.
   StreamSubscription<SessionEntity>? _listenerSession;
   StreamSubscription<List<AccountEntity>>? _listenerAccounts;
+
+  AccountEntity? getAccount({
+    required bool getActive,
+    int? getByIndex,
+    int? getByIdAccount,
+  }) {
+    if (state is! SessionLoadedState) return null;
+    final currentState = state as SessionLoadedState;
+
+    if (getActive) {
+      return currentState.accounts.firstWhereOrNull((e) {
+        return e.idAccount == currentState.session.activeIdAccount;
+      });
+    } else {
+      if (getByIndex != null) {
+        return currentState.accounts.elementAtOrNull(getByIndex);
+      } else if (getByIdAccount != null) {
+        return currentState.accounts.firstWhereOrNull((e) {
+          return e.idAccount == getByIdAccount;
+        });
+      }
+      return null;
+    }
+  }
+
+  bool isActiveIdAccount({int? getByIndex, int? getByIdAccount}) {
+    if (state is! SessionLoadedState) return false;
+    final currentState = state as SessionLoadedState;
+    final account =
+        getAccount(getActive: false, getByIndex: getByIndex, getByIdAccount: getByIdAccount);
+    return account?.idAccount == currentState.session.activeIdAccount;
+  }
+
+  AccountStorageEntity? getStorage({
+    required bool getActive,
+    int? getByIndex,
+    int? getByIdStorage,
+  }) {
+    final account = getAccount(getActive: true);
+    if (getActive) {
+      return account?.storages.firstWhereOrNull((e) {
+        return e.idStorage == account.activeIdStorage;
+      });
+    } else {
+      if (getByIndex != null) {
+        return account?.storages.elementAtOrNull(getByIndex);
+      } else if (getByIdStorage != null) {
+        return account?.storages.firstWhereOrNull((e) {
+          return e.idStorage == getByIdStorage;
+        });
+      }
+      return null;
+    }
+  }
 
   Future<void> checkAuthentication() async {
     // final api = ref.read(diProvider).apiRemoteClient.buckets.getBucketObjects(bucketName: bucketName);
@@ -51,29 +106,6 @@ final class SessionBloc extends _$SessionBloc {
     });
   }
 
-  Future<bool> setLocalization({
-    required int idAccount,
-    required AvailableAppLocale localization,
-  }) async {
-    if (state is! SessionLoadedState) return false;
-    final newState = state as SessionLoadedState;
-    final newAccounts = newState.accounts.toList();
-
-    final accountIndex = newAccounts.indexWhere((e) {
-      return e.idAccount == idAccount;
-    });
-
-    if (accountIndex == -1) return false;
-
-    newAccounts[accountIndex] =
-        newAccounts.elementAt(accountIndex).copyWith(localization: localization);
-
-    state = newState.copyWith(
-      accounts: newAccounts,
-    );
-    return true;
-  }
-
   Future<bool?> confirmLogin(int idAccount) async {
     if (state is! SessionLoadedState) return null;
     final currentState = state as SessionLoadedState;
@@ -95,7 +127,7 @@ final class SessionBloc extends _$SessionBloc {
 
     final newSession = SessionEntity(
       activeIdAccount: account.idAccount,
-      activeTypeCloud: account.activeTypeCloud,
+      activeIdStorage: account.activeIdStorage,
     );
 
     final response = await apiSessionDao.updateSession(newSession);
@@ -127,7 +159,7 @@ final class SessionBloc extends _$SessionBloc {
 
     final newSession = SessionEntity(
       activeIdAccount: account.idAccount,
-      activeTypeCloud: account.activeTypeCloud,
+      activeIdStorage: account.activeIdStorage,
     );
 
     final response = await apiSessionDao.updateSession(newSession);

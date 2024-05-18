@@ -1,14 +1,14 @@
 part of '../api_db.dart';
 
-@DriftAccessor(tables: [AccountsTable, AccountsCloudsTable])
-class AccountsDao extends DatabaseAccessor<ApiDatabase> with _$AccountsDaoMixin {
-  AccountsDao(super.db);
+@DriftAccessor(tables: [AccountTable, AccountStorageTable])
+class AccountDao extends DatabaseAccessor<ApiDatabase> with _$AccountDaoMixin {
+  AccountDao(super.db);
 
   Future<bool> createAccount({
     required AccountEntity account,
   }) async {
-    final accountInsert = await into(accountsTable).insertReturningOrNull(
-      AccountsTableCompanion.insert(
+    final accountInsert = await into(accountTable).insertReturningOrNull(
+      AccountTableCompanion.insert(
         name: account.name,
         localization: Value(account.localization.name),
         password: Value.absentIfNull(account.password),
@@ -21,9 +21,9 @@ class AccountsDao extends DatabaseAccessor<ApiDatabase> with _$AccountsDaoMixin 
   Future<bool> updateAccount({
     required AccountEntity account,
   }) async {
-    final accountUpdate = update(accountsTable);
+    final accountUpdate = update(accountTable);
     accountUpdate.where((t) => t.idAccount.equals(account.idAccount));
-    await accountUpdate.write(AccountsTableCompanion(
+    await accountUpdate.write(AccountTableCompanion(
       name: Value(account.name),
       localization: Value(account.localization.name),
       password: Value(account.password),
@@ -33,29 +33,29 @@ class AccountsDao extends DatabaseAccessor<ApiDatabase> with _$AccountsDaoMixin 
   }
 
   Stream<List<AccountEntity>> watchAccounts() {
-    final query = select(accountsTable).join([
+    final query = select(accountTable).join([
       leftOuterJoin(
-        accountsCloudsTable,
-        accountsCloudsTable.idAccount.equalsExp(accountsTable.idAccount) &
-            accountsCloudsTable.state.equals(true),
+        accountStorageTable,
+        accountStorageTable.idAccount.equalsExp(accountTable.idAccount) &
+            accountStorageTable.state.equals(true),
       )
     ]);
-    query.where(accountsTable.state.equals(true));
+    query.where(accountTable.state.equals(true));
     query.orderBy([
-      OrderingTerm.asc(accountsTable.idAccount),
-      OrderingTerm.asc(accountsCloudsTable.id),
+      OrderingTerm.asc(accountTable.idAccount),
+      OrderingTerm.asc(accountStorageTable.idStorage),
     ]);
 
     return query.watch().map((rows) {
       print('>>>> ROWS $rows');
       return rows.map((row) {
-        final account = row.readTable(accountsTable);
-        final clouds = row.readTableOrNull(accountsCloudsTable);
+        final account = row.readTable(accountTable);
+        final clouds = row.readTableOrNull(accountStorageTable);
         // print(
         //     '>>>> PROFILE: ${profile.idProfile}, ${profile.name} CLOUD: id: ${clouds.id} TYPE ${clouds.cloudType}');
         return AccountEntity.fromDto(
-          accountDto: row.readTable(accountsTable),
-          cloudsDto: null, // row.readTable(accountsCloudsTable));
+          accountDto: row.readTable(accountTable),
+          storageDto: null, // row.readTable(accountStorageTable));
         );
       }).toList();
     });

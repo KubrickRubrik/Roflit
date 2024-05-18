@@ -3,18 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:roflit/core/dto/account_page_dto.dart';
 import 'package:roflit/core/extension/estring.dart';
+import 'package:roflit/core/page_dto/account_page_dto.dart';
+import 'package:roflit/core/page_dto/login_page_dto.dart';
 import 'package:roflit/feature/common/providers/session/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
+import 'package:roflit/feature/common/widgets/action_account.dart';
 import 'package:roflit/feature/common/widgets/loader.dart';
 import 'package:roflit/feature/presentation/menu/router/router.dart';
 import 'package:roflit/generated/assets.gen.dart';
 
-class MainMenuContent extends ConsumerWidget {
-  const MainMenuContent({super.key});
+class MainMenuAccountsContent extends ConsumerWidget {
+  const MainMenuAccountsContent({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,14 +26,14 @@ class MainMenuContent extends ConsumerWidget {
       orElse: () => const SizedBox.shrink(),
       loading: () => const Loader(),
       loaded: (session, accounts) {
-        return const MainMenuAccountContentList();
+        return const _MainMenuAccountContentList();
       },
     );
   }
 }
 
-class MainMenuAccountContentList extends ConsumerWidget {
-  const MainMenuAccountContentList({super.key});
+class _MainMenuAccountContentList extends ConsumerWidget {
+  const _MainMenuAccountContentList({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -99,21 +101,59 @@ class _AccountsListItem extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final account = ref.watch(sessionBlocProvider.select((value) {
-      value as SessionLoadedState;
-      return value.accounts.elementAt(index);
+    final blocSession = ref.watch(sessionBlocProvider.notifier);
+
+    final account = ref.watch(sessionBlocProvider.select((v) {
+      return blocSession.getAccount(getActive: false, getByIndex: index);
+    }));
+
+    final isActiveAccount = ref.watch(sessionBlocProvider.select((v) {
+      return blocSession.isActiveIdAccount(getByIndex: index);
     }));
 
     final isHover = useState(false);
 
+    final getBgColor = useMemoized(
+      () {
+        if (isActiveAccount) {
+          return const Color(AppColors.bgDarkSelected1);
+        } else if (isHover.value) {
+          return const Color(AppColors.bgDarkHover).withOpacity(0.6);
+        } else if (index.isOdd) {
+          return const Color(AppColors.bgDarkHover).withOpacity(0.4);
+        }
+        return null;
+      },
+      [isActiveAccount, isHover.value],
+    );
+
+    final getTextColor = useMemoized(
+      () {
+        if (isActiveAccount) {
+          return appTheme.textTheme.title2.bold.onLight1;
+        } else {
+          return appTheme.textTheme.title2.bold.onDark2;
+        }
+      },
+      [isActiveAccount, isHover.value],
+    );
+
     return InkWell(
-      onTap: () {
-        //TODO: проверка наличия парроля
+      onTap: () async {
+        final login = await blocSession.confirmLogin(account?.idAccount ?? -1);
+        if (login != null && !login) {
+          rootNavigatorKey.currentContext?.goNamed(
+            RouteEndPoints.accounts.login.name,
+            extra: LoginPageDto(idAccount: account?.idAccount ?? -1),
+          );
+          return;
+        }
+
         rootNavigatorKey.currentContext?.goNamed(
           RouteEndPoints.accounts.account.name,
           extra: AccountPageDto(
             isCreateAccount: false,
-            idAccount: account.idAccount,
+            idAccount: account?.idAccount,
           ),
         );
       },
@@ -126,36 +166,22 @@ class _AccountsListItem extends HookConsumerWidget {
         margin: const EdgeInsets.symmetric(horizontal: 4),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         decoration: BoxDecoration(
-          color: isHover.value
-              ? const Color(AppColors.bgDarkHover).withOpacity(0.6)
-              : index.isOdd
-                  ? const Color(AppColors.bgDarkHover).withOpacity(0.4)
-                  : null,
+          color: getBgColor,
+          borderRadius: borderRadius8,
         ),
         child: Row(
           children: [
-            Container(
-              height: 40,
-              width: 40,
-              decoration: BoxDecoration(
-                borderRadius: borderRadius8,
-                color: const Color(AppColors.bgDarkGray4),
-              ),
-              alignment: Alignment.center,
-              child: Assets.icons.profile.svg(
-                width: 20,
-                height: 20,
-                colorFilter: const ColorFilter.mode(
-                  Color(AppColors.textOnDark1),
-                  BlendMode.srcIn,
-                ),
-              ),
+            AccountAvatar(
+              icon: Assets.icons.profile,
+              bgColor: const Color(AppColors.bgDarkGray3),
+              isHover: isHover.value,
             ),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                account.name,
-                style: appTheme.textTheme.body2.bold.onDark2,
+                account?.name ?? '',
+                overflow: TextOverflow.ellipsis,
+                style: getTextColor,
               ),
             ),
           ],

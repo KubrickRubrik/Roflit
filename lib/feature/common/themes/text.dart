@@ -175,4 +175,14 @@ extension CustomTextTheme on TextTheme {
       // fontFamily: inter,
     );
   }
+
+  TextStyle get caption3 {
+    return const TextStyle(
+      fontSize: 10.0,
+      letterSpacing: 0.01 * 12,
+      fontWeight: FontWeight.w400,
+      color: Color(AppColors.textOnLight1),
+      // fontFamily: inter,
+    );
+  }
 }

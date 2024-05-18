@@ -1,12 +1,11 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:roflit/core/dto/account_page_dto.dart';
-import 'package:roflit/core/dto/localization_page_dto.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/extension/estring.dart';
+import 'package:roflit/core/page_dto/account_page_dto.dart';
+import 'package:roflit/core/page_dto/localization_page_dto.dart';
 import 'package:roflit/feature/common/providers/account_service.dart';
 import 'package:roflit/feature/common/providers/session/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
@@ -28,22 +27,37 @@ class MainMenuAccountPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final blocSession = ref.watch(sessionBlocProvider.notifier);
     final bloc = ref.read(accountServiceProvider);
 
     final account = ref.watch(sessionBlocProvider.select((v) {
-      v as SessionLoadedState;
-      return v.accounts.firstWhereOrNull((e) => e.idAccount == accountPageDto.idAccount);
+      return blocSession.getAccount(getActive: true);
     }));
 
-    final accountLocalization = account?.localization.name.toUpperCase();
+    final localizationState = useState<String?>(account?.localization.name.toUpperCase());
 
     final nameController = useTextEditingController(
       text: account?.name,
       keys: [account?.idAccount],
     );
+
     final passwordController = useTextEditingController(
       keys: [account?.idAccount],
     );
+
+    Future<void> onTapLocalization() async {
+      final localization = await context.pushNamed<String?>(
+        RouteEndPoints.accounts.account.localization.name,
+        extra: LocalizationPageDto(
+          idAccount: account?.idAccount ?? -1,
+          localizationType: account?.localization ?? AvailableAppLocale.ru,
+        ),
+      );
+
+      if (localization != null) {
+        localizationState.value = localization.toUpperCase();
+      }
+    }
 
     return Material(
       color: const Color(AppColors.bgDarkBlue1),
@@ -91,27 +105,17 @@ class MainMenuAccountPage extends HookConsumerWidget {
                     ),
                   ),
                   MainMenuItemButton(
-                    onTap: () {
-                      context.pushNamed(
-                        RouteEndPoints.accounts.account.localization.name,
-                        extra: LocalizationPageDto(
-                          idAccount: account?.idAccount ?? -1,
-                          localizationType: account?.localization ?? AvailableAppLocale.ru,
-                        ),
-                      );
-                    },
+                    onTap: onTapLocalization,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const AspectRatio(aspectRatio: 1),
                         Text(
-                          accountLocalization ?? 'Локализация'.translate,
+                          localizationState.value ?? 'Локализация'.translate,
                           overflow: TextOverflow.fade,
                           style: appTheme.textTheme.title2.bold.onDark1,
                         ),
-                        ActionMenuButton(onTap: () {
-                          context.pushNamed(RouteEndPoints.accounts.account.localization.name);
-                        }),
+                        ActionMenuButton(onTap: onTapLocalization),
                       ],
                     ),
                   ),
@@ -130,7 +134,9 @@ class MainMenuAccountPage extends HookConsumerWidget {
                             style: appTheme.textTheme.title2.bold.onDark1,
                           ),
                           ActionMenuButton(onTap: () {
-                            context.pushNamed(RouteEndPoints.accounts.account.localization.name);
+                            context.pushNamed(
+                              RouteEndPoints.accounts.account.storages.name,
+                            );
                           }),
                         ],
                       ),
@@ -174,12 +180,13 @@ class MainMenuAccountPage extends HookConsumerWidget {
                   context.pop();
                 }
               } else {
-                await bloc.updateAccount(
+                final response = await bloc.updateAccount(
                   idAccount: accountPageDto.idAccount,
                   name: nameController.text,
-                  localization: account?.localization ?? AvailableAppLocale.ru,
+                  localization: AvailableAppLocale.ru.fromName(localizationState.value),
                   password: passwordController.text,
                 );
+                if (response && context.mounted) context.pop();
               }
             },
           ),
