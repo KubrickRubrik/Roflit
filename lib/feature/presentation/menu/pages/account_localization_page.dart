@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/extension/estring.dart';
-import 'package:roflit/core/localization.dart';
-import 'package:roflit/core/page_dto/localization_page_dto.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
@@ -11,11 +10,7 @@ import 'package:roflit/feature/common/widgets/action_menu_button.dart';
 import 'package:roflit/feature/presentation/menu/widgets/menu_item_button.dart';
 
 class MainMenuAccountLocalizationPage extends StatelessWidget {
-  final LocalizationPageDto localizationPageDto;
-  const MainMenuAccountLocalizationPage({
-    required this.localizationPageDto,
-    super.key,
-  });
+  const MainMenuAccountLocalizationPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -52,12 +47,9 @@ class MainMenuAccountLocalizationPage extends StatelessWidget {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: LocalizationController.defaultLanguage.length,
+              itemCount: AppLocalization.values.length,
               itemBuilder: (context, index) {
-                return MainMenuAccountLocalizationItem(
-                  index,
-                  localizationPageDto: localizationPageDto,
-                );
+                return MainMenuAccountLocalizationItem(index);
               },
             ),
           ),
@@ -69,24 +61,19 @@ class MainMenuAccountLocalizationPage extends StatelessWidget {
 
 class MainMenuAccountLocalizationItem extends ConsumerWidget {
   final int index;
-  final LocalizationPageDto localizationPageDto;
-  const MainMenuAccountLocalizationItem(
-    this.index, {
-    required this.localizationPageDto,
-    super.key,
-  });
+  const MainMenuAccountLocalizationItem(this.index);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final localization = LocalizationController.defaultLanguage.values.elementAt(index);
+    final localization = AppLocalization.values[index];
 
     return MainMenuItemButton(
       onTap: () {
-        context.pop(localization.code);
+        context.pop(localization);
       },
       child: Text(
         localization.title,
-        style: appTheme.textTheme.title2.bold.onDark1,
+        style: appTheme.textTheme.title2.onDark1,
       ),
     );
   }

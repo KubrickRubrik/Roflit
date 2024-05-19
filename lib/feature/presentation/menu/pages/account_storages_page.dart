@@ -16,11 +16,6 @@ class MainMenuAccountStoragesPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final blocSession = ref.read(sessionBlocProvider.notifier);
-    // final account = ref.watch(sessionBlocProvider.select((v) {
-    //   return blocSession.getAccount(getActive: true);
-    // }));
-
     return Material(
       color: const Color(AppColors.bgDarkBlue1),
       borderRadius: borderRadius12,
@@ -44,7 +39,7 @@ class MainMenuAccountStoragesPage extends ConsumerWidget {
                   onTap: () => context.pop(),
                 ),
                 Text(
-                  'Хранилища'.translate,
+                  'Список хранилищ'.translate,
                   overflow: TextOverflow.fade,
                   style: appTheme.textTheme.title2.bold.onDark1,
                 ),

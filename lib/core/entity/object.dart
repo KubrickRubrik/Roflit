@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:roflit/data/local/api_db.dart';
@@ -11,7 +12,7 @@ class ObjectEntity with _$ObjectEntity {
     required String bucket,
     required String title,
     required String? localPath,
-    required TypeCloud cloudType,
+    required TypeStorage? storageType,
   }) = _ObjectEntity;
 
   factory ObjectEntity.fromDto(ObjectDto dto) {
@@ -20,9 +21,8 @@ class ObjectEntity with _$ObjectEntity {
       bucket: dto.bucket,
       title: dto.title,
       localPath: dto.localPath,
-      cloudType: TypeCloud.values.firstWhere(
-        (e) => e.name == dto.cloudType,
-        orElse: () => TypeCloud.none,
+      storageType: TypeStorage.values.firstWhereOrNull(
+        (e) => e.name == dto.storageType,
       ),
     );
   }

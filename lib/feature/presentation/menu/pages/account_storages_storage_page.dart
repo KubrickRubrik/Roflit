@@ -1,0 +1,212 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:roflit/core/enums.dart';
+import 'package:roflit/core/extension/estring.dart';
+import 'package:roflit/core/page_dto/storage_page_dto.dart';
+import 'package:roflit/feature/common/providers/session/provider.dart';
+import 'package:roflit/feature/common/providers/storage_service.dart';
+import 'package:roflit/feature/common/themes/colors.dart';
+import 'package:roflit/feature/common/themes/sizes.dart';
+import 'package:roflit/feature/common/themes/text.dart';
+import 'package:roflit/feature/common/widgets/action_menu_button.dart';
+import 'package:roflit/feature/presentation/menu/router/router.dart';
+import 'package:roflit/feature/presentation/menu/widgets/menu_button.dart';
+import 'package:roflit/feature/presentation/menu/widgets/menu_item_button.dart';
+import 'package:roflit/feature/presentation/menu/widgets/text_field.dart';
+
+class MainMenuAccountStoragesStoragePage extends HookConsumerWidget {
+  final StoragePageDto storagePageDto;
+
+  const MainMenuAccountStoragesStoragePage({
+    required this.storagePageDto,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final blocSession = ref.watch(sessionBlocProvider.notifier);
+    final blocStorage = ref.read(storageServiceProvider);
+    final storage = ref.watch(sessionBlocProvider.select((v) {
+      return blocSession.getStorage(getActive: false, getByIdStorage: storagePageDto.idStorage);
+    }));
+
+    final titleStorageController = useTextEditingController(
+      text: storage?.title,
+      keys: [storage?.idAccount],
+    );
+
+    final accessKeyStorageController = useTextEditingController(
+      text: storage?.accessKey,
+      keys: [storage?.idAccount],
+    );
+
+    final secretKeyStorageController = useTextEditingController(
+      text: storage?.secretKey,
+      keys: [storage?.idAccount],
+    );
+
+    final regionKeyStorageController = useTextEditingController(
+      text: storage?.region,
+      keys: [storage?.idAccount],
+    );
+
+    final typeStorageState = useState<TypeStorage>(
+      storage?.storageType ?? TypeStorage.yxCloud,
+    );
+
+    Future<void> onTapTypeStorage() async {
+      final typeStorage = await context.pushNamed<TypeStorage?>(
+        RouteEndPoints.accounts.account.storages.storage.type.name,
+      );
+
+      if (typeStorage != null) {
+        typeStorageState.value = typeStorage;
+      }
+    }
+
+    return Material(
+      color: const Color(AppColors.bgDarkBlue1),
+      borderRadius: borderRadius12,
+      child: Column(
+        children: [
+          //! Appbar.
+          Container(
+            height: 56,
+            decoration: const BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  width: 2,
+                  color: Color(AppColors.borderLineOnLight0),
+                ),
+              ),
+            ),
+            alignment: Alignment.center,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ActionMenuButton(
+                  onTap: () => context.pop(),
+                ),
+                Text(
+                  'Хранилище'.translate,
+                  overflow: TextOverflow.fade,
+                  style: appTheme.textTheme.title2.bold.onDark1,
+                ),
+                const AspectRatio(aspectRatio: 1),
+              ],
+            ),
+          ),
+          //! Content list.
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  //! Title cloud.
+                  MainMenuItemButton(
+                    onTap: () {},
+                    child: MainMenuTextField(
+                      hint: 'Название'.translate,
+                      controller: titleStorageController,
+                    ),
+                  ),
+                  //! Type Cloud.
+                  MainMenuItemButton(
+                    onTap: onTapTypeStorage,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const AspectRatio(aspectRatio: 1),
+                        Text(
+                          typeStorageState.value.title,
+                          overflow: TextOverflow.fade,
+                          style: appTheme.textTheme.title2.bold.selected1,
+                        ),
+                        ActionMenuButton(onTap: onTapTypeStorage),
+                      ],
+                    ),
+                  ),
+                  //! Access key.
+                  MainMenuItemButton(
+                    onTap: () {},
+                    child: MainMenuTextField(
+                      hint: 'Ключ доступа'.translate,
+                      controller: accessKeyStorageController,
+                    ),
+                  ),
+                  //! The secret key.
+                  MainMenuItemButton(
+                    onTap: () {},
+                    child: MainMenuTextField(
+                      hint: 'Секретный ключ'.translate,
+                      controller: secretKeyStorageController,
+                    ),
+                  ),
+                  //! Cloud region.
+                  MainMenuItemButton(
+                    onTap: () {},
+                    child: MainMenuTextField(
+                      hint: 'Регион облака'.translate,
+                      controller: regionKeyStorageController,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          //! Buttons.
+          Flex(
+            direction: Axis.horizontal,
+            children: [
+              if (!storagePageDto.isCreateAccount) ...{
+                Flexible(
+                  child: MainMenuButton(
+                    title: 'Удалить'.translate,
+                    onTap: () async {
+                      // final response = await bloc.deleteAccount(idAccount: account!.idAccount);
+
+                      // if (response && context.mounted) {
+                      //   context.pop();
+                      // }
+                    },
+                  ),
+                ),
+              },
+              Flexible(
+                child: MainMenuButton(
+                  title: switch (storagePageDto.isCreateAccount) {
+                    true => 'Добавить'.translate,
+                    _ => 'Сохранить'.translate,
+                  },
+                  onTap: () async {
+                    if (storagePageDto.isCreateAccount) {
+                      //   final response = await bloc.createAccount(
+                      //     name: nameController.text,
+                      //     localization: account?.localization ?? AvailableAppLocale.ru,
+                      //     password: passwordController.text,
+                      //   );
+
+                      //   if (response && context.mounted) {
+                      //     context.pop();
+                      //   }
+                    } else {
+                      //   final response = await bloc.updateAccount(
+                      //     idAccount: storagePageDto.idAccount,
+                      //     name: nameController.text,
+                      //     localization: AvailableAppLocale.ru.fromName(localizationState.value),
+                      //     password: passwordController.text,
+                      //   );
+                      //   if (response && context.mounted) context.pop();
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}

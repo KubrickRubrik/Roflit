@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/extension/estring.dart';
-import 'package:roflit/core/page_dto/account_page_dto.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 import 'package:roflit/feature/common/widgets/action_menu_button.dart';
-import 'package:roflit/feature/presentation/menu/router/router.dart';
-import 'package:roflit/feature/presentation/menu/widgets/accounts_content.dart';
-import 'package:roflit/feature/presentation/menu/widgets/menu_button.dart';
+import 'package:roflit/feature/presentation/menu/widgets/menu_item_button.dart';
 
-class MainMenuAccountsPage extends StatelessWidget {
-  const MainMenuAccountsPage({super.key});
+class MainMenuAccountStoragesStorageTypePage extends StatelessWidget {
+  const MainMenuAccountStoragesStorageTypePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,12 +34,10 @@ class MainMenuAccountsPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ActionMenuButton(
-                  onTap: () {
-                    context.pushNamed(RouteEndPoints.info.name);
-                  },
+                  onTap: () => context.pop(),
                 ),
                 Text(
-                  'Аккаунты'.translate,
+                  'Тип облака'.translate,
                   overflow: TextOverflow.fade,
                   style: appTheme.textTheme.title2.bold.onDark1,
                 ),
@@ -48,19 +45,35 @@ class MainMenuAccountsPage extends StatelessWidget {
               ],
             ),
           ),
-          const Expanded(
-            child: MainMenuAccountsContent(),
-          ),
-          MainMenuButton(
-            title: 'Создать аккаунт'.translate,
-            onTap: () {
-              context.pushNamed(
-                RouteEndPoints.accounts.account.name,
-                extra: AccountPageDto(isCreateAccount: true),
-              );
-            },
+          Expanded(
+            child: ListView.builder(
+              itemCount: TypeStorage.values.length,
+              itemBuilder: (context, index) {
+                return MainMenuAccountStorageTypeItem(index);
+              },
+            ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class MainMenuAccountStorageTypeItem extends ConsumerWidget {
+  final int index;
+  const MainMenuAccountStorageTypeItem(this.index);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final typeStorage = TypeStorage.values[index];
+
+    return MainMenuItemButton(
+      onTap: () {
+        context.pop(typeStorage);
+      },
+      child: Text(
+        typeStorage.title,
+        style: appTheme.textTheme.title2.onDark1,
       ),
     );
   }

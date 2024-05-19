@@ -3,13 +3,13 @@ import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/generated/assets.gen.dart';
 
-class AccountAvatar extends StatelessWidget {
+class ActionHoverButton extends StatelessWidget {
   final SvgGenImage icon;
   final bool isHover;
   final Color bgColor;
   final Color bgHoverColor;
 
-  const AccountAvatar({
+  const ActionHoverButton({
     required this.icon,
     required this.isHover,
     this.bgColor = const Color(AppColors.bgDarkGray1),

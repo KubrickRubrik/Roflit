@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:roflit/core/page_dto/account_page_dto.dart';
-import 'package:roflit/core/page_dto/localization_page_dto.dart';
 import 'package:roflit/core/page_dto/login_page_dto.dart';
 import 'package:roflit/core/page_dto/storage_page_dto.dart';
 import 'package:roflit/feature/presentation/menu/pages/account_localization_page.dart';
 import 'package:roflit/feature/presentation/menu/pages/account_page.dart';
-import 'package:roflit/feature/presentation/menu/pages/account_storages_cloud_page.dart';
 import 'package:roflit/feature/presentation/menu/pages/account_storages_page.dart';
+import 'package:roflit/feature/presentation/menu/pages/account_storages_storage_page.dart';
+import 'package:roflit/feature/presentation/menu/pages/account_storages_storage_type_page.dart';
 import 'package:roflit/feature/presentation/menu/pages/accounts_page.dart';
 import 'package:roflit/feature/presentation/menu/pages/info_page.dart';
 import 'package:roflit/feature/presentation/menu/pages/login_page.dart';
@@ -21,8 +21,8 @@ abstract final class MainMenuRouter {
     return GoRouter(
       debugLogDiagnostics: false,
       navigatorKey: rootNavigatorKey,
-      initialLocation: RouteEndPoints.accounts.account.storages.go,
-      // initialLocation: RouteEndPoints.accounts.go,
+      // initialLocation: RouteEndPoints.accounts.account.storages.go,
+      initialLocation: RouteEndPoints.accounts.go,
       routes: [
         GoRoute(
           name: RouteEndPoints.info.name,
@@ -69,11 +69,7 @@ abstract final class MainMenuRouter {
                   name: RouteEndPoints.accounts.account.localization.name,
                   path: RouteEndPoints.accounts.account.localization.path,
                   builder: (context, state) {
-                    final extra = convert<LocalizationPageDto>(
-                      value: state.extra,
-                      defaul: LocalizationPageDto.empty(),
-                    );
-                    return MainMenuAccountLocalizationPage(localizationPageDto: extra);
+                    return const MainMenuAccountLocalizationPage();
                   },
                 ),
                 GoRoute(
@@ -91,8 +87,17 @@ abstract final class MainMenuRouter {
                           value: state.extra,
                           defaul: StoragePageDto.empty(),
                         );
-                        return MainMenuAccountStoragesCloudPage(storagePageDto: extra);
+                        return MainMenuAccountStoragesStoragePage(storagePageDto: extra);
                       },
+                      routes: [
+                        GoRoute(
+                          name: RouteEndPoints.accounts.account.storages.storage.type.name,
+                          path: RouteEndPoints.accounts.account.storages.storage.type.path,
+                          builder: (context, state) {
+                            return const MainMenuAccountStoragesStorageTypePage();
+                          },
+                        ),
+                      ],
                     ),
                   ],
                 ),

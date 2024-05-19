@@ -42,7 +42,7 @@ class MainMenuTextField extends HookWidget {
       controller: controller,
       maxLength: 32,
       maxLines: 1,
-      style: appTheme.textTheme.title1.onDark1,
+      style: appTheme.textTheme.title2.onDark1,
       textAlign: TextAlign.center,
       obscureText: obscure.value,
       onSubmitted: onSubmitted,
@@ -57,7 +57,7 @@ class MainMenuTextField extends HookWidget {
         border: InputBorder.none,
         counterText: '',
         hintText: hint,
-        hintStyle: appTheme.textTheme.title1.onDark1,
+        hintStyle: appTheme.textTheme.title2.onDark1,
       ),
     );
   }

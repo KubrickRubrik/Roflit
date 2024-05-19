@@ -10,7 +10,7 @@ import 'package:roflit/feature/common/providers/ui/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
-import 'package:roflit/feature/common/widgets/action_account.dart';
+import 'package:roflit/feature/common/widgets/action_hover_button.dart';
 import 'package:roflit/feature/common/widgets/action_menu_button.dart';
 import 'package:roflit/feature/common/widgets/create_account_button.dart';
 import 'package:roflit/feature/common/widgets/loader.dart';
@@ -225,7 +225,7 @@ class _AccountsListItem extends HookConsumerWidget {
 
     return InkWell(
       onTap: () async {
-        final login = await blocSession.confirmLogin(account?.idAccount ?? -1);
+        final login = await blocSession.checkLogin(account?.idAccount ?? -1);
         if (login != null && !login) {
           rootNavigatorKey.currentContext?.goNamed(
             RouteEndPoints.accounts.login.name,
@@ -272,7 +272,7 @@ class _AccountsListItem extends HookConsumerWidget {
         ),
         child: Row(
           children: [
-            AccountAvatar(
+            ActionHoverButton(
               icon: Assets.icons.profile,
               bgColor: const Color(AppColors.bgDarkGray3),
               isHover: isHover.value,

@@ -5,7 +5,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/extension/estring.dart';
 import 'package:roflit/core/page_dto/account_page_dto.dart';
-import 'package:roflit/core/page_dto/localization_page_dto.dart';
 import 'package:roflit/feature/common/providers/account_service.dart';
 import 'package:roflit/feature/common/providers/session/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
@@ -28,17 +27,19 @@ class MainMenuAccountPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final blocSession = ref.watch(sessionBlocProvider.notifier);
-    final bloc = ref.read(accountServiceProvider);
+    final blocAccount = ref.read(accountServiceProvider);
 
     final account = ref.watch(sessionBlocProvider.select((v) {
-      return blocSession.getAccount(getActive: true);
+      return blocSession.getAccount(getActive: !accountPageDto.isCreateAccount);
     }));
-
-    final localizationState = useState<String?>(account?.localization.name.toUpperCase());
 
     final nameController = useTextEditingController(
       text: account?.name,
       keys: [account?.idAccount],
+    );
+
+    final localizationState = useState<AppLocalization>(
+      account?.localization ?? AppLocalization.ru,
     );
 
     final passwordController = useTextEditingController(
@@ -46,16 +47,12 @@ class MainMenuAccountPage extends HookConsumerWidget {
     );
 
     Future<void> onTapLocalization() async {
-      final localization = await context.pushNamed<String?>(
+      final localization = await context.pushNamed<AppLocalization?>(
         RouteEndPoints.accounts.account.localization.name,
-        extra: LocalizationPageDto(
-          idAccount: account?.idAccount ?? -1,
-          localizationType: account?.localization ?? AvailableAppLocale.ru,
-        ),
       );
 
       if (localization != null) {
-        localizationState.value = localization.toUpperCase();
+        localizationState.value = localization;
       }
     }
 
@@ -64,6 +61,7 @@ class MainMenuAccountPage extends HookConsumerWidget {
       borderRadius: borderRadius12,
       child: Column(
         children: [
+          //! Appbar.
           Container(
             height: 56,
             decoration: const BoxDecoration(
@@ -82,10 +80,7 @@ class MainMenuAccountPage extends HookConsumerWidget {
                   onTap: () => context.pop(),
                 ),
                 Text(
-                  switch (accountPageDto.isCreateAccount) {
-                    true => 'Создание аккаунта'.translate,
-                    _ => 'Изменение аккаунта'.translate,
-                  },
+                  'Аккаунт'.translate,
                   overflow: TextOverflow.fade,
                   style: appTheme.textTheme.title2.bold.onDark1,
                 ),
@@ -93,17 +88,21 @@ class MainMenuAccountPage extends HookConsumerWidget {
               ],
             ),
           ),
+          //! Content list.
           Expanded(
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  //! Account name .
                   MainMenuItemButton(
+                    onTap: () {},
                     child: MainMenuTextField(
                       hint: 'Имя'.translate,
                       controller: nameController,
                     ),
                   ),
+                  //! Localization.
                   MainMenuItemButton(
                     onTap: onTapLocalization,
                     child: Row(
@@ -111,27 +110,29 @@ class MainMenuAccountPage extends HookConsumerWidget {
                       children: [
                         const AspectRatio(aspectRatio: 1),
                         Text(
-                          localizationState.value ?? 'Локализация'.translate,
+                          localizationState.value.name.toUpperCase(),
                           overflow: TextOverflow.fade,
-                          style: appTheme.textTheme.title2.bold.onDark1,
+                          style: appTheme.textTheme.title2.bold.selected1,
                         ),
                         ActionMenuButton(onTap: onTapLocalization),
                       ],
                     ),
                   ),
+                  //! Account storages.
                   if (!accountPageDto.isCreateAccount) ...{
                     MainMenuItemButton(
                       onTap: () {
                         context.pushNamed(RouteEndPoints.accounts.account.storages.name);
                       },
+                      // bgHoverColor: Colors.red,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const AspectRatio(aspectRatio: 1),
                           Text(
-                            'Хранилища'.translate,
+                            'Список хранилищ'.translate,
                             overflow: TextOverflow.fade,
-                            style: appTheme.textTheme.title2.bold.onDark1,
+                            style: appTheme.textTheme.title2.onDark1,
                           ),
                           ActionMenuButton(onTap: () {
                             context.pushNamed(
@@ -142,7 +143,9 @@ class MainMenuAccountPage extends HookConsumerWidget {
                       ),
                     ),
                   },
+                  //! Password.
                   MainMenuItemButton(
+                    onTap: () {},
                     child: MainMenuTextField(
                       hint: 'Пароль'.translate,
                       controller: passwordController,
@@ -163,32 +166,55 @@ class MainMenuAccountPage extends HookConsumerWidget {
               ),
             ),
           ),
-          MainMenuButton(
-            title: switch (accountPageDto.isCreateAccount) {
-              true => 'Добавить'.translate,
-              _ => 'Сохранить'.translate,
-            },
-            onTap: () async {
-              if (accountPageDto.isCreateAccount) {
-                final response = await bloc.createAccount(
-                  name: nameController.text,
-                  localization: account?.localization ?? AvailableAppLocale.ru,
-                  password: passwordController.text,
-                );
+          //! Buttons.
+          Flex(
+            direction: Axis.horizontal,
+            children: [
+              if (!accountPageDto.isCreateAccount) ...{
+                Flexible(
+                  child: MainMenuButton(
+                    title: 'Удалить'.translate,
+                    onTap: () async {
+                      final response =
+                          await blocAccount.deleteAccount(idAccount: account!.idAccount);
 
-                if (response && context.mounted) {
-                  context.pop();
-                }
-              } else {
-                final response = await bloc.updateAccount(
-                  idAccount: accountPageDto.idAccount,
-                  name: nameController.text,
-                  localization: AvailableAppLocale.ru.fromName(localizationState.value),
-                  password: passwordController.text,
-                );
-                if (response && context.mounted) context.pop();
-              }
-            },
+                      if (response && context.mounted) {
+                        context.pop();
+                      }
+                    },
+                  ),
+                ),
+              },
+              Flexible(
+                child: MainMenuButton(
+                  title: switch (accountPageDto.isCreateAccount) {
+                    true => 'Создать'.translate,
+                    _ => 'Сохранить'.translate,
+                  },
+                  onTap: () async {
+                    if (accountPageDto.isCreateAccount) {
+                      final response = await blocAccount.createAccount(
+                        name: nameController.text,
+                        localization: account?.localization ?? AppLocalization.ru,
+                        password: passwordController.text,
+                      );
+
+                      if (response && context.mounted) {
+                        context.pop();
+                      }
+                    } else {
+                      final response = await blocAccount.updateAccount(
+                        idAccount: accountPageDto.idAccount,
+                        name: nameController.text,
+                        localization: localizationState.value,
+                        password: passwordController.text,
+                      );
+                      if (response && context.mounted) context.pop();
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
         ],
       ),

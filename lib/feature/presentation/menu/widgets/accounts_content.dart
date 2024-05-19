@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:roflit/core/entity/account.dart';
 import 'package:roflit/core/extension/estring.dart';
 import 'package:roflit/core/page_dto/account_page_dto.dart';
 import 'package:roflit/core/page_dto/login_page_dto.dart';
@@ -10,7 +11,8 @@ import 'package:roflit/feature/common/providers/session/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
-import 'package:roflit/feature/common/widgets/action_account.dart';
+import 'package:roflit/feature/common/widgets/action_hover_button.dart';
+import 'package:roflit/feature/common/widgets/action_menu_button.dart';
 import 'package:roflit/feature/common/widgets/loader.dart';
 import 'package:roflit/feature/presentation/menu/router/router.dart';
 import 'package:roflit/generated/assets.gen.dart';
@@ -37,10 +39,12 @@ class _MainMenuAccountContentList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(sessionBlocProvider);
-    if (state is! SessionLoadedState) return const SizedBox.shrink();
+    final accounts = ref.watch(sessionBlocProvider.select((v) {
+      if (v is! SessionLoadedState) return <AccountEntity>[];
+      return v.accounts;
+    }));
 
-    if (state.accounts.isEmpty) {
+    if (accounts.isEmpty) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -51,26 +55,26 @@ class _MainMenuAccountContentList extends ConsumerWidget {
               Text(
                 'Нет активных аккаунтов.'.translate,
                 textAlign: TextAlign.center,
-                style: appTheme.textTheme.body2.bold.onDark1,
+                style: appTheme.textTheme.title2.onDark1,
               ),
               const SizedBox(height: 16),
               Text(
                 'Создайте новый аккаунт, чтобы привязать к нему профиль хранилища.'.translate,
                 textAlign: TextAlign.center,
-                style: appTheme.textTheme.body2.bold.onDark1,
+                style: appTheme.textTheme.title2.onDark1,
               ),
               const SizedBox(height: 16),
               RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
                   text: 'За подробной информацией обратитесь в раздел '.translate,
-                  style: appTheme.textTheme.body2.bold.onDark1.copyWith(
+                  style: appTheme.textTheme.title2.onDark1.copyWith(
                     height: 1.4,
                   ),
                   children: [
                     TextSpan(
                       text: 'Инфо'.translate,
-                      style: appTheme.textTheme.body2.bold.secondary0,
+                      style: appTheme.textTheme.body2.bold.selected1,
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
                           context.goNamed(RouteEndPoints.info.name);
@@ -86,7 +90,7 @@ class _MainMenuAccountContentList extends ConsumerWidget {
     } else {
       return ListView.builder(
         shrinkWrap: true,
-        itemCount: state.accounts.length,
+        itemCount: accounts.length,
         itemBuilder: (context, index) {
           return _AccountsListItem(index);
         },
@@ -138,9 +142,27 @@ class _AccountsListItem extends HookConsumerWidget {
       [isActiveAccount, isHover.value],
     );
 
+    Future<void> onDoubleTapAccount() async {
+      final login = await blocSession.checkLogin(account?.idAccount ?? -1);
+      if (login != null && !login) {
+        rootNavigatorKey.currentContext?.goNamed(
+          RouteEndPoints.accounts.login.name,
+          extra: LoginPageDto(idAccount: account?.idAccount ?? -1),
+        );
+        return;
+      }
+      rootNavigatorKey.currentContext?.goNamed(
+        RouteEndPoints.accounts.account.name,
+        extra: AccountPageDto(
+          isCreateAccount: false,
+          idAccount: account?.idAccount,
+        ),
+      );
+    }
+
     return InkWell(
       onTap: () async {
-        final login = await blocSession.confirmLogin(account?.idAccount ?? -1);
+        final login = await blocSession.checkLogin(account?.idAccount ?? -1);
         if (login != null && !login) {
           rootNavigatorKey.currentContext?.goNamed(
             RouteEndPoints.accounts.login.name,
@@ -148,15 +170,8 @@ class _AccountsListItem extends HookConsumerWidget {
           );
           return;
         }
-
-        rootNavigatorKey.currentContext?.goNamed(
-          RouteEndPoints.accounts.account.name,
-          extra: AccountPageDto(
-            isCreateAccount: false,
-            idAccount: account?.idAccount,
-          ),
-        );
       },
+      onDoubleTap: onDoubleTapAccount,
       onHover: (value) {
         isHover.value = value;
       },
@@ -171,7 +186,7 @@ class _AccountsListItem extends HookConsumerWidget {
         ),
         child: Row(
           children: [
-            AccountAvatar(
+            ActionHoverButton(
               icon: Assets.icons.profile,
               bgColor: const Color(AppColors.bgDarkGray3),
               isHover: isHover.value,
@@ -182,6 +197,16 @@ class _AccountsListItem extends HookConsumerWidget {
                 account?.name ?? '',
                 overflow: TextOverflow.ellipsis,
                 style: getTextColor,
+              ),
+            ),
+            const SizedBox(width: 8),
+            SizedBox.square(
+              dimension: 40,
+              child: ActionMenuButton(
+                onTap: onDoubleTapAccount,
+                color: isActiveAccount
+                    ? const Color(AppColors.bgDarkGray1)
+                    : const Color(AppColors.bgLight0),
               ),
             ),
           ],

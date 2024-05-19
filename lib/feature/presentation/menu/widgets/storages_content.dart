@@ -4,13 +4,12 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/extension/estring.dart';
-import 'package:roflit/core/page_dto/account_page_dto.dart';
-import 'package:roflit/core/page_dto/login_page_dto.dart';
+import 'package:roflit/core/page_dto/storage_page_dto.dart';
 import 'package:roflit/feature/common/providers/session/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
-import 'package:roflit/feature/common/widgets/action_account.dart';
+import 'package:roflit/feature/common/widgets/action_hover_button.dart';
 import 'package:roflit/feature/common/widgets/loader.dart';
 import 'package:roflit/feature/presentation/menu/router/router.dart';
 import 'package:roflit/generated/assets.gen.dart';
@@ -37,10 +36,12 @@ class _MainMenuStoragesContentList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(sessionBlocProvider);
-    if (state is! SessionLoadedState) return const SizedBox.shrink();
+    final blocSession = ref.watch(sessionBlocProvider.notifier);
+    final storages = ref.watch(sessionBlocProvider.select((v) {
+      return blocSession.getAccount(getActive: true)?.storages ?? [];
+    }));
 
-    if (state.accounts.isEmpty) {
+    if (storages.isEmpty) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -70,10 +71,10 @@ class _MainMenuStoragesContentList extends ConsumerWidget {
                   children: [
                     TextSpan(
                       text: 'Инфо'.translate,
-                      style: appTheme.textTheme.body2.bold.secondary0,
+                      style: appTheme.textTheme.body2.bold.selected1,
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          context.goNamed(RouteEndPoints.info.name);
+                          context.pushNamed(RouteEndPoints.info.name);
                         },
                     ),
                   ],
@@ -86,7 +87,7 @@ class _MainMenuStoragesContentList extends ConsumerWidget {
     } else {
       return ListView.builder(
         shrinkWrap: true,
-        itemCount: state.accounts.length,
+        itemCount: storages.length,
         itemBuilder: (context, index) {
           return _StoragesListItem(index);
         },
@@ -104,11 +105,11 @@ class _StoragesListItem extends HookConsumerWidget {
     final blocSession = ref.read(sessionBlocProvider.notifier);
 
     final storage = ref.watch(sessionBlocProvider.select((v) {
-      return blocSession.getStorage(getActive: false);
+      return blocSession.getStorage(getActive: false, getByIndex: index);
     }));
 
     final isActiveStorage = ref.watch(sessionBlocProvider.select((v) {
-      return blocSession.getStorage(getActive: true)?.idStorage == storage?.idStorage;
+      return blocSession.isActiveStorage(getByIdStorage: storage?.idStorage);
     }));
 
     final isHover = useState(false);
@@ -140,20 +141,14 @@ class _StoragesListItem extends HookConsumerWidget {
 
     return InkWell(
       onTap: () async {
-        final login = await blocSession.confirmLogin(storage?.idAccount ?? -1);
-        if (login != null && !login) {
-          rootNavigatorKey.currentContext?.goNamed(
-            RouteEndPoints.accounts.login.name,
-            extra: LoginPageDto(idAccount: storage?.idAccount ?? -1),
-          );
-          return;
-        }
-
+        await blocSession.setActiveStorage(storage?.idStorage);
+      },
+      onDoubleTap: () {
         rootNavigatorKey.currentContext?.goNamed(
           RouteEndPoints.accounts.account.name,
-          extra: AccountPageDto(
+          extra: StoragePageDto(
             isCreateAccount: false,
-            idAccount: storage?.idAccount ?? -1,
+            idStorage: storage?.idStorage ?? -1,
           ),
         );
       },
@@ -171,18 +166,18 @@ class _StoragesListItem extends HookConsumerWidget {
         ),
         child: Row(
           children: [
-            AccountAvatar(
-              icon: Assets.icons.profile,
-              bgColor: const Color(AppColors.bgDarkGray3),
-              isHover: isHover.value,
-            ),
-            const SizedBox(width: 8),
             Expanded(
               child: Text(
                 storage?.title ?? '',
                 overflow: TextOverflow.ellipsis,
                 style: getTextColor,
               ),
+            ),
+            const SizedBox(width: 8),
+            ActionHoverButton(
+              icon: Assets.icons.cloud,
+              bgColor: const Color(AppColors.bgDarkGray3),
+              isHover: isHover.value,
             ),
           ],
         ),

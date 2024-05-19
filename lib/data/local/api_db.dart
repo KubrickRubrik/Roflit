@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:roflit/core/entity/account.dart';
 import 'package:roflit/core/entity/object.dart';
 import 'package:roflit/core/entity/session.dart';
-import 'package:roflit/core/enums.dart';
+import 'package:roflit/core/entity/storage.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 import 'package:uuid/uuid.dart';
@@ -21,12 +21,12 @@ part 'daos/objects_load_dao.dart';
 part 'daos/session_dao.dart';
 // Table
 part 'daos/test.dart';
-part 'tables/account_storage_table.dart';
 part 'tables/account_table.dart';
 part 'tables/object_download_table.dart';
 part 'tables/object_load_table.dart';
 part 'tables/object_table.dart';
 part 'tables/session_table.dart';
+part 'tables/storage_table.dart';
 part 'tables/test_table.dart';
 
 @DriftDatabase(
@@ -35,7 +35,7 @@ part 'tables/test_table.dart';
     TestTodoCategoryTable,
     SessionTable,
     AccountTable,
-    AccountStorageTable,
+    StorageTable,
     ObjectDownloadTable,
     ObjectLoadTable,
     ObjectTable,

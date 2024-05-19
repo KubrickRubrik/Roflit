@@ -8,6 +8,7 @@ abstract class RouteEndPoints {
   static const _password = 'password';
   static const _storages = 'storages';
   static const _storage = 'storage';
+  static const _type = 'type';
 
   static const _info = 'info';
 
@@ -42,6 +43,11 @@ abstract class RouteEndPoints {
           name: _storage,
           path: _storage,
           go: '/$_account/$_storages/$_storage',
+          type: (
+            name: _type,
+            path: _type,
+            go: '/$_account/$_storages/$_storage/$_type',
+          ),
         ),
       ),
     ),

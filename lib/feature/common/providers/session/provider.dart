@@ -4,7 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:roflit/core/entity/account.dart';
-import 'package:roflit/core/entity/account_storage.dart';
+import 'package:roflit/core/entity/storage.dart';
 import 'package:roflit/core/entity/session.dart';
 import 'package:roflit/core/providers/di_service.dart';
 
@@ -54,12 +54,30 @@ final class SessionBloc extends _$SessionBloc {
   bool isActiveIdAccount({int? getByIndex, int? getByIdAccount}) {
     if (state is! SessionLoadedState) return false;
     final currentState = state as SessionLoadedState;
-    final account =
-        getAccount(getActive: false, getByIndex: getByIndex, getByIdAccount: getByIdAccount);
-    return account?.idAccount == currentState.session.activeIdAccount;
+
+    if (getByIndex != null) {
+      final account = getAccount(getActive: false, getByIndex: getByIndex);
+      return account?.idAccount == currentState.session.activeIdAccount;
+    } else if (getByIdAccount != null) {
+      return getByIdAccount == currentState.session.activeIdAccount;
+    }
+    return false;
   }
 
-  AccountStorageEntity? getStorage({
+  bool isActiveStorage({int? getByIndex, int? getByIdStorage}) {
+    if (state is! SessionLoadedState) return false;
+    final currentState = state as SessionLoadedState;
+
+    if (getByIndex != null) {
+      final account = getStorage(getActive: false, getByIndex: getByIndex);
+      return account?.idAccount == currentState.session.activeIdStorage;
+    } else if (getByIdStorage != null) {
+      return getByIdStorage == currentState.session.activeIdStorage;
+    }
+    return false;
+  }
+
+  StorageEntity? getStorage({
     required bool getActive,
     int? getByIndex,
     int? getByIdStorage,
@@ -81,7 +99,7 @@ final class SessionBloc extends _$SessionBloc {
     }
   }
 
-  Future<void> checkAuthentication() async {
+  Future<void> watchSessionAndAccounts() async {
     // final api = ref.read(diProvider).apiRemoteClient.buckets.getBucketObjects(bucketName: bucketName);
     state = const SessionState.loading();
     await _listenerAccounts?.cancel();
@@ -106,7 +124,7 @@ final class SessionBloc extends _$SessionBloc {
     });
   }
 
-  Future<bool?> confirmLogin(int idAccount) async {
+  Future<bool?> checkLogin(int idAccount) async {
     if (state is! SessionLoadedState) return null;
     final currentState = state as SessionLoadedState;
     if (idAccount == currentState.session.activeIdAccount) return null;
@@ -123,7 +141,6 @@ final class SessionBloc extends _$SessionBloc {
   Future<void> loginFreeAccount(AccountEntity account) async {
     if (state is! SessionLoadedState) return;
     final apiSessionDao = ref.read(diServiceProvider).apiLocalClient.sessionDao;
-    final currentState = state as SessionLoadedState;
 
     final newSession = SessionEntity(
       activeIdAccount: account.idAccount,
@@ -136,8 +153,6 @@ final class SessionBloc extends _$SessionBloc {
       //TODO: добавление снэкбара
       return null;
     }
-
-    state = currentState.copyWith(session: newSession);
   }
 
   Future<bool> loginLockAccount({
@@ -168,8 +183,33 @@ final class SessionBloc extends _$SessionBloc {
       //TODO: добавление снэкбара
       return false;
     }
+    return true;
+  }
 
-    state = currentState.copyWith(session: newSession);
+  Future<bool> clearSession(int idAccount) async {
+    final apiSessionDao = ref.read(diServiceProvider).apiLocalClient.sessionDao;
+    final response = await apiSessionDao.clearSession();
+    return response;
+  }
+
+  Future<bool> setActiveStorage(int? idStorage) async {
+    final apiSessionDao = ref.read(diServiceProvider).apiLocalClient.sessionDao;
+    final account = getAccount(getActive: true);
+    if (account == null ||
+        account.storages.firstWhereOrNull((e) => e.idStorage == idStorage) == null) {
+      //TODO: добавление снэкбара
+      return false;
+    }
+
+    final response = await apiSessionDao.setActiveStorage(
+      idAccount: account.idAccount,
+      activeIdStorage: idStorage!,
+    );
+
+    if (!response) {
+      //TODO: добавление снэкбара
+      return false;
+    }
     return true;
   }
 }

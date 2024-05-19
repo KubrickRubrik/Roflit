@@ -4,9 +4,11 @@ import 'package:roflit/feature/common/themes/colors.dart';
 
 class ActionMenuButton extends HookWidget {
   final VoidCallback? onTap;
+  final Color color;
 
   const ActionMenuButton({
     this.onTap,
+    this.color = const Color(AppColors.bgLight0),
     super.key,
   });
 
@@ -24,21 +26,19 @@ class ActionMenuButton extends HookWidget {
         child: Center(
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            height: hoverState.value ? 16 : 10,
-            width: hoverState.value ? 16 : 10,
+            height: hoverState.value ? 14 : 8,
+            width: hoverState.value ? 14 : 8,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(
-                color: const Color(AppColors.borderLineOnDart0),
-              ),
+              border: Border.all(color: color),
             ),
             alignment: Alignment.center,
             child: Container(
-              height: hoverState.value ? 6 : 10,
-              width: hoverState.value ? 6 : 10,
-              decoration: const BoxDecoration(
+              height: hoverState.value ? 4 : 8,
+              width: hoverState.value ? 4 : 8,
+              decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Color(AppColors.bgLight0),
+                color: color,
               ),
             ),
           ),

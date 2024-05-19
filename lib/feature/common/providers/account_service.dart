@@ -3,24 +3,30 @@ import 'package:roflit/core/entity/account.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/providers/di_service.dart';
 import 'package:roflit/data/local/api_db.dart';
+import 'package:roflit/feature/common/providers/session/provider.dart';
 
 part 'account_service.g.dart';
 
 @riverpod
 AccountService accountService(AccountServiceRef ref) {
   return AccountService(
-    apiLocalClient: ref.read(diServiceProvider).apiLocalClient.accountsDao,
+    sessionBloc: ref.watch(sessionBlocProvider.notifier),
+    apiLocalClient: ref.watch(diServiceProvider).apiLocalClient.accountsDao,
   );
 }
 
 final class AccountService {
+  final SessionBloc sessionBloc;
   final AccountDao apiLocalClient;
 
-  AccountService({required this.apiLocalClient});
+  AccountService({
+    required this.sessionBloc,
+    required this.apiLocalClient,
+  });
 
   Future<bool> createAccount({
     required String name,
-    required AvailableAppLocale localization,
+    required AppLocalization localization,
     required String password,
   }) async {
     if (name.isEmpty ||
@@ -38,12 +44,15 @@ final class AccountService {
       activeBucket: '',
     );
 
-    final response = await apiLocalClient.createAccount(account: account);
+    final responseAccount = await apiLocalClient.createAccount(account: account);
 
-    if (!response) {
+    if (responseAccount == null) {
       return false;
       //TODO snackbar
     }
+    // await Future.delayed(Duration(seconds: 3), () {});
+    await sessionBloc.loginFreeAccount(responseAccount);
+    // });
     //TODO snackbar
     return true;
   }
@@ -51,7 +60,7 @@ final class AccountService {
   Future<bool> updateAccount({
     required int? idAccount,
     required String name,
-    required AvailableAppLocale localization,
+    required AppLocalization localization,
     required String password,
   }) async {
     if (idAccount == null) return false;
@@ -77,5 +86,23 @@ final class AccountService {
     }
     //TODO snackbar
     return true;
+  }
+
+  Future<bool> deleteAccount({required int idAccount}) async {
+    final responseSession = await sessionBloc.clearSession(idAccount);
+
+    if (!responseSession) {
+      return false;
+      //TODO snackbar
+    }
+
+    final response = await apiLocalClient.deleteAccount(idAccount: idAccount);
+
+    if (!response) {
+      return false;
+      //TODO snackbar
+    }
+
+    return response;
   }
 }

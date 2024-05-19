@@ -21,7 +21,7 @@ class HomeScreen extends HookConsumerWidget {
 
     useInitState(
       onBuild: () {
-        bloc.checkAuthentication();
+        bloc.watchSessionAndAccounts();
       },
     );
 

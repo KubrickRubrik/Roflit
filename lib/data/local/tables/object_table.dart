@@ -10,5 +10,5 @@ class ObjectTable extends Table {
   TextColumn get title => text().withLength(min: 6, max: 128)();
   TextColumn get localPath => text().nullable().withLength(min: 6, max: 128)();
 
-  TextColumn get cloudType => text().withLength(min: 2, max: 16)();
+  TextColumn get storageType => text().withLength(min: 2, max: 16)();
 }

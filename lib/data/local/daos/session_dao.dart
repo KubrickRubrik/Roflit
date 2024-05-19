@@ -55,4 +55,46 @@ class SessionDao extends DatabaseAccessor<ApiDatabase> with _$SessionDaoMixin {
       return response == 1;
     }
   }
+
+  Future<bool> clearSession() async {
+    final updateQuery = update(sessionTable);
+    updateQuery.where((t) => t.id.equals(1));
+    final response = await updateQuery.write(
+      SessionTableCompanion.insert(
+        activeIdAccount: const Value(null),
+        activeIdStorage: const Value(null),
+      ),
+    );
+    print('>>>> CLEAR SESSION $response');
+    return response == 1;
+  }
+
+  Future<bool> setActiveStorage({
+    required int idAccount,
+    required int activeIdStorage,
+  }) async {
+    return transaction<bool>(() async {
+      final updateAccountQuery = update(accountTable);
+      updateAccountQuery.where((t) => t.idAccount.equals(idAccount));
+      final responseAccount = await updateAccountQuery.write(
+        AccountTableCompanion(
+          activeIdStorage: Value(activeIdStorage),
+        ),
+      );
+      if (responseAccount != 1) {
+        throw Exception('Abort transaction');
+      }
+      final updateSessionQuery = update(sessionTable);
+      updateSessionQuery.where((t) => t.id.equals(1));
+      final responseSession = await updateSessionQuery.write(
+        SessionTableCompanion.insert(
+          activeIdStorage: Value(activeIdStorage),
+        ),
+      );
+      if (responseSession != 1) {
+        throw Exception('Abort transaction');
+      }
+      return true;
+    });
+  }
 }

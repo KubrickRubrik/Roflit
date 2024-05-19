@@ -10,7 +10,6 @@ class AccountTable extends Table {
   TextColumn get localization =>
       text().withDefault(const Constant('ru')).withLength(min: 2, max: 2)();
   IntColumn get activeIdStorage => integer().nullable()();
-  TextColumn get activeBucket => text().nullable().withLength(min: 1, max: 128)();
   TextColumn get password => text().nullable().withLength(min: 3, max: 32)();
   BoolColumn get state => boolean().withDefault(const Constant(true))();
 }
