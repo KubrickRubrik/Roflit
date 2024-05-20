@@ -56,11 +56,11 @@ enum DisplayStatus {
 enum TypeMassage { good, massage, error, warning }
 
 /// Type of cloud
-enum TypeStorage {
+enum StorageType {
   yxCloud(title: 'Yandex Cloud'),
   vkCloud(title: 'VK Cloud');
 
-  const TypeStorage({
+  const StorageType({
     required this.title,
   });
 
@@ -69,13 +69,12 @@ enum TypeStorage {
   bool get isYandexCloud => this == yxCloud;
   bool get isVkCloud => this == vkCloud;
 
-  // TypeStorage fromName(String? val) {
-  //   return switch (val) {
-  //     'yandexCloud' => TypeStorage.yxCloud,
-  //     'vkCloud' => TypeStorage.vkCloud,
-  //     _ => TypeStorage.none,
-  //   };
-  // }
+  StorageType fromName(String? val) {
+    return switch (val) {
+      'yandexCloud' => StorageType.yxCloud,
+      _ => StorageType.vkCloud,
+    };
+  }
 }
 
 enum SessionType {

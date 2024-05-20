@@ -12,9 +12,10 @@ DiService diService(DiServiceRef ref) {
 final class DiService {
   final ApiRemoteClient apiRemoteClient;
   final ApiLocalClient apiLocalClient;
+
   DiService(DiServiceRef ref)
-      : apiRemoteClient = ref.read(apiRemoteClientProvider),
-        apiLocalClient = ref.read(apiLocalClientProvider) {
+      : apiRemoteClient = ref.watch(apiRemoteClientProvider),
+        apiLocalClient = ref.watch(apiLocalClientProvider) {
     ref.onCancel(_cansel);
   }
 

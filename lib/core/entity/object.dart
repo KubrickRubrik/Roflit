@@ -12,7 +12,7 @@ class ObjectEntity with _$ObjectEntity {
     required String bucket,
     required String title,
     required String? localPath,
-    required TypeStorage? storageType,
+    required StorageType? storageType,
   }) = _ObjectEntity;
 
   factory ObjectEntity.fromDto(ObjectDto dto) {
@@ -21,7 +21,7 @@ class ObjectEntity with _$ObjectEntity {
       bucket: dto.bucket,
       title: dto.title,
       localPath: dto.localPath,
-      storageType: TypeStorage.values.firstWhereOrNull(
+      storageType: StorageType.values.firstWhereOrNull(
         (e) => e.name == dto.storageType,
       ),
     );

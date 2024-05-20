@@ -42,17 +42,32 @@ class AccountDao extends DatabaseAccessor<ApiDatabase> with _$AccountDaoMixin {
     return response == 1;
   }
 
-  Future<StorageEntity?> createStorage(StorageEntity storage) async {
+  Future<StorageEntity?> createStorage({
+    required StorageEntity storage,
+    required Future<StorageEntity> Function(String link) updateSecureStorage,
+  }) async {
     return transaction<StorageEntity?>(() async {
-      final storageInsert = await into(storageTable).insertReturningOrNull(
+      final storageDto = await into(storageTable).insertReturningOrNull(
         StorageTableCompanion.insert(
           idAccount: storage.idAccount,
           title: storage.title,
           storageType: storage.storageType.name,
         ),
       );
+
+      if (storageDto == null) {
+        throw Exception('Error create storage');
+      }
+
+      final storageSecure = await updateSecureStorage(storageDto.link).catchError((e) {
+        throw Exception('Error create storage $e');
+      });
+
+      return StorageEntity.fromDto(
+        storageDto: storageDto,
+        storageSecure: storageSecure,
+      );
     });
-    //TODO: add save to key in securestorage
   }
 
   Stream<List<AccountEntity>> watchAccounts() {

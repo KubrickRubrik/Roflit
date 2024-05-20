@@ -28,6 +28,11 @@ class MainMenuAccountStoragesStoragePage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final blocSession = ref.watch(sessionBlocProvider.notifier);
     final blocStorage = ref.read(storageServiceProvider);
+
+    final account = ref.watch(sessionBlocProvider.select((v) {
+      return blocSession.getAccount(getActive: true);
+    }));
+
     final storage = ref.watch(sessionBlocProvider.select((v) {
       return blocSession.getStorage(getActive: false, getByIdStorage: storagePageDto.idStorage);
     }));
@@ -52,12 +57,12 @@ class MainMenuAccountStoragesStoragePage extends HookConsumerWidget {
       keys: [storage?.idAccount],
     );
 
-    final typeStorageState = useState<TypeStorage>(
-      storage?.storageType ?? TypeStorage.yxCloud,
+    final typeStorageState = useState<StorageType>(
+      storage?.storageType ?? StorageType.yxCloud,
     );
 
     Future<void> onTapTypeStorage() async {
-      final typeStorage = await context.pushNamed<TypeStorage?>(
+      final typeStorage = await context.pushNamed<StorageType?>(
         RouteEndPoints.accounts.account.storages.storage.type.name,
       );
 
@@ -181,16 +186,19 @@ class MainMenuAccountStoragesStoragePage extends HookConsumerWidget {
                     _ => 'Сохранить'.translate,
                   },
                   onTap: () async {
-                    if (storagePageDto.isCreateAccount) {
-                      //   final response = await bloc.createAccount(
-                      //     name: nameController.text,
-                      //     localization: account?.localization ?? AvailableAppLocale.ru,
-                      //     password: passwordController.text,
-                      //   );
+                    if (storagePageDto.isCreateAccount && account?.idAccount != null) {
+                      final response = await blocStorage.createStorage(
+                        idAccount: account!.idAccount,
+                        title: titleStorageController.text,
+                        storageType: typeStorageState.value,
+                        accessKey: accessKeyStorageController.text,
+                        secretKey: secretKeyStorageController.text,
+                        region: regionKeyStorageController.text,
+                      );
 
-                      //   if (response && context.mounted) {
-                      //     context.pop();
-                      //   }
+                      if (response && context.mounted) {
+                        context.pop();
+                      }
                     } else {
                       //   final response = await bloc.updateAccount(
                       //     idAccount: storagePageDto.idAccount,

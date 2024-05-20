@@ -47,7 +47,7 @@ class MainMenuAccountStoragesStorageTypePage extends StatelessWidget {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: TypeStorage.values.length,
+              itemCount: StorageType.values.length,
               itemBuilder: (context, index) {
                 return MainMenuAccountStorageTypeItem(index);
               },
@@ -65,7 +65,7 @@ class MainMenuAccountStorageTypeItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final typeStorage = TypeStorage.values[index];
+    final typeStorage = StorageType.values[index];
 
     return MainMenuItemButton(
       onTap: () {
