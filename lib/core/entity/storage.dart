@@ -1,8 +1,7 @@
-import 'dart:convert';
-
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:roflit/data/local/api_db.dart';
+import 'package:roflit/middleware/services/secure.dart';
 
 part 'storage.freezed.dart';
 
@@ -21,45 +20,29 @@ class StorageEntity with _$StorageEntity {
 
   const StorageEntity._();
 
-  ({
-    String key,
-    String value,
-  }) toSecureStorage() {
-    final key = link;
-    final value = jsonEncode({
-      'accessKey': accessKey,
-      'secretKey': secretKey,
-      'region': region,
-    });
-    return (key: key, value: value);
-  }
-
-  ({
-    String accessKey,
-    String secretKey,
-    String region,
-  }) fromSecureStorage(String jsonSecure) {
-    final value = jsonDecode(jsonSecure);
-    return (
-      accessKey: value['accessKey'],
-      secretKey: value['secretKey'],
-      region: value['region'],
+  StorageEntity toDto() {
+    return StorageEntity(
+      idStorage: idStorage,
+      idAccount: idAccount,
+      title: title,
+      storageType: storageType,
+      link: link,
+      accessKey: SecureService.encryptedSm(key: link, value: accessKey),
+      secretKey: SecureService.encryptedSm(key: link, value: secretKey),
+      region: SecureService.encryptedSm(key: link, value: region),
     );
   }
 
-  factory StorageEntity.fromDto({
-    required StorageDto storageDto,
-    required StorageEntity storageSecure,
-  }) {
+  factory StorageEntity.fromDto(StorageDto storageDto) {
     return StorageEntity(
       idStorage: storageDto.idStorage,
       idAccount: storageDto.idAccount,
       title: storageDto.title,
       storageType: StorageType.yxCloud.fromName(storageDto.storageType),
       link: storageDto.link,
-      accessKey: storageSecure.accessKey,
-      secretKey: storageSecure.secretKey,
-      region: storageSecure.region,
+      accessKey: SecureService.decryptedSm(key: storageDto.link, value: storageDto.accessKey),
+      secretKey: SecureService.decryptedSm(key: storageDto.link, value: storageDto.secretKey),
+      region: SecureService.decryptedSm(key: storageDto.link, value: storageDto.region),
     );
   }
 }

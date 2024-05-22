@@ -11,7 +11,6 @@ import 'package:roflit/core/entity/session.dart';
 import 'package:roflit/core/entity/storage.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
-import 'package:uuid/uuid.dart';
 
 part 'api_db.g.dart';
 // Dao
@@ -59,7 +58,6 @@ LazyDatabase _openConnection() {
   //  LazyDatabase util lets us find the right location for the file async.
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
-    print('>>>> $dbFolder');
     final file = File(p.join(dbFolder.path, 'db.sqlite'));
     // Also work around limitations on old Android versions
     if (Platform.isAndroid) {

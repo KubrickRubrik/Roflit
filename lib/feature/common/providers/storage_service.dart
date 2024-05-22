@@ -4,6 +4,7 @@ import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/providers/di_service.dart';
 import 'package:roflit/data/api_local_client.dart';
 import 'package:roflit/feature/common/providers/session/provider.dart';
+import 'package:uuid/uuid.dart';
 
 part 'storage_service.g.dart';
 
@@ -44,29 +45,13 @@ final class StorageService {
       idAccount: idAccount,
       title: title,
       storageType: storageType,
-      link: '',
+      link: const Uuid().v1(),
       accessKey: accessKey,
       secretKey: secretKey,
       region: region,
-    );
+    ).toDto();
 
-    Future<StorageEntity> updateSecureStorage(String link) async {
-      print('>>>> $link --- ${storage.toSecureStorage().value}');
-      await apiLocalClient.secureStorage.write(key: link, value: storage.toSecureStorage().value);
-      return storage;
-    }
-    // (
-    //   idAccount: -1,
-    //   name: name,
-    //   localization: localization,
-    //   password: password.isEmpty ? null : password,
-    //   activeBucket: '',
-    // );
-
-    final responseAccount = await apiLocalClient.accountsDao.createStorage(
-      storage: storage,
-      updateSecureStorage: updateSecureStorage,
-    );
+    final responseAccount = await apiLocalClient.accountsDao.createStorage(storage: storage);
 
     if (responseAccount == null) {
       return false;

@@ -42,16 +42,17 @@ class AccountDao extends DatabaseAccessor<ApiDatabase> with _$AccountDaoMixin {
     return response == 1;
   }
 
-  Future<StorageEntity?> createStorage({
-    required StorageEntity storage,
-    required Future<StorageEntity> Function(String link) updateSecureStorage,
-  }) async {
+  Future<StorageEntity?> createStorage({required StorageEntity storage}) async {
     return transaction<StorageEntity?>(() async {
       final storageDto = await into(storageTable).insertReturningOrNull(
         StorageTableCompanion.insert(
           idAccount: storage.idAccount,
           title: storage.title,
           storageType: storage.storageType.name,
+          link: storage.link,
+          accessKey: storage.accessKey,
+          secretKey: storage.secretKey,
+          region: storage.region,
         ),
       );
 
@@ -59,14 +60,7 @@ class AccountDao extends DatabaseAccessor<ApiDatabase> with _$AccountDaoMixin {
         throw Exception('Error create storage');
       }
 
-      final storageSecure = await updateSecureStorage(storageDto.link).catchError((e) {
-        throw Exception('Error create storage $e');
-      });
-
-      return StorageEntity.fromDto(
-        storageDto: storageDto,
-        storageSecure: storageSecure,
-      );
+      return StorageEntity.fromDto(storageDto);
     });
   }
 
@@ -83,13 +77,13 @@ class AccountDao extends DatabaseAccessor<ApiDatabase> with _$AccountDaoMixin {
       OrderingTerm.asc(storageTable.idStorage),
     ]);
 
-    return query.watch().map((rows) {
+    return query.map((row) => null).watch().watch().map((rows) {
       print('>>>> ROWS $rows');
       return rows.map((row) {
         final account = row.readTable(accountTable);
         final clouds = row.readTableOrNull(storageTable);
-        // print(
-        //     '>>>> PROFILE: ${profile.idProfile}, ${profile.name} CLOUD: id: ${clouds.id} TYPE ${clouds.cloudType}');
+        print(
+            '>>>> ID ${account.idAccount} | CLOUD: idStorage: ${clouds?.idStorage} TYPE ${clouds?.storageType}');
         return AccountEntity.fromDto(
           accountDto: row.readTable(accountTable),
           storageDto: null, // row.readTable(storageTable));
