@@ -43,25 +43,23 @@ class AccountDao extends DatabaseAccessor<ApiDatabase> with _$AccountDaoMixin {
   }
 
   Future<StorageEntity?> createStorage({required StorageEntity storage}) async {
-    return transaction<StorageEntity?>(() async {
-      final storageDto = await into(storageTable).insertReturningOrNull(
-        StorageTableCompanion.insert(
-          idAccount: storage.idAccount,
-          title: storage.title,
-          storageType: storage.storageType.name,
-          link: storage.link,
-          accessKey: storage.accessKey,
-          secretKey: storage.secretKey,
-          region: storage.region,
-        ),
-      );
+    final storageDto = await into(storageTable).insertReturningOrNull(
+      StorageTableCompanion.insert(
+        idAccount: storage.idAccount,
+        title: storage.title,
+        storageType: storage.storageType.name,
+        link: storage.link,
+        accessKey: storage.accessKey,
+        secretKey: storage.secretKey,
+        region: storage.region,
+      ),
+    );
 
-      if (storageDto == null) {
-        throw Exception('Error create storage');
-      }
+    if (storageDto == null) {
+      throw Exception('Error create storage');
+    }
 
-      return StorageEntity.fromDto(storageDto);
-    });
+    return StorageEntity.fromDto(storageDto);
   }
 
   Stream<List<AccountEntity>> watchAccounts() {
@@ -77,18 +75,32 @@ class AccountDao extends DatabaseAccessor<ApiDatabase> with _$AccountDaoMixin {
       OrderingTerm.asc(storageTable.idStorage),
     ]);
 
-    return query.map((row) => null).watch().watch().map((rows) {
-      print('>>>> ROWS $rows');
-      return rows.map((row) {
+    return query.watch().map((rows) {
+      final listResult = <int, AccountEntity>{};
+      for (final row in rows) {
         final account = row.readTable(accountTable);
-        final clouds = row.readTableOrNull(storageTable);
-        print(
-            '>>>> ID ${account.idAccount} | CLOUD: idStorage: ${clouds?.idStorage} TYPE ${clouds?.storageType}');
-        return AccountEntity.fromDto(
-          accountDto: row.readTable(accountTable),
-          storageDto: null, // row.readTable(storageTable));
-        );
-      }).toList();
+        final storage = row.readTableOrNull(storageTable);
+        if (listResult[account.idAccount] != null && storage != null) {
+          final newAccount = listResult[account.idAccount];
+
+          if (!newAccount!.storages.any((s) => s.idStorage == storage.idStorage)) {
+            final newStorage = StorageEntity.fromDto(storage);
+            listResult[account.idAccount] = newAccount.copyWith(storages: [
+              ...newAccount.storages,
+              newStorage,
+            ]);
+          }
+        } else {
+          listResult.addAll({
+            account.idAccount: AccountEntity.fromDto(
+              accountDto: account,
+              storageDto: storage,
+            )
+          });
+        }
+      }
+
+      return listResult.values.toList();
     });
   }
 }

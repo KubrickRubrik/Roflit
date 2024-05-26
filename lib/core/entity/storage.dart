@@ -38,7 +38,7 @@ class StorageEntity with _$StorageEntity {
       idStorage: storageDto.idStorage,
       idAccount: storageDto.idAccount,
       title: storageDto.title,
-      storageType: StorageType.yxCloud.fromName(storageDto.storageType),
+      storageType: StorageType.yxCloud.fromTypeName(storageDto.storageType),
       link: storageDto.link,
       accessKey: SecureService.decryptedSm(key: storageDto.link, value: storageDto.accessKey),
       secretKey: SecureService.decryptedSm(key: storageDto.link, value: storageDto.secretKey),

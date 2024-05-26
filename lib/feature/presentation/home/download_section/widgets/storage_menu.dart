@@ -3,8 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/extension/estring.dart';
-import 'package:roflit/core/page_dto/account_page_dto.dart';
-import 'package:roflit/core/page_dto/login_page_dto.dart';
+import 'package:roflit/core/page_dto/storage_page_dto.dart';
 import 'package:roflit/feature/common/providers/session/provider.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
@@ -17,28 +16,32 @@ import 'package:roflit/feature/common/widgets/loader.dart';
 import 'package:roflit/feature/presentation/menu/router/router.dart';
 import 'package:roflit/generated/assets.gen.dart';
 
-class LoadingSectionAccountsMenu extends ConsumerWidget {
+class DownloadSectionStorageMenu extends ConsumerWidget {
   final double width;
-  const LoadingSectionAccountsMenu({required this.width, super.key});
+
+  const DownloadSectionStorageMenu({
+    required this.width,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bloc = ref.watch(uiBlocProvider.notifier);
-    final isDisplayedAccountMenu = ref.watch(
-      uiBlocProvider.select((v) => v.isDisplayedAccountMenu),
+    final isDisplayedStorageMenu = ref.watch(
+      uiBlocProvider.select((v) => v.isDisplayedStorageMenu),
     );
 
     return AnimatedPositioned(
       top: 0,
-      left: isDisplayedAccountMenu ? 0 : -width,
-      right: isDisplayedAccountMenu ? 0 : width,
+      left: isDisplayedStorageMenu ? 0 : width,
+      right: isDisplayedStorageMenu ? 0 : -width,
       duration: const Duration(milliseconds: 250),
       curve: Curves.ease,
       child: InkWell(
         onTap: () {},
         onHover: (value) {
           bloc.menuActivity(
-            typeMenu: TypeMenu.account,
+            typeMenu: TypeMenu.storage,
             action: ActionMenu.hoverLeave,
             isHover: value,
           );
@@ -75,7 +78,7 @@ class LoadingSectionAccountsMenu extends ConsumerWidget {
                     const SizedBox(width: 16),
                     Expanded(
                       child: Text(
-                        'Аккаунт'.translate,
+                        'Хранилище'.translate,
                         overflow: TextOverflow.fade,
                         style: appTheme.textTheme.title2.bold.onDark1,
                       ),
@@ -83,10 +86,12 @@ class LoadingSectionAccountsMenu extends ConsumerWidget {
                     ActionMenuButton(
                       onTap: () {
                         bloc.menuActivity(
-                          typeMenu: TypeMenu.account,
+                          typeMenu: TypeMenu.storage,
                           action: ActionMenu.close,
                         );
-                        rootNavigatorKey.currentContext?.goNamed(RouteEndPoints.accounts.name);
+                        rootNavigatorKey.currentContext?.goNamed(
+                          RouteEndPoints.accounts.name,
+                        );
                         bloc.menuActivity(
                           typeMenu: TypeMenu.main,
                           action: ActionMenu.open,
@@ -96,7 +101,7 @@ class LoadingSectionAccountsMenu extends ConsumerWidget {
                   ],
                 ),
               ),
-              const SectionAccountsMenuContent(),
+              const SectionStoragesMenuContent(),
             ],
           ),
         ),
@@ -105,8 +110,8 @@ class LoadingSectionAccountsMenu extends ConsumerWidget {
   }
 }
 
-class SectionAccountsMenuContent extends ConsumerWidget {
-  const SectionAccountsMenuContent({super.key});
+class SectionStoragesMenuContent extends ConsumerWidget {
+  const SectionStoragesMenuContent({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -116,21 +121,25 @@ class SectionAccountsMenuContent extends ConsumerWidget {
       orElse: () => const SizedBox.shrink(),
       loading: () => const Loader(),
       loaded: (session, accounts) {
-        return const SectionAccountsMenuContentList();
+        return const SectionStoragesMenuContentList();
       },
     );
   }
 }
 
-class SectionAccountsMenuContentList extends ConsumerWidget {
-  const SectionAccountsMenuContentList({super.key});
+class SectionStoragesMenuContentList extends ConsumerWidget {
+  const SectionStoragesMenuContentList({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bloc = ref.watch(uiBlocProvider.notifier);
-    final state = ref.watch(sessionBlocProvider) as SessionLoadedState;
+    final blocUI = ref.watch(uiBlocProvider.notifier);
+    final blocSession = ref.watch(sessionBlocProvider.notifier);
 
-    if (state.accounts.isEmpty) {
+    final account = ref.watch(sessionBlocProvider.select((v) {
+      return blocSession.getAccount(getActive: true);
+    }));
+
+    if (account == null || account.storages.isEmpty) {
       return SizedBox(
         height: 200,
         child: Column(
@@ -140,24 +149,24 @@ class SectionAccountsMenuContentList extends ConsumerWidget {
             Expanded(
               child: Center(
                 child: Text(
-                  'Нет активных аккаунтов'.translate,
+                  'Нет активных хранилищ'.translate,
                   textAlign: TextAlign.center,
                   style: appTheme.textTheme.body2.bold.onDark1,
                 ),
               ),
             ),
             CreateMenuButton(
-              title: 'Создать аккаунт'.translate,
+              title: 'Создать хранилище'.translate,
               onTap: () {
-                bloc.menuActivity(
+                blocUI.menuActivity(
                   typeMenu: TypeMenu.account,
                   action: ActionMenu.close,
                 );
                 rootNavigatorKey.currentContext?.goNamed(
-                  RouteEndPoints.accounts.account.name,
-                  extra: AccountPageDto(isCreateAccount: true),
+                  RouteEndPoints.accounts.account.storages.storage.name,
+                  extra: StoragePageDto(isCreateAccount: true),
                 );
-                bloc.menuActivity(
+                blocUI.menuActivity(
                   typeMenu: TypeMenu.main,
                   action: ActionMenu.open,
                 );
@@ -170,37 +179,37 @@ class SectionAccountsMenuContentList extends ConsumerWidget {
       return ListView.builder(
         shrinkWrap: true,
         padding: const EdgeInsets.only(bottom: 16),
-        itemCount: state.accounts.length,
+        itemCount: account.storages.length,
         itemBuilder: (context, index) {
-          return _AccountsListItem(index);
+          return _StorageListItem(index);
         },
       );
     }
   }
 }
 
-class _AccountsListItem extends HookConsumerWidget {
+class _StorageListItem extends HookConsumerWidget {
   final int index;
-  const _AccountsListItem(this.index);
+  const _StorageListItem(this.index);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final blocSession = ref.watch(sessionBlocProvider.notifier);
     final blocUI = ref.watch(uiBlocProvider.notifier);
 
-    final account = ref.watch(sessionBlocProvider.select((v) {
-      return blocSession.getAccount(getActive: false, getByIndex: index);
+    final storage = ref.watch(sessionBlocProvider.select((v) {
+      return blocSession.getStorage(getActive: false, getByIndex: index);
     }));
 
-    final isActiveAccount = ref.watch(sessionBlocProvider.select((v) {
-      return blocSession.isActiveIdAccount(getByIdAccount: account?.idAccount);
+    final isActiveStorage = ref.watch(sessionBlocProvider.select((v) {
+      return blocSession.isActiveStorage(getByIdStorage: storage?.idStorage);
     }));
 
     final isHover = useState(false);
 
     final getBgColor = useMemoized(
       () {
-        if (isActiveAccount) {
+        if (isActiveStorage) {
           return const Color(AppColors.bgDarkSelected1);
         } else if (isHover.value) {
           return const Color(AppColors.bgDarkHover).withOpacity(0.6);
@@ -209,46 +218,36 @@ class _AccountsListItem extends HookConsumerWidget {
         }
         return null;
       },
-      [isActiveAccount, isHover.value],
+      [isActiveStorage, isHover.value],
     );
 
     final getTextColor = useMemoized(
       () {
-        if (isActiveAccount) {
+        if (isActiveStorage) {
           return appTheme.textTheme.title2.bold.onLight1;
         } else {
           return appTheme.textTheme.title2.bold.onDark2;
         }
       },
-      [isActiveAccount, isHover.value],
+      [isActiveStorage, isHover.value],
     );
 
     return InkWell(
       onTap: () async {
-        final login = await blocSession.checkLogin(account?.idAccount ?? -1);
-        if (login != null && !login) {
-          rootNavigatorKey.currentContext?.goNamed(
-            RouteEndPoints.accounts.login.name,
-            extra: LoginPageDto(idAccount: account?.idAccount ?? -1),
-          );
-          blocUI.menuActivity(
-            typeMenu: TypeMenu.main,
-            action: ActionMenu.open,
-          );
-        }
+        await blocSession.setActiveStorage(storage?.idStorage ?? -1);
         // Future.delayed(const Duration(milliseconds: 300), () {
         //   blocUI.menuActivity(
-        //     typeMenu: TypeMenu.account,
+        //     typeMenu: TypeMenu.storage,
         //     action: ActionMenu.close,
         //   );
         // });
       },
       onDoubleTap: () {
         rootNavigatorKey.currentContext?.goNamed(
-          RouteEndPoints.accounts.account.name,
-          extra: AccountPageDto(
+          RouteEndPoints.accounts.account.storages.storage.name,
+          extra: StoragePageDto(
             isCreateAccount: false,
-            idAccount: account?.idAccount,
+            idStorage: storage?.idStorage,
           ),
         );
         blocUI.menuActivity(
@@ -256,7 +255,7 @@ class _AccountsListItem extends HookConsumerWidget {
           action: ActionMenu.open,
         );
         blocUI.menuActivity(
-          typeMenu: TypeMenu.account,
+          typeMenu: TypeMenu.storage,
           action: ActionMenu.close,
         );
       },
@@ -274,14 +273,14 @@ class _AccountsListItem extends HookConsumerWidget {
         child: Row(
           children: [
             ActionHoverButton(
-              icon: Assets.icons.profile,
+              icon: Assets.icons.cloud,
               bgColor: const Color(AppColors.bgDarkGray3),
               isHover: isHover.value,
             ),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                account?.name ?? '',
+                storage?.title ?? '',
                 overflow: TextOverflow.ellipsis,
                 style: getTextColor,
               ),

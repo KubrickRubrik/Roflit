@@ -30,7 +30,7 @@ class AccountEntity with _$AccountEntity {
       ),
       activeIdStorage: accountDto.activeIdStorage,
       password: accountDto.password,
-      storages: [],
+      storages: storageDto != null ? [StorageEntity.fromDto(storageDto)] : [],
     );
   }
 

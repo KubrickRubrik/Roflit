@@ -102,7 +102,7 @@ class _StoragesListItem extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final blocSession = ref.read(sessionBlocProvider.notifier);
+    final blocSession = ref.watch(sessionBlocProvider.notifier);
 
     final storage = ref.watch(sessionBlocProvider.select((v) {
       return blocSession.getStorage(getActive: false, getByIndex: index);

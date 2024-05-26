@@ -4,8 +4,8 @@ import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:roflit/core/entity/account.dart';
-import 'package:roflit/core/entity/storage.dart';
 import 'package:roflit/core/entity/session.dart';
+import 'package:roflit/core/entity/storage.dart';
 import 'package:roflit/core/providers/di_service.dart';
 
 part 'provider.freezed.dart';
@@ -37,6 +37,8 @@ final class SessionBloc extends _$SessionBloc {
 
     if (getActive) {
       return currentState.accounts.firstWhereOrNull((e) {
+        // print(
+        //     '>>>> ACC ${e.idAccount} - ${currentState.session.activeIdAccount} - ${e.activeIdStorage}');
         return e.idAccount == currentState.session.activeIdAccount;
       });
     } else {
@@ -82,9 +84,12 @@ final class SessionBloc extends _$SessionBloc {
     int? getByIndex,
     int? getByIdStorage,
   }) {
+    // if (state is! SessionLoadedState) return null;
+    // final currentState = state as SessionLoadedState;
     final account = getAccount(getActive: true);
     if (getActive) {
       return account?.storages.firstWhereOrNull((e) {
+        // print('>>>> ${e.idStorage} == ${account.activeIdStorage}');
         return e.idStorage == account.activeIdStorage;
       });
     } else {

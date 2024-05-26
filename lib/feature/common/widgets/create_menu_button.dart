@@ -4,12 +4,12 @@ import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 
-class CreateAccountButton extends HookWidget {
+class CreateMenuButton extends HookWidget {
   final String title;
   final VoidCallback onTap;
   final VoidCallback? onDoubleTap;
 
-  const CreateAccountButton({
+  const CreateMenuButton({
     required this.title,
     required this.onTap,
     this.onDoubleTap,

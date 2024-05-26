@@ -16,7 +16,6 @@ class SessionDao extends DatabaseAccessor<ApiDatabase> with _$SessionDaoMixin {
     query.limit(1);
 
     return query.watchSingleOrNull().map((row) {
-      print('>>>> ROW SESSION $row');
       final session = row?.readTableOrNull(sessionTable);
 
       return SessionEntity(
@@ -40,7 +39,6 @@ class SessionDao extends DatabaseAccessor<ApiDatabase> with _$SessionDaoMixin {
           activeIdStorage: Value(session.activeIdStorage),
         ),
       );
-      print('>>>> INSERT $response');
       return response == 1;
     } else {
       final updateQuery = update(sessionTable);
@@ -51,7 +49,7 @@ class SessionDao extends DatabaseAccessor<ApiDatabase> with _$SessionDaoMixin {
           activeIdStorage: Value(session.activeIdStorage),
         ),
       );
-      print('>>>> UPDATE $response');
+
       return response == 1;
     }
   }

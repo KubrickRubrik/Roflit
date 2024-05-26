@@ -69,9 +69,9 @@ enum StorageType {
   bool get isYandexCloud => this == yxCloud;
   bool get isVkCloud => this == vkCloud;
 
-  StorageType fromName(String? val) {
+  StorageType fromTypeName(String? val) {
     return switch (val) {
-      'yandexCloud' => StorageType.yxCloud,
+      'yxCloud' => StorageType.yxCloud,
       _ => StorageType.vkCloud,
     };
   }
