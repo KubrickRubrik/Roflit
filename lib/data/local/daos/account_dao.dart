@@ -33,12 +33,9 @@ class AccountDao extends DatabaseAccessor<ApiDatabase> with _$AccountDaoMixin {
   }
 
   Future<bool> deleteAccount({required int idAccount}) async {
-    final accountUpdate = update(accountTable);
+    final accountUpdate = delete(accountTable);
     accountUpdate.where((t) => t.idAccount.equals(idAccount));
-    final response = await accountUpdate.write(const AccountTableCompanion(
-      state: Value(false),
-    ));
-
+    final response = await accountUpdate.go();
     return response == 1;
   }
 
@@ -56,20 +53,44 @@ class AccountDao extends DatabaseAccessor<ApiDatabase> with _$AccountDaoMixin {
     );
 
     if (storageDto == null) {
-      throw Exception('Error create storage');
+      return null;
     }
 
     return StorageEntity.fromDto(storageDto);
+  }
+
+  Future<bool> updateStorage({required StorageEntity storage}) async {
+    final storageUpdate = update(storageTable);
+    storageUpdate.where((t) => t.idStorage.equals(storage.idStorage));
+    final response = await storageUpdate.write(
+      StorageTableCompanion(
+        title: Value(storage.title),
+        storageType: Value(storage.storageType.name),
+        link: Value(storage.link),
+        accessKey: Value(storage.accessKey),
+        secretKey: Value(storage.secretKey),
+        region: Value(storage.region),
+      ),
+    );
+
+    return response == 1;
+  }
+
+  Future<bool> deleteStorage({required int idStorage}) async {
+    final deleteStorage = delete(storageTable);
+    deleteStorage.where((t) => t.idStorage.equals(idStorage));
+    final response = await deleteStorage.go();
+    return response == 1;
   }
 
   Stream<List<AccountEntity>> watchAccounts() {
     final query = select(accountTable).join([
       leftOuterJoin(
         storageTable,
-        storageTable.idAccount.equalsExp(accountTable.idAccount) & storageTable.state.equals(true),
+        storageTable.idAccount.equalsExp(accountTable.idAccount),
       )
     ]);
-    query.where(accountTable.state.equals(true));
+
     query.orderBy([
       OrderingTerm.asc(accountTable.idAccount),
       OrderingTerm.asc(storageTable.idStorage),

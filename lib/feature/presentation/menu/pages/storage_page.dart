@@ -16,10 +16,10 @@ import 'package:roflit/feature/presentation/menu/widgets/menu_button.dart';
 import 'package:roflit/feature/presentation/menu/widgets/menu_item_button.dart';
 import 'package:roflit/feature/presentation/menu/widgets/text_field.dart';
 
-class MainMenuAccountStoragesStoragePage extends HookConsumerWidget {
+class MainMenuStoragePage extends HookConsumerWidget {
   final StoragePageDto storagePageDto;
 
-  const MainMenuAccountStoragesStoragePage({
+  const MainMenuStoragePage({
     required this.storagePageDto,
     super.key,
   });
@@ -32,29 +32,29 @@ class MainMenuAccountStoragesStoragePage extends HookConsumerWidget {
     final account = ref.watch(sessionBlocProvider.select((v) {
       return blocSession.getAccount(getActive: true);
     }));
-
+    print('>>>> STOR ${storagePageDto.idStorage}');
     final storage = ref.watch(sessionBlocProvider.select((v) {
       return blocSession.getStorage(getActive: false, getByIdStorage: storagePageDto.idStorage);
     }));
 
     final titleStorageController = useTextEditingController(
       text: storage?.title,
-      keys: [storage?.idAccount],
+      keys: [storage?.idStorage],
     );
 
     final accessKeyStorageController = useTextEditingController(
       text: storage?.accessKey,
-      keys: [storage?.idAccount],
+      keys: [storage?.idStorage],
     );
 
     final secretKeyStorageController = useTextEditingController(
       text: storage?.secretKey,
-      keys: [storage?.idAccount],
+      keys: [storage?.idStorage],
     );
 
     final regionKeyStorageController = useTextEditingController(
       text: storage?.region,
-      keys: [storage?.idAccount],
+      keys: [storage?.idStorage],
     );
 
     final typeStorageState = useState<StorageType>(
@@ -92,7 +92,9 @@ class MainMenuAccountStoragesStoragePage extends HookConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ActionMenuButton(
-                  onTap: () => context.pop(),
+                  onTap: () {
+                    context.pop();
+                  },
                 ),
                 Text(
                   'Хранилище'.translate,
@@ -170,11 +172,13 @@ class MainMenuAccountStoragesStoragePage extends HookConsumerWidget {
                   child: MainMenuButton(
                     title: 'Удалить'.translate,
                     onTap: () async {
-                      // final response = await bloc.deleteAccount(idAccount: account!.idAccount);
+                      final response = await blocStorage.deleteStorage(
+                        idStorage: storagePageDto.idStorage ?? -1,
+                      );
 
-                      // if (response && context.mounted) {
-                      //   context.pop();
-                      // }
+                      if (response && context.mounted) {
+                        context.pop();
+                      }
                     },
                   ),
                 ),
@@ -188,7 +192,7 @@ class MainMenuAccountStoragesStoragePage extends HookConsumerWidget {
                   onTap: () async {
                     if (storagePageDto.isCreateAccount && account?.idAccount != null) {
                       final response = await blocStorage.createStorage(
-                        idAccount: account!.idAccount,
+                        idAccount: account?.idAccount ?? -1,
                         title: titleStorageController.text,
                         storageType: typeStorageState.value,
                         accessKey: accessKeyStorageController.text,
@@ -200,13 +204,18 @@ class MainMenuAccountStoragesStoragePage extends HookConsumerWidget {
                         context.pop();
                       }
                     } else {
-                      //   final response = await bloc.updateAccount(
-                      //     idAccount: storagePageDto.idAccount,
-                      //     name: nameController.text,
-                      //     localization: AvailableAppLocale.ru.fromName(localizationState.value),
-                      //     password: passwordController.text,
-                      //   );
-                      //   if (response && context.mounted) context.pop();
+                      final response = await blocStorage.updateStorage(
+                        idStorage: storagePageDto.idStorage ?? -1,
+                        title: titleStorageController.text,
+                        storageType: typeStorageState.value,
+                        accessKey: accessKeyStorageController.text,
+                        secretKey: secretKeyStorageController.text,
+                        region: regionKeyStorageController.text,
+                      );
+
+                      if (response && context.mounted) {
+                        context.pop();
+                      }
                     }
                   },
                 ),

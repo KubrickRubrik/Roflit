@@ -9,6 +9,9 @@ abstract class RouteEndPoints {
   static const _storages = 'storages';
   static const _storage = 'storage';
   static const _type = 'type';
+  //
+  static const _storageEdit = 'storage-edit';
+  static const _typeEdit = 'type-edit';
 
   static const _info = 'info';
 
@@ -49,6 +52,16 @@ abstract class RouteEndPoints {
             go: '/$_account/$_storages/$_storage/$_type',
           ),
         ),
+      ),
+    ),
+    storageEdit: (
+      name: _storageEdit,
+      path: _storageEdit,
+      go: '/$_account/$_storageEdit',
+      typeEdit: (
+        name: _typeEdit,
+        path: _typeEdit,
+        go: '/$_account/$_storageEdit/$_typeEdit',
       ),
     ),
   );

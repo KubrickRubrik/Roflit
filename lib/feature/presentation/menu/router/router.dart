@@ -6,11 +6,11 @@ import 'package:roflit/core/page_dto/storage_page_dto.dart';
 import 'package:roflit/feature/presentation/menu/pages/account_localization_page.dart';
 import 'package:roflit/feature/presentation/menu/pages/account_page.dart';
 import 'package:roflit/feature/presentation/menu/pages/account_storages_page.dart';
-import 'package:roflit/feature/presentation/menu/pages/account_storages_storage_page.dart';
-import 'package:roflit/feature/presentation/menu/pages/account_storages_storage_type_page.dart';
 import 'package:roflit/feature/presentation/menu/pages/accounts_page.dart';
 import 'package:roflit/feature/presentation/menu/pages/info_page.dart';
 import 'package:roflit/feature/presentation/menu/pages/login_page.dart';
+import 'package:roflit/feature/presentation/menu/pages/storage_page.dart';
+import 'package:roflit/feature/presentation/menu/pages/storage_type_page.dart';
 
 part 'end_points.dart';
 
@@ -87,19 +87,39 @@ abstract final class MainMenuRouter {
                           value: state.extra,
                           defaul: StoragePageDto.empty(),
                         );
-                        return MainMenuAccountStoragesStoragePage(storagePageDto: extra);
+                        return MainMenuStoragePage(storagePageDto: extra);
                       },
                       routes: [
                         GoRoute(
                           name: RouteEndPoints.accounts.account.storages.storage.type.name,
                           path: RouteEndPoints.accounts.account.storages.storage.type.path,
                           builder: (context, state) {
-                            return const MainMenuAccountStoragesStorageTypePage();
+                            return const MainMenuStorageTypePage();
                           },
                         ),
                       ],
                     ),
                   ],
+                ),
+              ],
+            ),
+            GoRoute(
+              name: RouteEndPoints.accounts.storageEdit.name,
+              path: RouteEndPoints.accounts.storageEdit.path,
+              builder: (context, state) {
+                final extra = convert<StoragePageDto>(
+                  value: state.extra,
+                  defaul: StoragePageDto.empty(),
+                );
+                return MainMenuStoragePage(storagePageDto: extra);
+              },
+              routes: [
+                GoRoute(
+                  name: RouteEndPoints.accounts.storageEdit.typeEdit.name,
+                  path: RouteEndPoints.accounts.storageEdit.typeEdit.path,
+                  builder: (context, state) {
+                    return const MainMenuStorageTypePage();
+                  },
                 ),
               ],
             ),

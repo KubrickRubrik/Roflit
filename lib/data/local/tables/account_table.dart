@@ -11,5 +11,4 @@ class AccountTable extends Table {
       text().withDefault(const Constant('ru')).withLength(min: 2, max: 2)();
   IntColumn get activeIdStorage => integer().nullable()();
   TextColumn get password => text().nullable().withLength(min: 3, max: 32)();
-  BoolColumn get state => boolean().withDefault(const Constant(true))();
 }

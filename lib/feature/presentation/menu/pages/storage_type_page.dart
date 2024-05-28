@@ -9,8 +9,8 @@ import 'package:roflit/feature/common/themes/text.dart';
 import 'package:roflit/feature/common/widgets/action_menu_button.dart';
 import 'package:roflit/feature/presentation/menu/widgets/menu_item_button.dart';
 
-class MainMenuAccountStoragesStorageTypePage extends StatelessWidget {
-  const MainMenuAccountStoragesStorageTypePage({super.key});
+class MainMenuStorageTypePage extends StatelessWidget {
+  const MainMenuStorageTypePage({super.key});
 
   @override
   Widget build(BuildContext context) {

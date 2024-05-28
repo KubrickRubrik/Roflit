@@ -8,11 +8,10 @@ class SessionDao extends DatabaseAccessor<ApiDatabase> with _$SessionDaoMixin {
     final query = select(sessionTable).join([
       innerJoin(
         accountTable,
-        accountTable.idAccount.equalsExp(sessionTable.activeIdAccount) &
-            accountTable.state.equals(true),
+        accountTable.idAccount.equalsExp(sessionTable.activeIdAccount),
       )
     ]);
-    query.where(accountTable.state.equals(true));
+
     query.limit(1);
 
     return query.watchSingleOrNull().map((row) {
@@ -63,7 +62,6 @@ class SessionDao extends DatabaseAccessor<ApiDatabase> with _$SessionDaoMixin {
         activeIdStorage: const Value(null),
       ),
     );
-    print('>>>> CLEAR SESSION $response');
     return response == 1;
   }
 

@@ -244,7 +244,7 @@ class _StorageListItem extends HookConsumerWidget {
       },
       onDoubleTap: () {
         rootNavigatorKey.currentContext?.goNamed(
-          RouteEndPoints.accounts.account.storages.storage.name,
+          RouteEndPoints.accounts.storageEdit.name,
           extra: StoragePageDto(
             isCreateAccount: false,
             idStorage: storage?.idStorage,

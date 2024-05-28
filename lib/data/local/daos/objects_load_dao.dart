@@ -11,7 +11,7 @@ class ObjectLoadDao extends DatabaseAccessor<ApiDatabase> with _$ObjectLoadDaoMi
         objectTable.idObject.equalsExp(objectLoadTable.idObject),
       ),
     ]);
-    query.where(objectLoadTable.state.equals(true));
+
     query.orderBy([OrderingTerm.asc(objectLoadTable.id)]);
 
     return query.watch().map((rows) {

@@ -7,5 +7,4 @@ class ObjectLoadTable extends Table {
 
   IntColumn get id => integer().autoIncrement()();
   IntColumn get idObject => integer().references(ObjectTable, #idObject)();
-  BoolColumn get state => boolean().withDefault(const Constant(false))();
 }

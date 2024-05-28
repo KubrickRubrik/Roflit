@@ -65,36 +65,45 @@ final class StorageService {
     return true;
   }
 
-  // Future<bool> updateStorage({
-  //   required int? idStorage,
-  //   required String name,
-  //   required AppLocalization localization,
-  //   required String password,
-  // }) async {
-  //   if (idStorage == null) return false;
-  //   if (name.isEmpty ||
-  //       name.isNotEmpty && name.length < 3 ||
-  //       password.isNotEmpty && password.length < 3) {
-  //     //TODO snackbar
-  //     return false;
-  //   }
+  Future<bool> updateStorage({
+    required int idStorage,
+    required String title,
+    required StorageType storageType,
+    required String accessKey,
+    required String secretKey,
+    required String region,
+  }) async {
+    final storage = StorageEntity(
+      idStorage: idStorage,
+      idAccount: -1,
+      title: title,
+      storageType: storageType,
+      link: const Uuid().v1(),
+      accessKey: accessKey,
+      secretKey: secretKey,
+      region: region,
+    ).toDto();
 
-  //   final account = AccountEntity(
-  //     idAccount: idAccount,
-  //     name: name,
-  //     localization: localization,
-  //     password: password.isEmpty ? null : password,
-  //   );
+    final response = await apiLocalClient.accountsDao.updateStorage(storage: storage);
 
-  //   final response = await apiLocalClient.updateAccount(account: account);
+    if (!response) {
+      return false;
+      //TODO snackbar
+    }
+    //TODO snackbar
+    return true;
+  }
 
-  //   if (!response) {
-  //     return false;
-  //     //TODO snackbar
-  //   }
-  //   //TODO snackbar
-  //   return true;
-  // }
+  Future<bool> deleteStorage({required int idStorage}) async {
+    final response = await apiLocalClient.accountsDao.deleteStorage(idStorage: idStorage);
+
+    if (!response) {
+      return false;
+      //TODO snackbar
+    }
+    //TODO snackbar
+    return true;
+  }
 
   // Future<bool> deleteStorage({required int idStorage}) async {
   //   final responseSession = await sessionBloc.clearSession(idAccount);

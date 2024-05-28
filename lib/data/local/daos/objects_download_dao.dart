@@ -12,7 +12,6 @@ class ObjectDownloadDao extends DatabaseAccessor<ApiDatabase> with _$ObjectDownl
       )
     ]);
 
-    query.where(objectDownloadTable.state.equals(true));
     query.orderBy([OrderingTerm.asc(objectDownloadTable.id)]);
 
     return query.watch().map((rows) {
