@@ -8,7 +8,7 @@ import 'package:roflit/helper_remove/main/widgets/background.dart';
 import 'package:roflit/middleware/zip_utils.dart';
 
 import 'content_section/content_section.dart';
-import 'download_section/donwload_section.dart';
+import 'download_section/download_section.dart';
 import 'loading_section/loading_section.dart';
 
 class HomeScreen extends HookConsumerWidget {
