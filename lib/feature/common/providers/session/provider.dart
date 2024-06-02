@@ -27,6 +27,30 @@ final class SessionBloc extends _$SessionBloc {
   StreamSubscription<SessionEntity>? _listenerSession;
   StreamSubscription<List<AccountEntity>>? _listenerAccounts;
 
+  Future<void> watchSessionAndAccounts() async {
+    state = const SessionState.loading();
+    await _listenerSession?.cancel();
+    await _listenerAccounts?.cancel();
+
+    final watchingDao = ref.read(diServiceProvider).apiLocalClient.watchingDao;
+
+    _listenerSession = watchingDao.watchSession().listen((event) {
+      if (state is SessionLoadedState) {
+        state = (state as SessionLoadedState).copyWith(session: event);
+      } else {
+        state = SessionState.loaded(session: event);
+      }
+    });
+
+    _listenerAccounts = watchingDao.watchAccounts().listen((event) {
+      if (state is SessionLoadedState) {
+        state = (state as SessionLoadedState).copyWith(accounts: event);
+      } else {
+        state = SessionState.loaded(accounts: event);
+      }
+    });
+  }
+
   AccountEntity? getAccount({
     required bool getActive,
     int? getByIndex,
@@ -37,8 +61,6 @@ final class SessionBloc extends _$SessionBloc {
 
     if (getActive) {
       return currentState.accounts.firstWhereOrNull((e) {
-        // print(
-        //     '>>>> ACC ${e.idAccount} - ${currentState.session.activeIdAccount} - ${e.activeIdStorage}');
         return e.idAccount == currentState.session.activeIdAccount;
       });
     } else {
@@ -102,31 +124,6 @@ final class SessionBloc extends _$SessionBloc {
       }
       return null;
     }
-  }
-
-  Future<void> watchSessionAndAccounts() async {
-    // final api = ref.read(diProvider).apiRemoteClient.buckets.getBucketObjects(bucketName: bucketName);
-    state = const SessionState.loading();
-    await _listenerAccounts?.cancel();
-
-    final apiSessionDao = ref.read(diServiceProvider).apiLocalClient.sessionDao;
-    final apiAccountsDao = ref.read(diServiceProvider).apiLocalClient.accountsDao;
-
-    _listenerSession = apiSessionDao.watchSession().listen((event) {
-      if (state is SessionLoadedState) {
-        state = (state as SessionLoadedState).copyWith(session: event);
-      } else {
-        state = SessionState.loaded(session: event);
-      }
-    });
-
-    _listenerAccounts = apiAccountsDao.watchAccounts().listen((event) {
-      if (state is SessionLoadedState) {
-        state = (state as SessionLoadedState).copyWith(accounts: event);
-      } else {
-        state = SessionState.loaded(accounts: event);
-      }
-    });
   }
 
   Future<bool?> checkLogin(int idAccount) async {

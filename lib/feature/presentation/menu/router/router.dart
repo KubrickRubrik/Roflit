@@ -14,13 +14,13 @@ import 'package:roflit/feature/presentation/menu/pages/storage_type_page.dart';
 
 part 'end_points.dart';
 
-final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> rootMenuNavigatorKey = GlobalKey<NavigatorState>();
 
 abstract final class MainMenuRouter {
   static GoRouter getRoute() {
     return GoRouter(
       debugLogDiagnostics: false,
-      navigatorKey: rootNavigatorKey,
+      navigatorKey: rootMenuNavigatorKey,
       // initialLocation: RouteEndPoints.accounts.account.storages.go,
       initialLocation: RouteEndPoints.accounts.go,
       routes: [

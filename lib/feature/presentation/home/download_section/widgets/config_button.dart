@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 
-class DonwloadSectionConfigButton extends StatefulWidget {
-  const DonwloadSectionConfigButton({super.key});
+class DownloadSectionConfigButton extends StatefulWidget {
+  const DownloadSectionConfigButton({super.key});
 
   @override
-  State<DonwloadSectionConfigButton> createState() => _DonwloadSectionConfigButtonState();
+  State<DownloadSectionConfigButton> createState() => _DownloadSectionConfigButtonState();
 }
 
-class _DonwloadSectionConfigButtonState extends State<DonwloadSectionConfigButton> {
+class _DownloadSectionConfigButtonState extends State<DownloadSectionConfigButton> {
   bool isHover = false;
 
   @override

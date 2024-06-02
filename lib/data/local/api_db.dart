@@ -15,11 +15,14 @@ import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 part 'api_db.g.dart';
 // Dao
 part 'daos/account_dao.dart';
+part 'daos/bucket_dao.dart';
 part 'daos/objects_download_dao.dart';
 part 'daos/objects_load_dao.dart';
 part 'daos/session_dao.dart';
+part 'daos/storage_dao.dart';
 // Table
 part 'daos/test.dart';
+part 'daos/watching_dao.dart';
 part 'tables/account_table.dart';
 part 'tables/object_download_table.dart';
 part 'tables/object_load_table.dart';
@@ -41,10 +44,13 @@ part 'tables/test_table.dart';
   ],
   daos: [
     TestDao,
+    WatchingDao,
     SessionDao,
     AccountDao,
     ObjectDownloadDao,
     ObjectLoadDao,
+    StorageDao,
+    BucketDao,
   ],
 )
 class ApiDatabase extends _$ApiDatabase {

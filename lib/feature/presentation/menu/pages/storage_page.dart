@@ -32,7 +32,7 @@ class MainMenuStoragePage extends HookConsumerWidget {
     final account = ref.watch(sessionBlocProvider.select((v) {
       return blocSession.getAccount(getActive: true);
     }));
-    print('>>>> STOR ${storagePageDto.idStorage}');
+
     final storage = ref.watch(sessionBlocProvider.select((v) {
       return blocSession.getStorage(getActive: false, getByIdStorage: storagePageDto.idStorage);
     }));

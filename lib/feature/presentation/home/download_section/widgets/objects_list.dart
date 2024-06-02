@@ -3,8 +3,8 @@ import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 
-class DonwloadSectionObjectsList extends StatelessWidget {
-  DonwloadSectionObjectsList({super.key});
+class DownloadSectionObjectsList extends StatelessWidget {
+  DownloadSectionObjectsList({super.key});
   final controller = ScrollController();
 
   @override

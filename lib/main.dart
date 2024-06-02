@@ -9,8 +9,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/config/constants.dart';
 import 'package:roflit/core/providers/di_service.dart';
 import 'package:roflit/feature/common/providers/observer/provider.dart';
+import 'package:roflit/feature/common/providers/storage/provider.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
 import 'package:roflit/feature/presentation/home/home_screen.dart';
+
+import 'feature/common/providers/session/provider.dart';
+import 'middleware/utils/hooks.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -80,14 +84,24 @@ class MainApp extends StatelessWidget {
   }
 }
 
-class _EagerInitialization extends ConsumerWidget {
+class _EagerInitialization extends HookConsumerWidget {
   const _EagerInitialization({required this.child});
   final Widget child;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(diServiceProvider);
-    ref.watch(uiBlocProvider);
+    ref.watch(uiBlocProvider.notifier);
+    final sessionBloc = ref.watch(sessionBlocProvider.notifier);
+    final bucketsBloc = ref.watch(storageBlocProvider.notifier);
+
+    useInitState(
+      onBuild: () {
+        sessionBloc.watchSessionAndAccounts();
+        bucketsBloc.watchStorages();
+      },
+    );
+
     return child;
   }
 }

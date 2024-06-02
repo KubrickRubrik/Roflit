@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 
-class DonwloadSectionHoverObjects extends StatefulWidget {
+class DownloadSectionHoverObjects extends StatefulWidget {
   final Widget child;
-  const DonwloadSectionHoverObjects({required this.child, super.key});
+  const DownloadSectionHoverObjects({required this.child, super.key});
 
   @override
-  State<DonwloadSectionHoverObjects> createState() => _DonwloadSectionHoverObjectsState();
+  State<DownloadSectionHoverObjects> createState() => _DownloadSectionHoverObjectsState();
 }
 
-class _DonwloadSectionHoverObjectsState extends State<DonwloadSectionHoverObjects> {
+class _DownloadSectionHoverObjectsState extends State<DownloadSectionHoverObjects> {
   bool isHover = false;
   @override
   Widget build(BuildContext context) {

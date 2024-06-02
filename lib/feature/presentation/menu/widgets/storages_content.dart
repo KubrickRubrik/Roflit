@@ -144,7 +144,7 @@ class _StoragesListItem extends HookConsumerWidget {
         await blocSession.setActiveStorage(storage?.idStorage);
       },
       onDoubleTap: () {
-        rootNavigatorKey.currentContext?.goNamed(
+        rootMenuNavigatorKey.currentContext?.goNamed(
           RouteEndPoints.accounts.account.storages.storage.name,
           extra: StoragePageDto(
             isCreateAccount: false,

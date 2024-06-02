@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:roflit/core/entity/account.dart';
 import 'package:roflit/core/enums.dart';
@@ -12,16 +14,19 @@ AccountService accountService(AccountServiceRef ref) {
   return AccountService(
     sessionBloc: ref.watch(sessionBlocProvider.notifier),
     apiLocalClient: ref.watch(diServiceProvider).apiLocalClient.accountsDao,
+    test: ref.watch(diServiceProvider).apiLocalClient.watchingDao,
   );
 }
 
 final class AccountService {
   final SessionBloc sessionBloc;
   final AccountDao apiLocalClient;
+  final WatchingDao test;
 
   AccountService({
     required this.sessionBloc,
     required this.apiLocalClient,
+    required this.test,
   });
 
   Future<bool> createAccount({

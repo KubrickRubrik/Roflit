@@ -145,13 +145,13 @@ class _AccountsListItem extends HookConsumerWidget {
     Future<void> onDoubleTapAccount() async {
       final login = await blocSession.checkLogin(account?.idAccount ?? -1);
       if (login != null && !login) {
-        rootNavigatorKey.currentContext?.goNamed(
+        rootMenuNavigatorKey.currentContext?.goNamed(
           RouteEndPoints.accounts.login.name,
           extra: LoginPageDto(idAccount: account?.idAccount ?? -1),
         );
         return;
       }
-      rootNavigatorKey.currentContext?.goNamed(
+      rootMenuNavigatorKey.currentContext?.goNamed(
         RouteEndPoints.accounts.account.name,
         extra: AccountPageDto(
           isCreateAccount: false,
@@ -164,7 +164,7 @@ class _AccountsListItem extends HookConsumerWidget {
       onTap: () async {
         final login = await blocSession.checkLogin(account?.idAccount ?? -1);
         if (login != null && !login) {
-          rootNavigatorKey.currentContext?.goNamed(
+          rootMenuNavigatorKey.currentContext?.goNamed(
             RouteEndPoints.accounts.login.name,
             extra: LoginPageDto(idAccount: account?.idAccount ?? -1),
           );

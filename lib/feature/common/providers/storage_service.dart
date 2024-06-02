@@ -51,7 +51,7 @@ final class StorageService {
       region: region,
     ).toDto();
 
-    final responseAccount = await apiLocalClient.accountsDao.createStorage(storage: storage);
+    final responseAccount = await apiLocalClient.storageDao.createStorage(storage: storage);
 
     if (responseAccount == null) {
       return false;
@@ -84,7 +84,7 @@ final class StorageService {
       region: region,
     ).toDto();
 
-    final response = await apiLocalClient.accountsDao.updateStorage(storage: storage);
+    final response = await apiLocalClient.storageDao.updateStorage(storage: storage);
 
     if (!response) {
       return false;
@@ -95,7 +95,7 @@ final class StorageService {
   }
 
   Future<bool> deleteStorage({required int idStorage}) async {
-    final response = await apiLocalClient.accountsDao.deleteStorage(idStorage: idStorage);
+    final response = await apiLocalClient.storageDao.deleteStorage(idStorage: idStorage);
 
     if (!response) {
       return false;
@@ -104,22 +104,4 @@ final class StorageService {
     //TODO snackbar
     return true;
   }
-
-  // Future<bool> deleteStorage({required int idStorage}) async {
-  //   final responseSession = await sessionBloc.clearSession(idAccount);
-
-  //   if (!responseSession) {
-  //     return false;
-  //     //TODO snackbar
-  //   }
-
-  //   final response = await apiLocalClient.deleteAccount(idAccount: idAccount);
-
-  //   if (!response) {
-  //     return false;
-  //     //TODO snackbar
-  //   }
-
-  //   return response;
-  // }
 }

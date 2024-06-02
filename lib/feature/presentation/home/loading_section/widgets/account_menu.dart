@@ -86,7 +86,7 @@ class LoadingSectionAccountsMenu extends ConsumerWidget {
                           typeMenu: TypeMenu.account,
                           action: ActionMenu.close,
                         );
-                        rootNavigatorKey.currentContext?.goNamed(RouteEndPoints.accounts.name);
+                        rootMenuNavigatorKey.currentContext?.goNamed(RouteEndPoints.accounts.name);
                         bloc.menuActivity(
                           typeMenu: TypeMenu.main,
                           action: ActionMenu.open,
@@ -153,7 +153,7 @@ class SectionAccountsMenuContentList extends ConsumerWidget {
                   typeMenu: TypeMenu.account,
                   action: ActionMenu.close,
                 );
-                rootNavigatorKey.currentContext?.goNamed(
+                rootMenuNavigatorKey.currentContext?.goNamed(
                   RouteEndPoints.accounts.account.name,
                   extra: AccountPageDto(isCreateAccount: true),
                 );
@@ -227,7 +227,7 @@ class _AccountsListItem extends HookConsumerWidget {
       onTap: () async {
         final login = await blocSession.checkLogin(account?.idAccount ?? -1);
         if (login != null && !login) {
-          rootNavigatorKey.currentContext?.goNamed(
+          rootMenuNavigatorKey.currentContext?.goNamed(
             RouteEndPoints.accounts.login.name,
             extra: LoginPageDto(idAccount: account?.idAccount ?? -1),
           );
@@ -244,7 +244,7 @@ class _AccountsListItem extends HookConsumerWidget {
         // });
       },
       onDoubleTap: () {
-        rootNavigatorKey.currentContext?.goNamed(
+        rootMenuNavigatorKey.currentContext?.goNamed(
           RouteEndPoints.accounts.account.name,
           extra: AccountPageDto(
             isCreateAccount: false,

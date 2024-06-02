@@ -11,8 +11,8 @@ import 'widgets/objects_hover.dart';
 import 'widgets/objects_list.dart';
 import 'widgets/storage_menu.dart';
 
-class DonwloadSection extends ConsumerWidget {
-  const DonwloadSection({super.key});
+class DownloadSection extends ConsumerWidget {
+  const DownloadSection({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -75,23 +75,22 @@ class DonwloadSection extends ConsumerWidget {
             flex: 8,
             child: Padding(
               padding: const EdgeInsets.only(right: 2, top: 14, bottom: 14),
-              child: DonwloadSectionHoverObjects(
+              child: DownloadSectionHoverObjects(
                 child: Stack(
                   children: [
                     Center(
-                      child: DonwloadSectionObjectsList(),
+                      child: DownloadSectionObjectsList(),
                     ),
                     DownloadSectionStorageMenu(width: constr.maxWidth),
                   ],
                 ),
               ),
             ),
-            // DonwloadSectionEmpty(),
           ),
           Container(
             height: 64,
             alignment: Alignment.topRight,
-            child: const DonwloadSectionConfigButton(),
+            child: const DownloadSectionConfigButton(),
           ),
         ],
       );

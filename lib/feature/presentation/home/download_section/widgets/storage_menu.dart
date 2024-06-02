@@ -89,7 +89,7 @@ class DownloadSectionStorageMenu extends ConsumerWidget {
                           typeMenu: TypeMenu.storage,
                           action: ActionMenu.close,
                         );
-                        rootNavigatorKey.currentContext?.goNamed(
+                        rootMenuNavigatorKey.currentContext?.goNamed(
                           RouteEndPoints.accounts.name,
                         );
                         bloc.menuActivity(
@@ -162,7 +162,7 @@ class SectionStoragesMenuContentList extends ConsumerWidget {
                   typeMenu: TypeMenu.account,
                   action: ActionMenu.close,
                 );
-                rootNavigatorKey.currentContext?.goNamed(
+                rootMenuNavigatorKey.currentContext?.goNamed(
                   RouteEndPoints.accounts.account.storages.storage.name,
                   extra: StoragePageDto(isCreateAccount: true),
                 );
@@ -243,7 +243,7 @@ class _StorageListItem extends HookConsumerWidget {
         // });
       },
       onDoubleTap: () {
-        rootNavigatorKey.currentContext?.goNamed(
+        rootMenuNavigatorKey.currentContext?.goNamed(
           RouteEndPoints.accounts.storageEdit.name,
           extra: StoragePageDto(
             isCreateAccount: false,

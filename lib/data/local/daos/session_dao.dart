@@ -4,26 +4,6 @@ part of '../api_db.dart';
 class SessionDao extends DatabaseAccessor<ApiDatabase> with _$SessionDaoMixin {
   SessionDao(super.db);
 
-  Stream<SessionEntity> watchSession() {
-    final query = select(sessionTable).join([
-      innerJoin(
-        accountTable,
-        accountTable.idAccount.equalsExp(sessionTable.activeIdAccount),
-      )
-    ]);
-
-    query.limit(1);
-
-    return query.watchSingleOrNull().map((row) {
-      final session = row?.readTableOrNull(sessionTable);
-
-      return SessionEntity(
-        activeIdAccount: session?.activeIdAccount,
-        activeIdStorage: session?.activeIdStorage,
-      );
-    });
-  }
-
   Future<bool> updateSession(SessionEntity session) async {
     final querySelect = select(sessionTable);
     querySelect.where((t) => t.id.equals(1));

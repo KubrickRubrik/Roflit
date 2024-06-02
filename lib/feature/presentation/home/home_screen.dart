@@ -2,10 +2,8 @@ import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/providers/di_service.dart';
-import 'package:roflit/feature/common/providers/session/provider.dart';
 import 'package:roflit/feature/common/widgets/lines.dart';
 import 'package:roflit/helper_remove/main/widgets/background.dart';
-import 'package:roflit/middleware/zip_utils.dart';
 
 import 'content_section/content_section.dart';
 import 'download_section/download_section.dart';
@@ -16,15 +14,6 @@ class HomeScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(sessionBlocProvider);
-    final bloc = ref.watch(sessionBlocProvider.notifier);
-
-    useInitState(
-      onBuild: () {
-        bloc.watchSessionAndAccounts();
-      },
-    );
-
     return Material(
       child: MainBackgaround(
         child: Stack(
@@ -39,7 +28,7 @@ class HomeScreen extends HookConsumerWidget {
                     children: [
                       Flexible(
                         flex: 3,
-                        child: DonwloadSection(),
+                        child: DownloadSection(),
                       ),
                       Lines.vertical(),
                       Flexible(

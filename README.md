@@ -150,7 +150,18 @@ StatefulWidget  -> ConsumerStatefulWidget -> StatefulHookConsumerWidget (HookSta
 #### Rules for using a riverpod provider (good and bad practice):
 
 - Good
+
   - providers should be created globally, not in class methods or field of class.
+
+- Good
+
+  - **read.watch** creates the provider cache (if it hasn't been created yet) and binds the provider to the widget.
+
+- Good
+
+  - **read.watch(Provider)** returns a state, the change of which will trigger the nearest build method.
+  - **read.watch(Provider.notifier)** returns access to the provider methods and the state at the time of this call, does not use the build method.
+
 - Good
 
   - **read.watch** should only be used at the build stage of Providers - declaratively!.
@@ -195,6 +206,7 @@ StatefulWidget  -> ConsumerStatefulWidget -> StatefulHookConsumerWidget (HookSta
   - Using `ref` in asynchronous widget methods requires checking `context.mounted`.
 
 #### Use of providers:
+
 ```
 class Example extends ConsumerWidget {
   const Example({super.key});
@@ -230,3 +242,12 @@ class Example extends ConsumerWidget {
 - `flutter pub add dev:build_runner`
 - `flutter pub add dev:drift_dev`
 - `flutter pub add dev:drift_db_viewer`
+
+#### Rules for using a drift (good and bad practice):
+
+- Good
+
+  - Subscription to a database stream should only be performed in a stateful provider so that the subscription can be closed.
+
+- Good
+  - Each new subscription triggers the forwarding of data to other subscriptions.
