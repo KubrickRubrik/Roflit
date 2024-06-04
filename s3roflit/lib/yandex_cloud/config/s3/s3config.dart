@@ -58,7 +58,7 @@ final class S3Config with PreparedData {
     return YandexRequestDto(
         url: Uri.parse('${YCConstant.url}$canonicalRequest$queryString'),
         headers: s3Headers,
-        requestType: requestType,
+        typeRequest: requestType,
         body: utf8.encode(requestBody));
   }
 }

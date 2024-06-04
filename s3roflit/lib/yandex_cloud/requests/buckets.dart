@@ -1,9 +1,10 @@
+import 'package:s3roflit/interface/storage_interface.dart';
 import 'package:s3roflit/yandex_cloud/config/constants.dart';
 import 'package:s3roflit/yandex_cloud/config/s3/dto.dart';
 import 'package:s3roflit/yandex_cloud/config/s3/s3config.dart';
 import 'package:s3roflit/yandex_cloud/requests/parameters/bucket_parameters.dart';
 
-final class YandexRequestsBucket {
+final class YandexRequestsBucket implements StorageBucketRequestsInterface {
   final YandexAccess _access;
 
   YandexRequestsBucket(
@@ -11,7 +12,8 @@ final class YandexRequestsBucket {
   ) : _access = access;
 
   /// Returns a list of buckets available to the user.
-  YandexRequestDto getList({
+  @override
+  YandexRequestDto get({
     Map<String, String> headers = const {},
     String queryParameters = '',
   }) {
@@ -34,6 +36,7 @@ final class YandexRequestsBucket {
   /// - Does the user have sufficient rights to access the bucket.
   /// The response can only contain general headers
   /// https://cloud.yandex.ru/ru/docs/storage/s3/api-ref/common-request-headers.
+  @override
   YandexRequestDto getMeta({
     required String bucketName,
     Map<String, String> headers = const {},
@@ -68,6 +71,7 @@ final class YandexRequestsBucket {
   //   return s3Config.signing();
   // }
 
+  @override
   YandexRequestDto delete({
     required String bucketName,
     Map<String, String> headers = const {},
@@ -87,7 +91,8 @@ final class YandexRequestsBucket {
   /// Returns a list of objects in the bucket.
   /// Pagination is used; in one request you can get a list of no longer than 1000 objects.
   /// If there are more objects, then you need to run several queries in a row.
-  YandexRequestDto getListObject({
+  @override
+  YandexRequestDto getObjects({
     required String bucketName,
     Map<String, String> headers = const {},
     BucketListObjectParameters queryParameters = const BucketListObjectParameters.empty(),

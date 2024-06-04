@@ -8,7 +8,8 @@ import 'package:roflit/core/entity/bucket.dart';
 import 'package:roflit/core/entity/storage.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/providers/di_service.dart';
-import 'package:roflit/feature/common/providers/s3_service.dart';
+import 'package:s3roflit/interface/storage_interface.dart';
+import 'package:s3roflit/s3roflit.dart';
 
 part 'provider.freezed.dart';
 part 'provider.g.dart';
@@ -36,7 +37,7 @@ final class StorageBloc extends _$StorageBloc {
       if (state.activeStorage?.idStorage == event.idStorage) return;
       EasyDebounce.debounce(Tags.updateBuckets, const Duration(milliseconds: 500), () {
         state = state.copyWith(activeStorage: event);
-        ref.read(s3ServiceProvider).setStorage(event);
+
         _updateBuckets();
       });
     });
@@ -47,7 +48,8 @@ final class StorageBloc extends _$StorageBloc {
     final currentIdStorage = state.activeStorage!.idStorage;
     state = state.copyWith(loading: ContentStatus.loading);
 
-    final dto = ref.read(s3ServiceProvider).storage!.buckets.getList();
+    final dto = state.roflit?.buckets.get();
+    if (dto == null) return;
     print('>>>> ${dto.url}- ${dto.headers}');
     //TODO: перенести экземпляр S3Roflit в StorageState !!!!.
     state = state.copyWith(loading: ContentStatus.loaded);

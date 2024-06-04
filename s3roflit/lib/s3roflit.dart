@@ -26,14 +26,4 @@ abstract final class S3Roflit {
       secretKey: secretKey,
     );
   }
-
-  // static VKCloud custom({
-  //   required String accessKey,
-  //   required String secretKey,
-  // }) {
-  //   return CustomCloud(
-  //     accessKey: accessKey,
-  //     secretKey: secretKey,
-  //   );
-  // }
 }

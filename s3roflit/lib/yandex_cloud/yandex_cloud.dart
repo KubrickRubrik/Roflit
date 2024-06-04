@@ -1,9 +1,11 @@
+import 'package:s3roflit/interface/storage_interface.dart';
+
 import 'config/constants.dart';
 import 'config/s3/dto.dart';
 import 'requests/buckets.dart';
 import 'requests/objects.dart';
 
-final class YandexCloud {
+final class YandexCloud implements StorageInterface {
   final YandexAccess _access;
 
   YandexCloud({
@@ -18,6 +20,9 @@ final class YandexCloud {
           region: region,
         );
 
-  YandexRequestsBucket get buckets => YandexRequestsBucket(_access);
-  YandexRequestsObject get object => YandexRequestsObject(_access);
+  @override
+  StorageBucketRequestsInterface get buckets => YandexRequestsBucket(_access);
+
+  @override
+  StorageObjectRequestsInterface get object => YandexRequestsObject(_access);
 }

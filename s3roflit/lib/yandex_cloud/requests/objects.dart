@@ -1,16 +1,18 @@
+import 'package:s3roflit/interface/storage_interface.dart';
 import 'package:s3roflit/yandex_cloud/config/constants.dart';
 import 'package:s3roflit/yandex_cloud/config/s3/dto.dart';
 import 'package:s3roflit/yandex_cloud/config/s3/s3config.dart';
 
 import 'parameters/object_parameters.dart';
 
-final class YandexRequestsObject {
+final class YandexRequestsObject implements StorageObjectRequestsInterface {
   final YandexAccess _access;
   YandexRequestsObject(
     YandexAccess access,
   ) : _access = access;
 
   /// Returns an object from Object Storage.
+  @override
   YandexRequestDto get({
     required String bucketName,
     required String objectKey,
@@ -30,6 +32,7 @@ final class YandexRequestsObject {
     return s3Config.signing();
   }
 
+  @override
   YandexRequestDto delete({
     required String bucketName,
     required String objectKey,
@@ -47,6 +50,7 @@ final class YandexRequestsObject {
     return s3Config.signing();
   }
 
+  @override
   YandexRequestDto upload({
     required String bucketName,
     required String objectKey,
