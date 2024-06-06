@@ -8,6 +8,7 @@ class MainMenuTextField extends HookWidget {
   final bool obscureText;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
+  final int maxLength;
   final void Function(String)? onSubmitted;
 
   const MainMenuTextField({
@@ -17,6 +18,7 @@ class MainMenuTextField extends HookWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.onSubmitted,
+    this.maxLength = 32,
     super.key,
   });
 
@@ -40,7 +42,7 @@ class MainMenuTextField extends HookWidget {
 
     return TextField(
       controller: controller,
-      maxLength: 32,
+      maxLength: maxLength,
       maxLines: 1,
       style: appTheme.textTheme.title2.onDark1,
       textAlign: TextAlign.center,

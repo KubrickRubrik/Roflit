@@ -10,6 +10,7 @@ import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/providers/di_service.dart';
 import 'package:s3roflit/interface/storage_interface.dart';
 import 'package:s3roflit/s3roflit.dart';
+import 'package:xml/xml.dart';
 
 part 'provider.freezed.dart';
 part 'provider.g.dart';
@@ -37,26 +38,51 @@ final class StorageBloc extends _$StorageBloc {
       if (state.activeStorage?.idStorage == event.idStorage) return;
       EasyDebounce.debounce(Tags.updateBuckets, const Duration(milliseconds: 500), () {
         state = state.copyWith(activeStorage: event);
-
         _updateBuckets();
       });
     });
   }
 
   Future<void> _updateBuckets() async {
-    print('>>>> ${state.activeStorage?.title}');
     final currentIdStorage = state.activeStorage!.idStorage;
     state = state.copyWith(loading: ContentStatus.loading);
 
     final dto = state.roflit?.buckets.get();
     if (dto == null) return;
-    print('>>>> ${dto.url}- ${dto.headers}');
+    final response = await ref.watch(diServiceProvider).apiRemoteClient.send<List<BucketEntity>>(
+          dto,
+          serializer: Seriealizer.serialize,
+        );
+    print('>>>> TUT $response');
     //TODO: перенести экземпляр S3Roflit в StorageState !!!!.
     state = state.copyWith(loading: ContentStatus.loaded);
     if (currentIdStorage != state.activeStorage?.idStorage) return;
-
     state = state.copyWith(
-      buckets: [],
+      buckets: response ?? [],
     );
+  }
+}
+
+abstract final class Seriealizer {
+  static List<BucketEntity> serialize(Object? value) {
+    // try {
+    print('>>>> 1 $value');
+    final listBucket = XmlDocument.parse(value as String).findAllElements('Bucket').toList();
+    print('>>>> 2 $listBucket');
+    if (listBucket.isEmpty) return [];
+
+    final buckets = List.generate(listBucket.length, (index) {
+      final bucket = listBucket[index];
+      return BucketEntity(
+        bucket: bucket.findElements('Name').single.innerText,
+        countObjects: 5,
+        creationDate: bucket.findElements('CreationDate').single.innerText,
+      );
+    });
+    // buckets.sort((a, b) => a.name.compareTo(b.name));
+    return buckets;
+    // } catch (e) {
+    //   return [];
+    // }
   }
 }

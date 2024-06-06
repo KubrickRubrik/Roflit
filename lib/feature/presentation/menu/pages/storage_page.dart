@@ -141,6 +141,7 @@ class MainMenuStoragePage extends HookConsumerWidget {
                     child: MainMenuTextField(
                       hint: 'Ключ доступа'.translate,
                       controller: accessKeyStorageController,
+                      maxLength: 128,
                     ),
                   ),
                   //! The secret key.
@@ -149,6 +150,7 @@ class MainMenuStoragePage extends HookConsumerWidget {
                     child: MainMenuTextField(
                       hint: 'Секретный ключ'.translate,
                       controller: secretKeyStorageController,
+                      maxLength: 128,
                     ),
                   ),
                   //! Cloud region.

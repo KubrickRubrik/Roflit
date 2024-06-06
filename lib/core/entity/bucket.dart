@@ -7,6 +7,7 @@ class BucketEntity with _$BucketEntity {
   const factory BucketEntity({
     required String bucket,
     required int countObjects,
+    required String creationDate,
   }) = _BucketEntity;
 
   // factory ObjectEntity.fromDto(ObjectDto dto) {

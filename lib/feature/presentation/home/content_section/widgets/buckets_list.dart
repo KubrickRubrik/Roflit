@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:roflit/feature/common/providers/storage/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
@@ -26,40 +29,50 @@ class ContentSectionBucketsList extends StatelessWidget {
         trackBorderColor: Colors.transparent,
         thickness: 4,
         trackRadius: const Radius.circular(4),
-        child: ScrollConfiguration(
-          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-          child: ListView.builder(
-            controller: controller,
-            primary: false,
-            itemCount: 30,
-            padding: const EdgeInsets.only(left: 3, right: 3, bottom: 10),
-            itemBuilder: (context, index) {
-              return ContenteSectionBucketsListItem(index);
-            },
-          ),
+        child: Consumer(
+          builder: (context, ref, child) {
+            final buckets = ref.watch(storageBlocProvider.select((value) {
+              return value.buckets;
+            }));
+            return ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+              child: ListView.builder(
+                controller: controller,
+                primary: false,
+                itemCount: buckets.length,
+                padding: const EdgeInsets.only(left: 3, right: 3, bottom: 10),
+                itemBuilder: (context, index) {
+                  return ContenteSectionBucketsListItem(index: index);
+                },
+              ),
+            );
+          },
         ),
       ),
     );
   }
 }
 
-class ContenteSectionBucketsListItem extends StatefulWidget {
+class ContenteSectionBucketsListItem extends HookConsumerWidget {
   final int index;
-  const ContenteSectionBucketsListItem(this.index, {super.key});
+
+  const ContenteSectionBucketsListItem({
+    required this.index,
+    super.key,
+  });
 
   @override
-  State<ContenteSectionBucketsListItem> createState() => _ContenteSectionBucketsListItemState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bucket = ref.watch(storageBlocProvider.select((value) {
+      return value.buckets[index];
+    }));
 
-class _ContenteSectionBucketsListItemState extends State<ContenteSectionBucketsListItem> {
-  bool isHover = false;
-  @override
-  Widget build(BuildContext context) {
+    final stateHover = useState(false);
+
     return InkWell(
       onTap: () {},
       onHover: (value) {
-        isHover = value;
-        setState(() {});
+        stateHover.value = value;
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
@@ -67,7 +80,7 @@ class _ContenteSectionBucketsListItemState extends State<ContenteSectionBucketsL
         height: 64,
         decoration: BoxDecoration(
           borderRadius: borderRadius12,
-          color: isHover ? const Color(AppColors.bgDarkGray2) : null,
+          color: stateHover.value ? const Color(AppColors.bgDarkGray2) : null,
         ),
         child: Flex(
           direction: Axis.horizontal,
@@ -92,12 +105,12 @@ class _ContenteSectionBucketsListItemState extends State<ContenteSectionBucketsL
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Название бакета',
+                      bucket.bucket,
                       overflow: TextOverflow.ellipsis,
                       style: appTheme.textTheme.caption1.bold.onDark1,
                     ),
                     Text(
-                      '999 обьектов',
+                      '${bucket.countObjects}',
                       overflow: TextOverflow.ellipsis,
                       style: appTheme.textTheme.caption2.onDark1,
                     ),
