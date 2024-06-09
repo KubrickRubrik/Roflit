@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:roflit/core/enums.dart';
+import 'package:roflit/core/services/secure.dart';
 import 'package:roflit/data/local/api_db.dart';
-import 'package:roflit/middleware/services/secure.dart';
 
 part 'storage.freezed.dart';
 
@@ -12,6 +12,7 @@ class StorageEntity with _$StorageEntity {
     required int idAccount,
     required String title,
     required StorageType storageType,
+    required String? activeBucket,
     required String link,
     required String accessKey,
     required String secretKey,
@@ -26,6 +27,7 @@ class StorageEntity with _$StorageEntity {
       idAccount: idAccount,
       title: title,
       storageType: storageType,
+      activeBucket: activeBucket,
       link: link,
       accessKey: SecureService.encryptedSm(key: link, value: accessKey),
       secretKey: SecureService.encryptedSm(key: link, value: secretKey),
@@ -39,6 +41,7 @@ class StorageEntity with _$StorageEntity {
       idAccount: storageDto.idAccount,
       title: storageDto.title,
       storageType: StorageType.yxCloud.fromTypeName(storageDto.storageType),
+      activeBucket: storageDto.activeBucket,
       link: storageDto.link,
       accessKey: SecureService.decryptedSm(key: storageDto.link, value: storageDto.accessKey),
       secretKey: SecureService.decryptedSm(key: storageDto.link, value: storageDto.secretKey),

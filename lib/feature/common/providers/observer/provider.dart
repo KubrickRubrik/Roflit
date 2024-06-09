@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:roflit/middleware/zip_utils.dart';
+import 'package:roflit/core/utils/logger.dart';
 
 final class BlocObserver extends ProviderObserver {
   final bool isUsed;

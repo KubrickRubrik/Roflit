@@ -4,18 +4,8 @@ part of '../api_db.dart';
 class StorageDao extends DatabaseAccessor<ApiDatabase> with _$StorageDaoMixin {
   StorageDao(super.db);
 
-  Future<StorageEntity?> createStorage({required StorageEntity storage}) async {
-    final storageDto = await into(storageTable).insertReturningOrNull(
-      StorageTableCompanion.insert(
-        idAccount: storage.idAccount,
-        title: storage.title,
-        storageType: storage.storageType.name,
-        link: storage.link,
-        accessKey: storage.accessKey,
-        secretKey: storage.secretKey,
-        region: storage.region,
-      ),
-    );
+  Future<StorageEntity?> createStorage({required StorageTableCompanion storage}) async {
+    final storageDto = await into(storageTable).insertReturningOrNull(storage);
 
     if (storageDto == null) {
       return null;
@@ -24,20 +14,10 @@ class StorageDao extends DatabaseAccessor<ApiDatabase> with _$StorageDaoMixin {
     return StorageEntity.fromDto(storageDto);
   }
 
-  Future<bool> updateStorage({required StorageEntity storage}) async {
-    final storageUpdate = update(storageTable);
-    storageUpdate.where((t) => t.idStorage.equals(storage.idStorage));
-    final response = await storageUpdate.write(
-      StorageTableCompanion(
-        title: Value(storage.title),
-        storageType: Value(storage.storageType.name),
-        link: Value(storage.link),
-        accessKey: Value(storage.accessKey),
-        secretKey: Value(storage.secretKey),
-        region: Value(storage.region),
-      ),
-    );
-
+  Future<bool> updateStorage({required StorageTableCompanion storage}) async {
+    final updateStorage = update(storageTable);
+    updateStorage.where((t) => t.idStorage.equals(storage.idStorage.value));
+    final response = await updateStorage.write(storage);
     return response == 1;
   }
 

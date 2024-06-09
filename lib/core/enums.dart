@@ -32,13 +32,14 @@ enum ActionStatus { isAction, isDone }
 
 /// Content loading status.
 enum ContentStatus {
-  none,
   loading,
   loaded,
   total,
-  empty;
+  empty,
+  error;
 
-  bool get isEmpty => this == none;
+  bool get isError => this == error;
+  bool get isEmpty => this == empty;
   bool get isLoading => this == loading;
   bool get isLoaded => this == loaded;
   bool get isTotal => this == total;

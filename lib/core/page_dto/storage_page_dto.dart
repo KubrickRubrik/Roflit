@@ -1,13 +1,13 @@
-final class StoragePageDto {
+final class MenuStorageDto {
   final int? idStorage;
   final bool isCreateAccount;
 
-  StoragePageDto({
+  MenuStorageDto({
     required this.isCreateAccount,
     this.idStorage,
   });
 
-  StoragePageDto.empty()
+  MenuStorageDto.empty()
       : isCreateAccount = false,
         idStorage = null;
 }

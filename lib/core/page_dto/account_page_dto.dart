@@ -1,13 +1,13 @@
-final class AccountPageDto {
+final class MenuAccountDto {
   final int? idAccount;
   final bool isCreateAccount;
 
-  AccountPageDto({
+  MenuAccountDto({
     required this.isCreateAccount,
     this.idAccount,
   });
 
-  AccountPageDto.empty()
+  MenuAccountDto.empty()
       : isCreateAccount = true,
         idAccount = null;
 }

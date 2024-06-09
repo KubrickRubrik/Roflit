@@ -5,14 +5,14 @@ class StorageState with _$StorageState {
   const factory StorageState({
     @Default(null) StorageEntity? activeStorage,
     @Default([]) List<BucketEntity> buckets,
-    @Default(ContentStatus.empty) ContentStatus loading,
+    @Default(ContentStatus.loading) ContentStatus loaderPage,
+    @Default(ContentStatus.loading) ContentStatus loaderScroll,
   }) = _StorageState;
 
   const StorageState._();
 
-  StorageInterface? get roflit {
-    return switch (activeStorage?.storageType) {
-      null => null,
+  StorageInterface get roflit {
+    return switch (activeStorage!.storageType) {
       StorageType.yxCloud => S3Roflit.yandex(
           accessKey: activeStorage!.accessKey,
           secretKey: activeStorage!.secretKey,
@@ -23,5 +23,9 @@ class StorageState with _$StorageState {
           secretKey: activeStorage!.secretKey,
         ),
     };
+  }
+
+  StorageSerializerInterface get serizalizer {
+    return StorageSerializer.serializaer(activeStorage!.storageType);
   }
 }

@@ -1,9 +1,9 @@
-final class LoginPageDto {
+final class MenuLoginDto {
   final int idAccount;
 
-  LoginPageDto({
+  MenuLoginDto({
     required this.idAccount,
   });
 
-  LoginPageDto.empty() : idAccount = -1;
+  MenuLoginDto.empty() : idAccount = -1;
 }

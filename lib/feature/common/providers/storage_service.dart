@@ -1,8 +1,10 @@
+import 'package:drift/drift.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:roflit/core/entity/storage.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/providers/di_service.dart';
 import 'package:roflit/data/api_local_client.dart';
+import 'package:roflit/data/local/api_db.dart';
 import 'package:roflit/feature/common/providers/session/provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -49,9 +51,20 @@ final class StorageService {
       accessKey: accessKey,
       secretKey: secretKey,
       region: region,
+      activeBucket: '',
     ).toDto();
 
-    final responseAccount = await apiLocalClient.storageDao.createStorage(storage: storage);
+    final insertStorage = StorageTableCompanion.insert(
+      idAccount: storage.idAccount,
+      title: storage.title,
+      storageType: storage.storageType.name,
+      link: storage.link,
+      accessKey: storage.accessKey,
+      secretKey: storage.secretKey,
+      region: storage.region,
+    );
+
+    final responseAccount = await apiLocalClient.storageDao.createStorage(storage: insertStorage);
 
     if (responseAccount == null) {
       return false;
@@ -78,13 +91,24 @@ final class StorageService {
       idAccount: -1,
       title: title,
       storageType: storageType,
+      activeBucket: null,
       link: const Uuid().v1(),
       accessKey: accessKey,
       secretKey: secretKey,
       region: region,
     ).toDto();
 
-    final response = await apiLocalClient.storageDao.updateStorage(storage: storage);
+    final updateStorage = StorageTableCompanion(
+      idStorage: Value(idStorage),
+      title: Value(storage.title),
+      storageType: Value(storage.storageType.name),
+      link: Value(storage.link),
+      accessKey: Value(storage.accessKey),
+      secretKey: Value(storage.secretKey),
+      region: Value(storage.region),
+    );
+
+    final response = await apiLocalClient.storageDao.updateStorage(storage: updateStorage);
 
     if (!response) {
       return false;

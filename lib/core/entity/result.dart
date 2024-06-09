@@ -1,24 +1,18 @@
-import 'package:http/http.dart';
-import 'package:xml/xml.dart';
-
 class Result {
-  late int statusCode;
-  late XmlDocument? success;
-  late bool failed;
+  final int? statusCode;
+  final Object? success;
+  final bool failed;
+  final String? message;
 
-  Result.success(Response response) {
-    try {
-      success = XmlDocument.parse(response.body);
-      statusCode = response.statusCode;
-      failed = false;
-    } catch (e) {
-      throw Exception('Error serialize');
-    }
-  }
+  Result.success({
+    required this.success,
+    this.statusCode,
+  })  : failed = false,
+        message = null;
 
-  Result.failuer() {
-    statusCode = 0;
-    success = null;
-    failed = true;
-  }
+  Result.failuer({
+    required this.message,
+    this.statusCode,
+    this.success,
+  }) : failed = true;
 }

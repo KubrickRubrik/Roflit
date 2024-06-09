@@ -11,10 +11,10 @@ import 'package:roflit/core/providers/di_service.dart';
 import 'package:roflit/feature/common/providers/observer/provider.dart';
 import 'package:roflit/feature/common/providers/storage/provider.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
-import 'package:roflit/feature/presentation/home/home_screen.dart';
+import 'package:roflit/feature/presentation/home/home.dart';
 
+import 'core/utils/hooks.dart';
 import 'feature/common/providers/session/provider.dart';
-import 'middleware/utils/hooks.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -75,7 +75,7 @@ class MainApp extends StatelessWidget {
             localizationsDelegates: context.localizationDelegates,
             supportedLocales: context.supportedLocales,
             locale: context.locale,
-            home: const HomeScreen(),
+            home: const Home(),
             scrollBehavior: AppScrollBehavior(),
           );
         },

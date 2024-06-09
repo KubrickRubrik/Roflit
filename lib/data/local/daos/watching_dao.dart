@@ -65,18 +65,6 @@ class WatchingDao extends DatabaseAccessor<ApiDatabase> with _$WatchingDaoMixin 
   }
 
   Stream<StorageEntity?> watchActiveStorage() {
-    // final query = select(sessionTable).join([
-    //   leftOuterJoin(
-    //     accountTable,
-    //     accountTable.idAccount.equalsExp(sessionTable.activeIdAccount),
-    //   ),
-    //   leftOuterJoin(
-    //     storageTable,
-    //     storageTable.idAccount.equalsExp(accountTable.idAccount),
-    //   )
-    // ]);
-    // query.where(accountTable.activeIdStorage.equalsExp(storageTable.idStorage));
-
     final query = select(sessionTable).join([
       leftOuterJoin(
         storageTable,

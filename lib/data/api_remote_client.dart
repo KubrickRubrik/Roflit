@@ -1,5 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:roflit/core/entity/result.dart';
+import 'package:roflit/core/utils/logger.dart';
 import 'package:s3roflit/interface/storage_interface.dart';
 
 part 'api_remote_client.g.dart';
@@ -10,22 +12,22 @@ ApiRemoteClient apiRemoteClient(ApiRemoteClientRef ref) {
 }
 
 final class ApiRemoteClient {
-  Future<T?> send<T>(
-    StorageBucketRequestsDtoInterface client, {
-    required T Function(dynamic) serializer,
-  }) async {
+  Future<Result> send(
+    StorageBucketRequestsDtoInterface client,
+  ) async {
     try {
       final response = await http.get(
         client.url,
         headers: client.headers,
       );
-      // log(response.statusCode.toString());
-      // log(response.body);
-      print('>>>> ${response.body.runtimeType}');
-      return serializer(response.body);
+      logger.info(response.body);
+      return Result.success(
+        statusCode: response.statusCode,
+        success: response.body,
+      );
     } catch (e) {
-      // log(e.toString());
-      return null;
+      logger.error(e);
+      return Result.failuer(message: e.toString());
     }
   }
 }

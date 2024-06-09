@@ -3,14 +3,14 @@ import 'package:go_router/go_router.dart';
 import 'package:roflit/core/page_dto/account_page_dto.dart';
 import 'package:roflit/core/page_dto/login_page_dto.dart';
 import 'package:roflit/core/page_dto/storage_page_dto.dart';
-import 'package:roflit/feature/presentation/menu/pages/account_localization_page.dart';
-import 'package:roflit/feature/presentation/menu/pages/account_page.dart';
-import 'package:roflit/feature/presentation/menu/pages/account_storages_page.dart';
-import 'package:roflit/feature/presentation/menu/pages/accounts_page.dart';
-import 'package:roflit/feature/presentation/menu/pages/info_page.dart';
-import 'package:roflit/feature/presentation/menu/pages/login_page.dart';
-import 'package:roflit/feature/presentation/menu/pages/storage_page.dart';
-import 'package:roflit/feature/presentation/menu/pages/storage_type_page.dart';
+import 'package:roflit/feature/presentation/menu/pages/menu_account.dart';
+import 'package:roflit/feature/presentation/menu/pages/menu_account_localization.dart';
+import 'package:roflit/feature/presentation/menu/pages/menu_account_storages.dart';
+import 'package:roflit/feature/presentation/menu/pages/menu_accounts.dart';
+import 'package:roflit/feature/presentation/menu/pages/menu_info.dart';
+import 'package:roflit/feature/presentation/menu/pages/menu_login.dart';
+import 'package:roflit/feature/presentation/menu/pages/menu_storage.dart';
+import 'package:roflit/feature/presentation/menu/pages/menu_storage_type.dart';
 
 part 'end_points.dart';
 
@@ -32,7 +32,7 @@ abstract final class MainMenuRouter {
               key: state.pageKey,
               transitionDuration: const Duration(milliseconds: 150),
               transitionsBuilder: _transitSlideLeft,
-              child: const MainMenuInfoPage(),
+              child: const MenuInfo(),
             );
           },
         ),
@@ -40,61 +40,61 @@ abstract final class MainMenuRouter {
           name: RouteEndPoints.accounts.name,
           path: RouteEndPoints.accounts.path,
           builder: (context, state) {
-            return const MainMenuAccountsPage();
+            return const MenuAccounts();
           },
           routes: [
             GoRoute(
               name: RouteEndPoints.accounts.login.name,
               path: RouteEndPoints.accounts.login.path,
               builder: (context, state) {
-                final extra = convert<LoginPageDto>(
+                final extra = convert<MenuLoginDto>(
                   value: state.extra,
-                  defaul: LoginPageDto.empty(),
+                  defaul: MenuLoginDto.empty(),
                 );
-                return MainMenuLoginPage(loginPageDto: extra);
+                return MenuLogin(menuLoginDto: extra);
               },
             ),
             GoRoute(
               name: RouteEndPoints.accounts.account.name,
               path: RouteEndPoints.accounts.account.path,
               builder: (context, state) {
-                final extra = convert<AccountPageDto>(
+                final extra = convert<MenuAccountDto>(
                   value: state.extra,
-                  defaul: AccountPageDto.empty(),
+                  defaul: MenuAccountDto.empty(),
                 );
-                return MainMenuAccountPage(accountPageDto: extra);
+                return MenuAccount(menuAccountDto: extra);
               },
               routes: [
                 GoRoute(
                   name: RouteEndPoints.accounts.account.localization.name,
                   path: RouteEndPoints.accounts.account.localization.path,
                   builder: (context, state) {
-                    return const MainMenuAccountLocalizationPage();
+                    return const MenuAccountLocalization();
                   },
                 ),
                 GoRoute(
                   name: RouteEndPoints.accounts.account.storages.name,
                   path: RouteEndPoints.accounts.account.storages.path,
                   builder: (context, state) {
-                    return const MainMenuAccountStoragesPage();
+                    return const MenuAccountStorages();
                   },
                   routes: [
                     GoRoute(
                       name: RouteEndPoints.accounts.account.storages.storage.name,
                       path: RouteEndPoints.accounts.account.storages.storage.path,
                       builder: (context, state) {
-                        final extra = convert<StoragePageDto>(
+                        final extra = convert<MenuStorageDto>(
                           value: state.extra,
-                          defaul: StoragePageDto.empty(),
+                          defaul: MenuStorageDto.empty(),
                         );
-                        return MainMenuStoragePage(storagePageDto: extra);
+                        return MenuStorage(menuStorageDto: extra);
                       },
                       routes: [
                         GoRoute(
                           name: RouteEndPoints.accounts.account.storages.storage.type.name,
                           path: RouteEndPoints.accounts.account.storages.storage.type.path,
                           builder: (context, state) {
-                            return const MainMenuStorageTypePage();
+                            return const MenuStorageType();
                           },
                         ),
                       ],
@@ -107,18 +107,18 @@ abstract final class MainMenuRouter {
               name: RouteEndPoints.accounts.storageEdit.name,
               path: RouteEndPoints.accounts.storageEdit.path,
               builder: (context, state) {
-                final extra = convert<StoragePageDto>(
+                final extra = convert<MenuStorageDto>(
                   value: state.extra,
-                  defaul: StoragePageDto.empty(),
+                  defaul: MenuStorageDto.empty(),
                 );
-                return MainMenuStoragePage(storagePageDto: extra);
+                return MenuStorage(menuStorageDto: extra);
               },
               routes: [
                 GoRoute(
                   name: RouteEndPoints.accounts.storageEdit.typeEdit.name,
                   path: RouteEndPoints.accounts.storageEdit.typeEdit.path,
                   builder: (context, state) {
-                    return const MainMenuStorageTypePage();
+                    return const MenuStorageType();
                   },
                 ),
               ],

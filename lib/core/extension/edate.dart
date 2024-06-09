@@ -1,16 +1,11 @@
-// import 'package:flutter/material.dart';
-
 extension EDateTime on DateTime {
-  String get yyyyMMdd {
-    return '$year${month.toString().padLeft(2, '0')}${day.toString().padLeft(2, '0')}';
-  }
-
-  // String get inHeader {
-  //   return '${formatWeekday(weekday)},'
-  //       ' ${day.toString().padLeft(2, '0')} ${formatMonth(month)} $year '
-  //       '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}:'
-  //       '${second.toString().padLeft(2, '0')} GMT';
+  // String get toYYYYmmDD {
+  //   return '$year${month.toString().padLeft(2, '0')}${day.toString().padLeft(2, '0')}';
   // }
+
+  String get toYmDhMs {
+    return '$year-$month-$day $hour:$second';
+  }
 
   String get xAmzDate {
     final a =
@@ -42,4 +37,28 @@ extension EDateTime on DateTime {
     'Nov',
     'Dec'
   ];
+
+  String get subscriptionCheckDateKey {
+    final date = toUtc();
+    return '${date.year}-${date.month}-${date.day}';
+  }
+
+  String get dayMonYear {
+    final russianMonths = [
+      'Января',
+      'Февраля',
+      'Марта',
+      'Апреля',
+      'Мая',
+      'Июня',
+      'Июля',
+      'Августа',
+      'Сентября',
+      'Октября',
+      'Ноября',
+      'Декабря',
+    ];
+
+    return '$day ${russianMonths[month - 1]} $year';
+  }
 }
