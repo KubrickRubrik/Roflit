@@ -9,16 +9,4 @@ class BucketEntity with _$BucketEntity {
     required int countObjects,
     required String creationDate,
   }) = _BucketEntity;
-
-  // factory ObjectEntity.fromDto(ObjectDto dto) {
-  //   return ObjectEntity(
-  //     idObject: dto.idObject,
-  //     bucket: dto.bucket,
-  //     title: dto.title,
-  //     localPath: dto.localPath,
-  //     storageType: StorageType.values.firstWhereOrNull(
-  //       (e) => e.name == dto.storageType,
-  //     ),
-  //   );
-  // }
 }

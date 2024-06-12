@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:roflit/core/enums.dart';
-import 'package:roflit/feature/common/providers/storage/provider.dart';
+import 'package:roflit/feature/common/providers/objects/provider.dart';
 
 import 'home_content_objects/home_content_objects_empty.dart';
 import 'home_content_objects/home_content_objects_loaded.dart';
@@ -12,7 +12,7 @@ class HomeContentObjects extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(storageBlocProvider.select((state) {
+    final state = ref.watch(objectsBlocProvider.select((state) {
       return state.loaderPage;
     }));
 

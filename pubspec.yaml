@@ -41,7 +41,8 @@ dependencies:
   path_provider: ^2.1.2
   #
   http: ^1.2.1
-  xml: ^6.5.0
+  # xml: ^6.5.0
+  xml2json: ^6.2.3
   s3roflit:
     path: ./s3roflit
 

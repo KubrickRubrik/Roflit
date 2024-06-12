@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/extension/edate.dart';
 import 'package:roflit/core/extension/estring.dart';
-import 'package:roflit/feature/common/providers/storage/provider.dart';
+import 'package:roflit/feature/common/providers/buckets/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
@@ -18,13 +18,13 @@ class BucketItem extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bloc = ref.watch(storageBlocProvider.notifier);
+    final bloc = ref.watch(bucketsBlocProvider.notifier);
 
-    final bucket = ref.watch(storageBlocProvider.select((value) {
+    final bucket = ref.watch(bucketsBlocProvider.select((value) {
       return value.buckets[index];
     }));
 
-    final isActiveBucket = ref.watch(storageBlocProvider.select((v) {
+    final isActiveBucket = ref.watch(bucketsBlocProvider.select((v) {
       return bloc.isActiveBucket(getByIndex: index);
     }));
 

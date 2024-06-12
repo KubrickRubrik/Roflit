@@ -1,6 +1,4 @@
-import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:roflit/core/enums.dart';
 import 'package:roflit/data/local/api_db.dart';
 
 part 'object.freezed.dart';
@@ -8,22 +6,20 @@ part 'object.freezed.dart';
 @freezed
 class ObjectEntity with _$ObjectEntity {
   const factory ObjectEntity({
-    required int idObject,
-    required String bucket,
-    required String title,
-    required String? localPath,
-    required StorageType? storageType,
+    required String keyObject,
+    required double size,
+    required String lastModified,
+    @Default(0) int idObject,
+    String? localPath,
   }) = _ObjectEntity;
 
   factory ObjectEntity.fromDto(ObjectDto dto) {
     return ObjectEntity(
       idObject: dto.idObject,
-      bucket: dto.bucket,
-      title: dto.title,
       localPath: dto.localPath,
-      storageType: StorageType.values.firstWhereOrNull(
-        (e) => e.name == dto.storageType,
-      ),
+      size: 0,
+      keyObject: '',
+      lastModified: '',
     );
   }
 }

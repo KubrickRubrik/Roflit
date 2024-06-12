@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:roflit/feature/common/providers/storage/provider.dart';
+import 'package:roflit/feature/common/providers/objects/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/widgets/object_item.dart';
@@ -14,11 +14,11 @@ class HomeContentObjectsLoaded extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = useScrollController();
 
-    final buckets = ref.watch(storageBlocProvider.select((value) {
-      return value.buckets;
+    final objects = ref.watch(objectsBlocProvider.select((value) {
+      return value.objects;
     }));
 
-    if (buckets.isEmpty) {
+    if (objects.isEmpty) {
       return const HomeContentBucketsEmpty();
     }
 
@@ -44,10 +44,10 @@ class HomeContentObjectsLoaded extends HookConsumerWidget {
           child: ListView.builder(
             controller: controller,
             primary: false,
-            itemCount: 30,
+            itemCount: objects.length,
             padding: const EdgeInsets.only(left: 3, right: 3, bottom: 10),
             itemBuilder: (context, index) {
-              return ObjectItem(index);
+              return ObjectItem(index: index);
             },
           ),
         ),

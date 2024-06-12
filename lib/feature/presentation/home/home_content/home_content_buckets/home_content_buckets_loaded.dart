@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:roflit/feature/common/providers/storage/provider.dart';
+import 'package:roflit/feature/common/providers/buckets/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/widgets/bucket_item.dart';
@@ -15,7 +15,7 @@ class HomeContentBucketsLoaded extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = useScrollController();
 
-    final buckets = ref.watch(storageBlocProvider.select((value) {
+    final buckets = ref.watch(bucketsBlocProvider.select((value) {
       return value.buckets;
     }));
 

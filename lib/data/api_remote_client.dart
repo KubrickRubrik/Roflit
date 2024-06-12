@@ -20,7 +20,7 @@ final class ApiRemoteClient {
         client.url,
         headers: client.headers,
       );
-      logger.info(response.body);
+      // logger.info(response.body);
       return Result.success(
         statusCode: response.statusCode,
         success: response.body,

@@ -8,8 +8,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/config/constants.dart';
 import 'package:roflit/core/providers/di_service.dart';
+import 'package:roflit/feature/common/providers/buckets/provider.dart';
+import 'package:roflit/feature/common/providers/objects/provider.dart';
 import 'package:roflit/feature/common/providers/observer/provider.dart';
-import 'package:roflit/feature/common/providers/storage/provider.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
 import 'package:roflit/feature/presentation/home/home.dart';
 
@@ -93,12 +94,14 @@ class _EagerInitialization extends HookConsumerWidget {
     ref.watch(diServiceProvider);
     ref.watch(uiBlocProvider.notifier);
     final sessionBloc = ref.watch(sessionBlocProvider.notifier);
-    final bucketsBloc = ref.watch(storageBlocProvider.notifier);
+    final bucketsBloc = ref.watch(bucketsBlocProvider.notifier);
+    final objectsBloc = ref.watch(objectsBlocProvider.notifier);
 
     useInitState(
       onBuild: () {
         sessionBloc.watchSessionAndAccounts();
         bucketsBloc.watchStorages();
+        objectsBloc.watchStorages();
       },
     );
 

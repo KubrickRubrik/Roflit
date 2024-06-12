@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:roflit/core/enums.dart';
-import 'package:roflit/feature/common/providers/storage/provider.dart';
+import 'package:roflit/feature/common/providers/buckets/provider.dart';
 
 import 'home_content_buckets/home_content_buckets_empty.dart';
 import 'home_content_buckets/home_content_buckets_loaded.dart';
@@ -12,7 +12,7 @@ class HomeContentBuckets extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(storageBlocProvider.select((state) {
+    final state = ref.watch(bucketsBlocProvider.select((state) {
       return state.loaderPage;
     }));
 

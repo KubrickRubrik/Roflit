@@ -1,25 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:roflit/core/services/bite_converter.dart';
+import 'package:roflit/feature/common/providers/objects/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 
-class ObjectItem extends StatefulWidget {
+class ObjectItem extends HookConsumerWidget {
   final int index;
-  const ObjectItem(this.index, {super.key});
+
+  const ObjectItem({
+    required this.index,
+    super.key,
+  });
 
   @override
-  State<ObjectItem> createState() => _ObjectItemState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bloc = ref.watch(objectsBlocProvider.notifier);
 
-class _ObjectItemState extends State<ObjectItem> {
-  bool isHover = false;
-  @override
-  Widget build(BuildContext context) {
+    final object = ref.watch(objectsBlocProvider.select((value) {
+      return value.objects[index];
+    }));
+
+    final stateHover = useState(false);
+
+    final getBgColor = useMemoized(
+      () {
+        // if (isActiveBucket) {
+        //   return const Color(AppColors.bgDarkGray2).withOpacity(0.5);
+        // } else
+        if (stateHover.value) {
+          return const Color(AppColors.bgDarkGray2).withOpacity(0.4);
+        } else if (index.isOdd) {
+          return const Color(AppColors.bgDarkGray2).withOpacity(0.1);
+        }
+        return null;
+      },
+      [stateHover.value],
+    );
+
     return InkWell(
       onTap: () {},
       onHover: (value) {
-        isHover = value;
-        setState(() {});
+        stateHover.value = value;
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
@@ -27,7 +51,7 @@ class _ObjectItemState extends State<ObjectItem> {
         height: 64,
         decoration: BoxDecoration(
           borderRadius: borderRadius12,
-          color: isHover ? const Color(AppColors.bgDarkGray2) : null,
+          color: getBgColor,
         ),
         child: Flex(
           direction: Axis.horizontal,
@@ -52,15 +76,16 @@ class _ObjectItemState extends State<ObjectItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Название объкта',
+                      object.keyObject,
                       overflow: TextOverflow.ellipsis,
                       style: appTheme.textTheme.caption1.bold.onDark1,
                     ),
-                    Text(
-                      '2.5 Mb',
-                      overflow: TextOverflow.ellipsis,
-                      style: appTheme.textTheme.caption2.onDark1,
-                    ),
+                    if (object.size > 0)
+                      Text(
+                        ByteConverter.fromBytes(object.size).toHumanReadable(SizeUnit.mB),
+                        overflow: TextOverflow.ellipsis,
+                        style: appTheme.textTheme.caption2.onDark1,
+                      ),
                   ],
                 ),
               ),

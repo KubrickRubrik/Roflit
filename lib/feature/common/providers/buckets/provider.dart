@@ -10,23 +10,21 @@ import 'package:roflit/core/entity/bucket.dart';
 import 'package:roflit/core/entity/storage.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/providers/di_service.dart';
-import 'package:roflit/core/services/storage_serializer/storage_serializer.dart';
+import 'package:roflit/core/providers/roflit_service.dart';
 import 'package:roflit/data/local/api_db.dart';
-import 'package:s3roflit/interface/storage_interface.dart';
-import 'package:s3roflit/s3roflit.dart';
 
 part 'provider.freezed.dart';
 part 'provider.g.dart';
 part 'state.dart';
 
 @riverpod
-final class StorageBloc extends _$StorageBloc {
+final class BucketsBloc extends _$BucketsBloc {
   @override
-  StorageState build() {
+  BucketsState build() {
     ref.onCancel(() async {
       await _listenerActiveStorage?.cancel();
     });
-    return const StorageState();
+    return const BucketsState();
   }
 
   // Removable listeners.
@@ -58,10 +56,12 @@ final class StorageBloc extends _$StorageBloc {
   }
 
   Future<void> _updateBuckets() async {
+    final roflitService = ref.read(roflitServiceProvider(state.activeStorage));
+
     final currentIdStorage = state.activeStorage!.idStorage;
     state = state.copyWith(loaderPage: ContentStatus.loading);
 
-    final dto = state.roflit.buckets.get();
+    final dto = roflitService.roflit.buckets.get();
 
     final response = await ref.watch(diServiceProvider).apiRemoteClient.send(dto);
 
@@ -69,8 +69,8 @@ final class StorageBloc extends _$StorageBloc {
 
     if (currentIdStorage != state.activeStorage?.idStorage) return;
 
-    final serializer = state.serizalizer.buckets;
-    state = state.copyWith(buckets: serializer(response.success));
+    final buckets = roflitService.serizalizer.buckets(response.success);
+    state = state.copyWith(buckets: buckets);
   }
 
   Future<void> setActiveBucket(int indexBucket) async {
