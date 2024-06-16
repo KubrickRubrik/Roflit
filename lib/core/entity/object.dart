@@ -7,8 +7,10 @@ part 'object.freezed.dart';
 class ObjectEntity with _$ObjectEntity {
   const factory ObjectEntity({
     required String keyObject,
+    required String bucket,
     required double size,
     required String lastModified,
+    @Default(null) String? path,
     @Default(0) int idObject,
     String? localPath,
   }) = _ObjectEntity;
@@ -16,6 +18,7 @@ class ObjectEntity with _$ObjectEntity {
   factory ObjectEntity.fromDto(ObjectDto dto) {
     return ObjectEntity(
       idObject: dto.idObject,
+      bucket: dto.bucket,
       localPath: dto.localPath,
       size: 0,
       keyObject: '',

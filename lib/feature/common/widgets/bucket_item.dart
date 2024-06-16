@@ -7,6 +7,7 @@ import 'package:roflit/feature/common/providers/buckets/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
+import 'package:roflit/feature/common/widgets/label_banner_item.dart';
 
 class BucketItem extends HookConsumerWidget {
   final int index;
@@ -63,15 +64,10 @@ class BucketItem extends HookConsumerWidget {
           direction: Axis.horizontal,
           children: [
             Container(
-              height: 50,
-              width: 72,
+              height: 40,
+              width: 40,
               margin: const EdgeInsets.only(left: 6),
-              decoration: BoxDecoration(
-                borderRadius: borderRadius8,
-                color: const Color(
-                  AppColors.bgDarkGray1,
-                ),
-              ),
+              child: const LabelBannerItem(),
             ),
             const SizedBox(width: 10),
             Expanded(

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:roflit/core/entity/bucket.dart';
@@ -8,7 +7,6 @@ import 'package:roflit/core/entity/storage.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:s3roflit/interface/storage_interface.dart';
 import 'package:s3roflit/s3roflit.dart';
-import 'package:xml/xml.dart';
 import 'package:xml2json/xml2json.dart';
 
 part 'roflit_service.g.dart';
@@ -21,9 +19,6 @@ RoflitService roflitService(RoflitServiceRef ref, StorageEntity? storage) {
 final class RoflitService {
   final StorageEntity? _storage;
   RoflitService(StorageEntity? storage) : _storage = storage;
-
-  final _ycSerializer = _YCSerializer();
-  final _vkSerializer = _VKSerializer();
 
   StorageInterface get roflit {
     return switch (_storage?.storageType) {
@@ -46,31 +41,37 @@ final class RoflitService {
 
   StorageSerializerInterface get serizalizer {
     return switch (_storage?.storageType) {
-      StorageType.yxCloud => _ycSerializer,
-      StorageType.vkCloud => _vkSerializer,
-      _ => _ycSerializer,
+      StorageType.yxCloud => _YCSerializer(host: roflit.host),
+      StorageType.vkCloud => _VKSerializer(host: roflit.host),
+      _ => _YCSerializer(host: roflit.host),
     };
   }
 }
 
 final class _YCSerializer implements StorageSerializerInterface {
+  final String host;
+
+  _YCSerializer({required this.host});
+
   final _parser = Xml2Json();
 
   @override
   List<BucketEntity> buckets(Object? value) {
     try {
-      final list = XmlDocument.parse(value as String).findAllElements('Bucket').toList();
+      _parser.parse(value as String);
+      final json = jsonDecode(_parser.toParker());
+      final document = json['ListAllMyBucketsResult'];
+      final buckets = document['Buckets']['Bucket'] as List?;
 
-      if (list.isEmpty) return [];
-
-      return List.generate(list.length, (index) {
-        final bucket = list[index];
+      final newBuckets = List.generate(buckets?.length ?? 0, (index) {
+        final bucket = buckets![index];
         return BucketEntity(
-          bucket: bucket.findElements('Name').single.innerText,
-          countObjects: 5,
-          creationDate: bucket.findElements('CreationDate').single.innerText,
+          bucket: bucket['Name'],
+          creationDate: bucket['CreationDate'],
         );
       });
+
+      return newBuckets;
     } catch (e) {
       return [];
     }
@@ -78,67 +79,57 @@ final class _YCSerializer implements StorageSerializerInterface {
 
   @override
   List<ObjectEntity> objects(Object? value) {
-    _parser.parse(value as String);
-    final json = jsonDecode(_parser.toParker());
-    final document = json['ListBucketResult'];
-    final keyCount = document['KeyCount'];
-    final bucket = document['Name'];
-    final isTruncated = document['IsTruncated'];
-    final objects = document['Contents'] as List?;
-    // try {
-    // final document = XmlDocument.parse(value as String);
-    log('--- toParker $keyCount');
-    log('--- toParker $bucket');
-    log('--- toParker $isTruncated');
-    log('--- toParker $objects');
-    final newObjects = List.generate(objects?.length ?? 0, (index) {
-      final object = objects![index];
-      return ObjectEntity(
-        keyObject: object['Key'],
-        size: double.parse(object['Size']),
-        lastModified: object['LastModified'],
-      );
-    });
+    try {
+      _parser.parse(value as String);
+      final json = jsonDecode(_parser.toParker());
+      final document = json['ListBucketResult'];
 
-    return newObjects;
-    // final objects = List.generate(list.length, (index) {
-    //   final object = list[index];
-    //   return ObjectEntity(
-    //     keyObject: object.findElements('Key').single.innerText,
-    //     size: int.parse(object.findElements('Size').single.innerText),
-    //     lastModified: object.findElements('LastModified').single.innerText,
-    //   );
-    // });
+      final bucket = document['Name'];
+      final objects = document['Contents'] as List?;
 
-    // return objects;
-    // } catch (e) {
-    //   print('>>>> ENPTY');
-    //   return [];
-    // }
+      final newObjects = List.generate(objects?.length ?? 0, (index) {
+        final object = objects![index];
+        return ObjectEntity(
+          keyObject: object['Key'],
+          bucket: bucket,
+          path: '$host/$bucket/${object['Key']}',
+          size: double.parse(object['Size']),
+          lastModified: object['LastModified'],
+        );
+      });
+
+      return newObjects;
+    } catch (e) {
+      return [];
+    }
   }
 }
 
 final class _VKSerializer implements StorageSerializerInterface {
+  final String host;
+
+  _VKSerializer({required this.host});
+
   @override
   List<BucketEntity> buckets(Object? value) {
-    try {
-      // print('>>>> 1 $value');
-      final listBucket = XmlDocument.parse(value as String).findAllElements('Bucket').toList();
-      // print('>>>> 2 $listBucket');
-      if (listBucket.isEmpty) return [];
+    // try {
+    //   // print('>>>> 1 $value');
+    //   final listBucket = XmlDocument.parse(value as String).findAllElements('Bucket').toList();
+    //   // print('>>>> 2 $listBucket');
+    //   if (listBucket.isEmpty) return [];
 
-      final buckets = List.generate(listBucket.length, (index) {
-        final bucket = listBucket[index];
-        return BucketEntity(
-          bucket: bucket.findElements('Name').single.innerText,
-          countObjects: 5,
-          creationDate: bucket.findElements('CreationDate').single.innerText,
-        );
-      });
-      return buckets;
-    } catch (e) {
-      return [];
-    }
+    //   final buckets = List.generate(listBucket.length, (index) {
+    //     final bucket = listBucket[index];
+    //     return BucketEntity(
+    //       bucket: bucket.findElements('Name').single.innerText,
+    //       countObjects: 5,
+    //       creationDate: bucket.findElements('CreationDate').single.innerText,
+    //     );
+    //   });
+    //   return buckets;
+    // } catch (e) {
+    return [];
+    // }
   }
 
   @override

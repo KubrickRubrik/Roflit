@@ -21,6 +21,9 @@ final class YandexCloud implements StorageInterface {
         );
 
   @override
+  String get host => 'https://${_access.host}';
+
+  @override
   StorageBucketRequestsInterface get buckets => YandexRequestsBucket(_access);
 
   @override

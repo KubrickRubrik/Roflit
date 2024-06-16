@@ -25,9 +25,11 @@ final class ByteConverter {
     return double.tryParse(valString.substring(0, endingIndex)) ?? value;
   }
 
-  double get megaBytes => _bytes / 1000000;
+  double get kiloBytes => _bytes / 1024;
 
-  double get gigaBytes => _bytes / 1000000000;
+  double get megaBytes => _bytes / 1048576;
+
+  double get gigaBytes => _bytes / 1073741824;
 
   factory ByteConverter.fromBytes(double value) => ByteConverter(value);
 
@@ -58,16 +60,24 @@ final class ByteConverter {
   bool isEqualTo(ByteConverter instance) => _bits == instance._bits;
 
   String toHumanReadable(SizeUnit unit, {int precision = 2}) {
-    switch (unit) {
-      case SizeUnit.gB:
-        return '${_withPrecision(gigaBytes, precision: precision)} GB';
-      case SizeUnit.mB:
-        return '${_withPrecision(megaBytes, precision: precision)} MB';
+    var value = _withPrecision(gigaBytes, precision: precision);
+    if (value != 0) {
+      return '$value GB';
     }
+    value = _withPrecision(megaBytes, precision: precision);
+    if (value != 0) {
+      return '$value MB';
+    }
+    value = _withPrecision(kiloBytes, precision: precision);
+    if (value != 0) {
+      return '$value Kb';
+    }
+    return '';
   }
 }
 
 enum SizeUnit {
   gB,
   mB,
+  kB,
 }

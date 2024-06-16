@@ -14,8 +14,35 @@ import 'package:flutter/services.dart';
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
+  /// File path: assets/icons/bucket.svg
+  SvgGenImage get bucket => const SvgGenImage('assets/icons/bucket.svg');
+
   /// File path: assets/icons/cloud.svg
   SvgGenImage get cloud => const SvgGenImage('assets/icons/cloud.svg');
+
+  /// File path: assets/icons/file_archive.svg
+  SvgGenImage get fileArchive => const SvgGenImage('assets/icons/file_archive.svg');
+
+  /// File path: assets/icons/file_doc.svg
+  SvgGenImage get fileDoc => const SvgGenImage('assets/icons/file_doc.svg');
+
+  /// File path: assets/icons/file_image.svg
+  SvgGenImage get fileImage => const SvgGenImage('assets/icons/file_image.svg');
+
+  /// File path: assets/icons/file_music.svg
+  SvgGenImage get fileMusic => const SvgGenImage('assets/icons/file_music.svg');
+
+  /// File path: assets/icons/file_other.svg
+  SvgGenImage get fileOther => const SvgGenImage('assets/icons/file_other.svg');
+
+  /// File path: assets/icons/file_program.svg
+  SvgGenImage get fileProgram => const SvgGenImage('assets/icons/file_program.svg');
+
+  /// File path: assets/icons/file_video.svg
+  SvgGenImage get fileVideo => const SvgGenImage('assets/icons/file_video.svg');
+
+  /// File path: assets/icons/folder.svg
+  SvgGenImage get folder => const SvgGenImage('assets/icons/folder.svg');
 
   /// File path: assets/icons/profile.svg
   SvgGenImage get profile => const SvgGenImage('assets/icons/profile.svg');
@@ -24,7 +51,20 @@ class $AssetsIconsGen {
   SvgGenImage get search => const SvgGenImage('assets/icons/search.svg');
 
   /// List of all assets
-  List<SvgGenImage> get values => [cloud, profile, search];
+  List<SvgGenImage> get values => [
+        bucket,
+        cloud,
+        fileArchive,
+        fileDoc,
+        fileImage,
+        fileMusic,
+        fileOther,
+        fileProgram,
+        fileVideo,
+        folder,
+        profile,
+        search
+      ];
 }
 
 class $AssetsTranslationsGen {

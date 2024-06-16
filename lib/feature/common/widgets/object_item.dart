@@ -7,6 +7,8 @@ import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 
+import 'label_banner_item.dart';
+
 class ObjectItem extends HookConsumerWidget {
   final int index;
 
@@ -27,9 +29,6 @@ class ObjectItem extends HookConsumerWidget {
 
     final getBgColor = useMemoized(
       () {
-        // if (isActiveBucket) {
-        //   return const Color(AppColors.bgDarkGray2).withOpacity(0.5);
-        // } else
         if (stateHover.value) {
           return const Color(AppColors.bgDarkGray2).withOpacity(0.4);
         } else if (index.isOdd) {
@@ -57,15 +56,10 @@ class ObjectItem extends HookConsumerWidget {
           direction: Axis.horizontal,
           children: [
             Container(
-              height: 50,
-              width: 50,
+              height: 40,
+              constraints: const BoxConstraints(minWidth: 40),
               margin: const EdgeInsets.only(left: 6),
-              decoration: BoxDecoration(
-                borderRadius: borderRadius8,
-                color: const Color(
-                  AppColors.bgDarkGray1,
-                ),
-              ),
+              child: LabelBannerItem(path: object.path ?? ''),
             ),
             const SizedBox(width: 10),
             Expanded(

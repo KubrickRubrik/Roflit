@@ -4,6 +4,7 @@ import 'package:s3roflit/yandex_cloud/config/constants.dart';
 import 'package:s3roflit/yandex_cloud/requests/parameters/object_parameters.dart';
 
 abstract interface class StorageInterface {
+  String get host;
   StorageBucketRequestsInterface get buckets;
   StorageObjectRequestsInterface get object;
 }

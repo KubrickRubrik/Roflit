@@ -6,7 +6,6 @@ part 'bucket.freezed.dart';
 class BucketEntity with _$BucketEntity {
   const factory BucketEntity({
     required String bucket,
-    required int countObjects,
     required String creationDate,
   }) = _BucketEntity;
 }
