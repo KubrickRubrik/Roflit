@@ -48,9 +48,17 @@ final class ObjectsBloc extends _$ObjectsBloc {
 
     final currentIdStorage = state.activeStorage!.idStorage;
     final currentActiveBucket = state.activeStorage?.activeBucket;
-    if (currentActiveBucket == null) return;
+    if (currentActiveBucket == null) {
+      state = state.copyWith(
+        objects: [],
+      );
+      return;
+    }
 
-    state = state.copyWith(loaderPage: ContentStatus.loading);
+    state = state.copyWith(
+      loaderPage: ContentStatus.loading,
+      objects: [],
+    );
 
     final dto = roflitService.roflit.buckets.getObjects(bucketName: currentActiveBucket);
 

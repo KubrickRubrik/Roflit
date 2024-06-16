@@ -59,7 +59,10 @@ final class BucketsBloc extends _$BucketsBloc {
     final roflitService = ref.read(roflitServiceProvider(state.activeStorage));
 
     final currentIdStorage = state.activeStorage!.idStorage;
-    state = state.copyWith(loaderPage: ContentStatus.loading);
+    state = state.copyWith(
+      loaderPage: ContentStatus.loading,
+      buckets: [],
+    );
 
     final dto = roflitService.roflit.buckets.get();
 
