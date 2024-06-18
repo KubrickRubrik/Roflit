@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/extension/edate.dart';
 import 'package:roflit/core/extension/estring.dart';
 import 'package:roflit/feature/common/providers/buckets/provider.dart';
@@ -67,7 +68,7 @@ class BucketItem extends HookConsumerWidget {
               height: 40,
               width: 40,
               margin: const EdgeInsets.only(left: 6),
-              child: const LabelBannerItem(),
+              child: const LabelBannerItem(type: IconSourceType.bucket),
             ),
             const SizedBox(width: 10),
             Expanded(

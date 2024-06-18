@@ -1,5 +1,5 @@
 final class ByteConverter {
-  double _bytes = 0.0;
+  int _bytes = 0;
   int _bits = 0;
 
   ByteConverter(this._bytes) {
@@ -7,7 +7,7 @@ final class ByteConverter {
   }
 
   ByteConverter.withBits(this._bits) {
-    _bytes = _bits / 8;
+    _bytes = _bits ~/ 8;
   }
 
   /// Method to round the double value to the given precision.
@@ -31,13 +31,13 @@ final class ByteConverter {
 
   double get gigaBytes => _bytes / 1073741824;
 
-  factory ByteConverter.fromBytes(double value) => ByteConverter(value);
+  factory ByteConverter.fromBytes(int value) => ByteConverter(value);
 
   ByteConverter add(ByteConverter value) => this + value;
 
   ByteConverter subtract(ByteConverter value) => this - value;
 
-  ByteConverter addBytes(double value) => this + ByteConverter.fromBytes(value);
+  ByteConverter addBytes(int value) => this + ByteConverter.fromBytes(value);
 
   ByteConverter operator +(ByteConverter instance) => ByteConverter(instance._bytes + _bytes);
 

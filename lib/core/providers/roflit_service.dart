@@ -5,6 +5,7 @@ import 'package:roflit/core/entity/bucket.dart';
 import 'package:roflit/core/entity/object.dart';
 import 'package:roflit/core/entity/storage.dart';
 import 'package:roflit/core/enums.dart';
+import 'package:roflit/core/services/format_converter.dart';
 import 'package:s3roflit/interface/storage_interface.dart';
 import 'package:s3roflit/s3roflit.dart';
 import 'package:xml2json/xml2json.dart';
@@ -90,10 +91,12 @@ final class _YCSerializer implements StorageSerializerInterface {
       final newObjects = List.generate(objects?.length ?? 0, (index) {
         final object = objects![index];
         return ObjectEntity(
-          keyObject: object['Key'],
+          objectKey: object['Key'],
           bucket: bucket,
-          path: '$host/$bucket/${object['Key']}',
-          size: double.parse(object['Size']),
+          type: FormatConverter.converter(object['Key']),
+          nesting: FormatConverter.nesting(object['Key']),
+          remotePath: '$host/$bucket/${object['Key']}',
+          size: int.parse(object['Size']),
           lastModified: object['LastModified'],
         );
       });

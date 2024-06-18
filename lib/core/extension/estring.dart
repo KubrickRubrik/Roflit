@@ -6,4 +6,10 @@ extension EString on String {
     if (date == null) return null;
     return date;
   }
+
+  String get objectName {
+    final title = split('/');
+    if (title.last.isNotEmpty) return title.last;
+    return title[title.length - 2];
+  }
 }

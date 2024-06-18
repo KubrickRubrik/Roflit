@@ -94,3 +94,17 @@ enum SessionType {
 
   const SessionType();
 }
+
+enum IconSourceType {
+  bucket,
+  image,
+  doc,
+  folder,
+  archive,
+  program,
+  music,
+  video,
+  other;
+
+  bool get isFolder => this == folder;
+}

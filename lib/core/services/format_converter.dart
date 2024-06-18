@@ -1,10 +1,13 @@
+import 'package:flutter/material.dart';
+import 'package:roflit/core/enums.dart';
+
 abstract final class FormatConverter {
-  static IconSourceType converter(String? value) {
-    if (value == null) {
+  static IconSourceType converter(String? objectKey) {
+    if (objectKey == null) {
       return IconSourceType.bucket;
     }
-    final end = value.split('.').last.toLowerCase();
-    final folder = value.endsWith('/');
+    final end = objectKey.split('.').last.toLowerCase();
+    final folder = objectKey.endsWith('/');
     if (folder) {
       return IconSourceType.folder;
     } else {
@@ -53,16 +56,25 @@ abstract final class FormatConverter {
       }
     }
   }
-}
 
-enum IconSourceType {
-  bucket,
-  image,
-  doc,
-  folder,
-  archive,
-  program,
-  music,
-  video,
-  other,
+  static int nesting(String? objectKey) {
+    if (objectKey == null) return 0;
+    var key = objectKey;
+    if (key.characters.last == '/') {
+      key = key.substring(0, objectKey.length - 1);
+    }
+
+    final count = key.split('/').length;
+    final nesting = (count > 0) ? count - 1 : 0;
+
+    if (nesting > 5) return 5;
+    return nesting;
+  }
+
+  static IconSourceType fromDto(String type) {
+    return IconSourceType.values.firstWhere(
+      (v) => v.name == type,
+      orElse: () => IconSourceType.other,
+    );
+  }
 }
