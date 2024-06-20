@@ -3,8 +3,9 @@ import 'dart:developer';
 
 import 'package:crypto/crypto.dart';
 import 'package:s3roflit/middleware/utility.dart';
-import 'package:s3roflit/yandex_cloud/config/constants.dart';
-import 'package:s3roflit/yandex_cloud/config/s3/dto.dart';
+import 'package:s3roflit/src/config/s3/dto.dart';
+import 'package:s3roflit/src/config/s3/request_type.dart';
+import 'package:s3roflit/yandex_cloud/constants.dart';
 
 final class S3Config with PreparedData {
   final YandexAccess access;
@@ -15,13 +16,14 @@ final class S3Config with PreparedData {
   final RequestType requestType;
   final Map<String, String> headers;
 
-  S3Config(
-      {required this.canonicalRequest,
-      required this.requestType,
-      required this.headers,
-      required this.access,
-      this.canonicalQuerystring = '',
-      this.requestBody = ''});
+  S3Config({
+    required this.canonicalRequest,
+    required this.requestType,
+    required this.headers,
+    required this.access,
+    this.canonicalQuerystring = '',
+    this.requestBody = '',
+  });
 
   signing() {
     final dateYYYYmmDD = Utility.dateYYYYmmDD;

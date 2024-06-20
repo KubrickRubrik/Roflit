@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:s3roflit/interface/storage_interface.dart';
-
-import '../constants.dart';
+import 'package:s3roflit/src/config/s3/request_type.dart';
 
 final class YandexAccess {
   final String _accessKey;

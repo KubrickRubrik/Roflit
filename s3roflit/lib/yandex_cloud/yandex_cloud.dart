@@ -1,7 +1,7 @@
 import 'package:s3roflit/interface/storage_interface.dart';
 
-import 'config/constants.dart';
-import 'config/s3/dto.dart';
+import '../src/config/s3/dto.dart';
+import 'constants.dart';
 import 'requests/buckets.dart';
 import 'requests/objects.dart';
 

@@ -1,8 +1,8 @@
 import 'package:s3roflit/interface/storage_interface.dart';
-import 'package:s3roflit/yandex_cloud/config/constants.dart';
-import 'package:s3roflit/yandex_cloud/config/s3/dto.dart';
-import 'package:s3roflit/yandex_cloud/config/s3/s3config.dart';
-import 'package:s3roflit/yandex_cloud/requests/parameters/bucket_parameters.dart';
+import 'package:s3roflit/src/config/s3/dto.dart';
+import 'package:s3roflit/src/config/s3/request_type.dart';
+import 'package:s3roflit/src/config/s3/s3config.dart';
+import 'package:s3roflit/src/requests/parameters/bucket_parameters.dart';
 
 final class YandexRequestsBucket implements StorageBucketRequestsInterface {
   final YandexAccess _access;

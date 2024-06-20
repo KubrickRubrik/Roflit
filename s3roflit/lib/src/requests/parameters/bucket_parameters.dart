@@ -26,11 +26,11 @@ final class BucketListObjectParameters {
   final String? startAfter;
 
   const BucketListObjectParameters({
-    required this.continuationToken,
-    required this.maxKeys,
-    required this.delimiter,
-    required this.prefix,
-    required this.startAfter,
+    this.continuationToken,
+    this.maxKeys,
+    this.delimiter,
+    this.prefix,
+    this.startAfter,
   });
 
   const BucketListObjectParameters.empty()

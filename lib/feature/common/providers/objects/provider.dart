@@ -9,6 +9,7 @@ import 'package:roflit/core/entity/storage.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/providers/di_service.dart';
 import 'package:roflit/core/providers/roflit_service.dart';
+import 'package:s3roflit/s3roflit.dart';
 
 part 'provider.freezed.dart';
 part 'provider.g.dart';
@@ -60,10 +61,12 @@ final class ObjectsBloc extends _$ObjectsBloc {
       objects: [],
     );
 
-    final dto = roflitService.roflit.buckets.getObjects(bucketName: currentActiveBucket);
+    final dto = roflitService.roflit.buckets.getObjects(
+      bucketName: currentActiveBucket,
+      queryParameters: const BucketListObjectParameters(maxKeys: 20),
+    );
 
     final response = await ref.watch(diServiceProvider).apiRemoteClient.send(dto);
-
     state = state.copyWith(loaderPage: ContentStatus.loaded);
 
     if (currentIdStorage != state.activeStorage?.idStorage ||

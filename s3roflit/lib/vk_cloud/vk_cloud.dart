@@ -1,6 +1,6 @@
 import 'package:s3roflit/interface/storage_interface.dart';
-import 'package:s3roflit/yandex_cloud/config/constants.dart';
-import 'package:s3roflit/yandex_cloud/config/s3/dto.dart';
+import 'package:s3roflit/src/config/s3/dto.dart';
+import 'package:s3roflit/yandex_cloud/constants.dart';
 import 'package:s3roflit/yandex_cloud/requests/buckets.dart';
 import 'package:s3roflit/yandex_cloud/requests/objects.dart';
 

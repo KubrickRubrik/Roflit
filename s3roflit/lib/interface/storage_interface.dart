@@ -1,7 +1,8 @@
 import 'dart:typed_data';
 
-import 'package:s3roflit/yandex_cloud/config/constants.dart';
-import 'package:s3roflit/yandex_cloud/requests/parameters/object_parameters.dart';
+import 'package:s3roflit/src/config/s3/request_type.dart';
+import 'package:s3roflit/src/requests/parameters/bucket_parameters.dart';
+import 'package:s3roflit/src/requests/parameters/object_parameters.dart';
 
 abstract interface class StorageInterface {
   String get host;
@@ -29,6 +30,7 @@ abstract interface class StorageBucketRequestsInterface {
   StorageBucketRequestsDtoInterface getObjects({
     required String bucketName,
     Map<String, String> headers = const {},
+    BucketListObjectParameters queryParameters = const BucketListObjectParameters.empty(),
   });
 }
 
