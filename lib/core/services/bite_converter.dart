@@ -14,15 +14,10 @@ final class ByteConverter {
   ///  returns the same value if the precision is greater
   /// than the length of the value.
   double _withPrecision(double value, {int precision = 2}) {
-    final valString = '$value';
-    // ignore: parameter_assignments
-    final endingIndex = valString.indexOf('.') + (precision++);
+    final newValue = (value < 0.1) ? 0 : value;
+    final valString = newValue.toStringAsFixed(2);
 
-    if (valString.length < endingIndex) {
-      return value;
-    }
-
-    return double.tryParse(valString.substring(0, endingIndex)) ?? value;
+    return double.tryParse(valString) ?? 0;
   }
 
   double get kiloBytes => _bytes / 1024;
@@ -59,7 +54,9 @@ final class ByteConverter {
 
   bool isEqualTo(ByteConverter instance) => _bits == instance._bits;
 
-  String toHumanReadable(SizeUnit unit, {int precision = 2}) {
+  String toHumanReadable({int precision = 3}) {
+    print('>>>> $gigaBytes | $megaBytes | $kiloBytes');
+
     var value = _withPrecision(gigaBytes, precision: precision);
     if (value != 0) {
       return '$value GB';

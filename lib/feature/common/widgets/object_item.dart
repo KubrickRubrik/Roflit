@@ -40,6 +40,11 @@ class ObjectItem extends HookConsumerWidget {
       [stateHover.value],
     );
 
+    // if (object.objectKey == 'txt 2.exe') {
+    print('>>>> ${object.objectKey} - ${object.size}');
+    //   print('>>>> ${ByteConverter.fromBytes(object.size)}');
+    // }
+
     return InkWell(
       onTap: () {},
       onHover: (value) {
@@ -81,7 +86,7 @@ class ObjectItem extends HookConsumerWidget {
                     ),
                     if (object.size > 0)
                       Text(
-                        ByteConverter.fromBytes(object.size).toHumanReadable(SizeUnit.mB),
+                        ByteConverter.fromBytes(object.size).toHumanReadable(),
                         overflow: TextOverflow.ellipsis,
                         style: appTheme.textTheme.caption2.onDark1,
                       ),
