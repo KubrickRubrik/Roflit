@@ -72,6 +72,23 @@ final class YandexRequestsBucket implements StorageBucketRequestsInterface {
   // }
 
   @override
+  StorageBucketRequestsDtoInterface create({
+    required String bucketName,
+    Map<String, String> headers = const {},
+  }) {
+    final canonicalRequest = '/$bucketName';
+    const requestType = RequestType.put;
+
+    final s3Config = S3Config(
+      access: _access,
+      canonicalRequest: canonicalRequest,
+      requestType: requestType,
+      headers: headers,
+    );
+    return s3Config.signing();
+  }
+
+  @override
   YandexRequestDto delete({
     required String bucketName,
     Map<String, String> headers = const {},

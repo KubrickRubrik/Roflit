@@ -14,7 +14,7 @@ import 'package:roflit/feature/common/widgets/action_menu_button.dart';
 import 'package:roflit/feature/presentation/menu/router/router.dart';
 import 'package:roflit/feature/presentation/menu/widgets/menu_button.dart';
 import 'package:roflit/feature/presentation/menu/widgets/menu_item_button.dart';
-import 'package:roflit/feature/presentation/menu/widgets/text_field.dart';
+import 'package:roflit/feature/presentation/menu/widgets/menu_text_field.dart';
 
 class MenuStorage extends HookConsumerWidget {
   final MenuStorageDto menuStorageDto;

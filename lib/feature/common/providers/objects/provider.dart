@@ -66,7 +66,7 @@ final class ObjectsBloc extends _$ObjectsBloc {
       queryParameters: const BucketListObjectParameters(maxKeys: 20),
     );
 
-    final response = await ref.watch(diServiceProvider).apiRemoteClient.send(dto);
+    final response = await ref.watch(diServiceProvider).apiRemoteClient.get(dto);
     state = state.copyWith(loaderPage: ContentStatus.loaded);
 
     if (currentIdStorage != state.activeStorage?.idStorage ||

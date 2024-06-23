@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/extension/estring.dart';
+import 'package:roflit/feature/common/providers/buckets/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
@@ -38,7 +40,7 @@ class HomeContentBucketsHover extends HookWidget {
             duration: const Duration(milliseconds: 300),
             sizeCurve: Curves.ease,
             crossFadeState:
-                (stateHover.value) ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                (!stateHover.value) ? CrossFadeState.showFirst : CrossFadeState.showSecond,
             firstChild: const SizedBox.shrink(),
             secondChild: const HomeContentCreateBucket(),
           ),
@@ -48,11 +50,12 @@ class HomeContentBucketsHover extends HookWidget {
   }
 }
 
-class HomeContentCreateBucket extends HookWidget {
+class HomeContentCreateBucket extends HookConsumerWidget {
   const HomeContentCreateBucket({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bloc = ref.watch(bucketsBlocProvider.notifier);
     final controller = useTextEditingController();
     final stateHover = useState(false);
 
@@ -76,24 +79,29 @@ class HomeContentCreateBucket extends HookWidget {
                   ),
                   child: HomeContentTextField(
                     controller: controller,
-                    hint: 'Название бакета',
+                    hint: 'Название бакета'.translate,
                   ),
                 ),
               ],
             ),
           ),
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 250),
-            curve: Curves.ease,
-            height: stateHover.value ? 64 : 48,
-            margin: EdgeInsets.only(left: h8, bottom: 0),
-            decoration: BoxDecoration(
-              color: stateHover.value ? const Color(AppColors.bgLightGrayOpacity10) : null,
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              'Создать бакет'.translate,
-              style: appTheme.textTheme.title2.onDark1,
+          InkWell(
+            onTap: () {
+              bloc.createBucket(bucketName: controller.text);
+            },
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.ease,
+              height: stateHover.value ? 64 : 48,
+              margin: EdgeInsets.only(left: h8, bottom: 0),
+              decoration: BoxDecoration(
+                color: stateHover.value ? const Color(AppColors.bgLightGrayOpacity10) : null,
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                'Создать бакет'.translate,
+                style: appTheme.textTheme.title2.onDark1,
+              ),
             ),
           ),
         ],

@@ -66,7 +66,7 @@ final class BucketsBloc extends _$BucketsBloc {
 
     final dto = roflitService.roflit.buckets.get();
 
-    final response = await ref.watch(diServiceProvider).apiRemoteClient.send(dto);
+    final response = await ref.watch(diServiceProvider).apiRemoteClient.get(dto);
 
     state = state.copyWith(loaderPage: ContentStatus.loaded);
 
@@ -100,6 +100,22 @@ final class BucketsBloc extends _$BucketsBloc {
     );
   }
 
+  Future<void> createBucket({required String bucketName}) async {
+    if (bucketName.isEmpty) return;
+
+    final roflitService = ref.read(roflitServiceProvider(state.activeStorage));
+    final dto = roflitService.roflit.buckets.create(
+      bucketName: bucketName,
+      headers: {
+        // 'X-Amz-Acl': 'private bucket-owner-full-control',"
+        'X-Amz-Grant-Read': 'id=ajep2ma0d8h9oumgiuuq'
+      },
+    );
+    // http://acs.amazonaws.com/groups/global/AllUsers
+    // uri=http://acs.amazonaws.com/groups/global/AuthenticatedUsers
+
+    final response = await ref.watch(diServiceProvider).apiRemoteClient.get(dto);
+  }
   // state = state.copyWith(loaderPage: ContentStatus.loading);
 
   // final objectsDto =

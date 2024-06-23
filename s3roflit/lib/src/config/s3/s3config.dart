@@ -78,7 +78,9 @@ mixin PreparedData {
     };
 
     for (var key in headers.keys) {
-      defaultHeaders.addAll({key: headers[key]!});
+      final titleKey = key.toLowerCase();
+      final value = headers[key]!;
+      defaultHeaders.addAll({titleKey: value});
     }
 
     if (!defaultHeaders.containsKey('content-type')) {

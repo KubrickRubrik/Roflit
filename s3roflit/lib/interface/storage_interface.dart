@@ -22,6 +22,11 @@ abstract interface class StorageBucketRequestsInterface {
     String queryParameters = '',
   });
 
+  StorageBucketRequestsDtoInterface create({
+    required String bucketName,
+    Map<String, String> headers = const {},
+  });
+
   StorageBucketRequestsDtoInterface delete({
     required String bucketName,
     Map<String, String> headers = const {},
