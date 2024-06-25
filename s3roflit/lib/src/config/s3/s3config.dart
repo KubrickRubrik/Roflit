@@ -15,6 +15,7 @@ final class S3Config with PreparedData {
   final String requestBody;
   final RequestType requestType;
   final Map<String, String> headers;
+  final String bucketName;
 
   S3Config({
     required this.canonicalRequest,
@@ -23,16 +24,19 @@ final class S3Config with PreparedData {
     required this.access,
     this.canonicalQuerystring = '',
     this.requestBody = '',
+    this.bucketName = '',
   });
 
   signing() {
     final dateYYYYmmDD = Utility.dateYYYYmmDD;
     final xAmzDateHeader = Utility.xAmzDateHeader;
+    final bucket = bucketName.isNotEmpty ? '$bucketName.' : '';
     //
     final headersS3Signature = _headersS3Signature(
       access: access,
       headers: headers,
       xAmzDateHeader: xAmzDateHeader,
+      bucket: bucket,
     );
     log('>>> Headers: $headersS3Signature');
     final canonicalS3Request = _canonicalS3Request(
@@ -57,11 +61,13 @@ final class S3Config with PreparedData {
     );
     log('>>> Header: $s3Headers');
     final queryString = canonicalQuerystring.isNotEmpty ? '?$canonicalQuerystring' : '';
+
     return YandexRequestDto(
-        url: Uri.parse('${YCConstant.url}$canonicalRequest$queryString'),
-        headers: s3Headers,
-        typeRequest: requestType,
-        body: utf8.encode(requestBody));
+      url: Uri.parse('https://$bucket${YCConstant.host}$canonicalRequest$queryString'),
+      headers: s3Headers,
+      typeRequest: requestType,
+      body: utf8.encode(requestBody),
+    );
   }
 }
 
@@ -71,9 +77,10 @@ mixin PreparedData {
     required YandexAccess access,
     required Map<String, String> headers,
     required String xAmzDateHeader,
+    String bucket = '',
   }) {
     final defaultHeaders = {
-      'host': access.host,
+      'host': '$bucket${access.host}',
       'x-amz-date': xAmzDateHeader,
     };
 
@@ -130,7 +137,7 @@ mixin PreparedData {
     //
     final stringToSign = '$algorithm\n$xAmzDateHeader\n$credentialScope\n'
         '${S3Utility.hashSha256(canonicalS3Request)}';
-    print('>>>> $stringToSign');
+
     //
     final signature = S3Utility.getSignature(
       secretKey: access.secretKey,

@@ -51,7 +51,7 @@ final class BucketListObjectParameters {
 
   String get _startAfterUrl => (startAfter?.isNotEmpty == true) ? '&start-after=$startAfter' : '';
 
-  String get url =>
+  String get queryString =>
       'list-type=2$_continuationUrl$_maxKeysUrl$_delimiterUrl$_prefixUrl$_startAfterUrl';
 }
 

@@ -42,12 +42,13 @@ final class YandexRequestsBucket implements StorageBucketRequestsInterface {
     Map<String, String> headers = const {},
     String queryParameters = '',
   }) {
-    final canonicalRequest = '/$bucketName';
+    const canonicalRequest = '/';
     const requestType = RequestType.get;
 
     final s3Config = S3Config(
       access: _access,
       canonicalRequest: canonicalRequest,
+      bucketName: bucketName,
       canonicalQuerystring: queryParameters,
       requestType: requestType,
       headers: headers,
@@ -76,12 +77,13 @@ final class YandexRequestsBucket implements StorageBucketRequestsInterface {
     required String bucketName,
     Map<String, String> headers = const {},
   }) {
-    final canonicalRequest = '/$bucketName';
+    const canonicalRequest = '/';
     const requestType = RequestType.put;
 
     final s3Config = S3Config(
       access: _access,
       canonicalRequest: canonicalRequest,
+      bucketName: bucketName,
       requestType: requestType,
       headers: headers,
     );
@@ -93,12 +95,13 @@ final class YandexRequestsBucket implements StorageBucketRequestsInterface {
     required String bucketName,
     Map<String, String> headers = const {},
   }) {
-    final canonicalRequest = '/$bucketName';
+    const canonicalRequest = '/';
     const requestType = RequestType.delete;
 
     final s3Config = S3Config(
       access: _access,
       canonicalRequest: canonicalRequest,
+      bucketName: bucketName,
       requestType: requestType,
       headers: headers,
     );
@@ -114,13 +117,14 @@ final class YandexRequestsBucket implements StorageBucketRequestsInterface {
     Map<String, String> headers = const {},
     BucketListObjectParameters queryParameters = const BucketListObjectParameters.empty(),
   }) {
-    final canonicalRequest = '/$bucketName';
+    const canonicalRequest = '/';
     const requestType = RequestType.get;
 
     final s3Config = S3Config(
       access: _access,
       canonicalRequest: canonicalRequest,
-      canonicalQuerystring: queryParameters.url,
+      bucketName: bucketName,
+      canonicalQuerystring: queryParameters.queryString,
       requestType: requestType,
       headers: headers,
     );
