@@ -38,7 +38,7 @@ class _SectionContentNavigationHeaderBarState extends State<SectionContentNaviga
 
 class _ContentSectionNavigationHEaderBarSearch extends StatefulWidget {
   final double maxWidth;
-  const _ContentSectionNavigationHEaderBarSearch({required this.maxWidth, super.key});
+  const _ContentSectionNavigationHEaderBarSearch({required this.maxWidth});
 
   @override
   State<_ContentSectionNavigationHEaderBarSearch> createState() =>

@@ -22,7 +22,7 @@ class MenuLogin extends HookConsumerWidget {
     final blocSession = ref.watch(sessionBlocProvider.notifier);
     final passwordController = useTextEditingController();
 
-    void login() async {
+    Future<void> login() async {
       final response = await blocSession.loginLockAccount(
         idAccount: menuLoginDto.idAccount,
         password: passwordController.text,

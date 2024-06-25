@@ -5,6 +5,7 @@ import 'package:roflit/feature/common/themes/text.dart';
 class HomeContentTextField extends HookWidget {
   final TextEditingController controller;
   final String hint;
+  final TextStyle? hintStyle;
   final bool obscureText;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
@@ -14,6 +15,7 @@ class HomeContentTextField extends HookWidget {
   const HomeContentTextField({
     required this.controller,
     required this.hint,
+    this.hintStyle,
     this.obscureText = false,
     this.prefixIcon,
     this.suffixIcon,
@@ -59,7 +61,7 @@ class HomeContentTextField extends HookWidget {
         border: InputBorder.none,
         counterText: '',
         hintText: hint,
-        hintStyle: appTheme.textTheme.title2.onDark1,
+        hintStyle: hintStyle ?? appTheme.textTheme.title2.onDark1,
       ),
     );
   }

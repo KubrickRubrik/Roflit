@@ -111,7 +111,6 @@ final class SessionBloc extends _$SessionBloc {
     final account = getAccount(getActive: true);
     if (getActive) {
       return account?.storages.firstWhereOrNull((e) {
-        // print('>>>> ${e.idStorage} == ${account.activeIdStorage}');
         return e.idStorage == account.activeIdStorage;
       });
     } else {

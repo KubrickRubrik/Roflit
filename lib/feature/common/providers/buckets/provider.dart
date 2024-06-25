@@ -50,12 +50,12 @@ final class BucketsBloc extends _$BucketsBloc {
       EasyDebounce.debounce(Tags.updateBuckets, const Duration(milliseconds: 500), () {
         state = state.copyWith(activeStorage: event);
 
-        _updateBuckets();
+        _updateContentBuckets();
       });
     });
   }
 
-  Future<void> _updateBuckets() async {
+  Future<void> _updateContentBuckets() async {
     final roflitService = ref.read(roflitServiceProvider(state.activeStorage));
 
     final currentIdStorage = state.activeStorage!.idStorage;

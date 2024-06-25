@@ -40,11 +40,6 @@ class ObjectItem extends HookConsumerWidget {
       [stateHover.value],
     );
 
-    // if (object.objectKey == 'txt 2.exe') {
-    print('>>>> ${object.objectKey} - ${object.size}');
-    //   print('>>>> ${ByteConverter.fromBytes(object.size)}');
-    // }
-
     return InkWell(
       onTap: () {},
       onHover: (value) {

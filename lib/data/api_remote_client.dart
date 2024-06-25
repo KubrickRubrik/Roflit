@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -35,7 +33,7 @@ final class ApiRemoteClient {
         case RequestType.delete:
         case RequestType.post:
       }
-      log('@@@@ ${response?.body}');
+      // log('@@@@ ${response?.body}');
 
       return Result.success(
         statusCode: response?.statusCode,

@@ -55,8 +55,6 @@ final class ByteConverter {
   bool isEqualTo(ByteConverter instance) => _bits == instance._bits;
 
   String toHumanReadable({int precision = 3}) {
-    print('>>>> $gigaBytes | $megaBytes | $kiloBytes');
-
     var value = _withPrecision(gigaBytes, precision: precision);
     if (value != 0) {
       return '$value GB';

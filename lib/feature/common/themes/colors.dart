@@ -25,6 +25,7 @@ abstract final class AppColors {
   static const borderLineOnLight1 = 0xFF292929;
 
   static const bgLightGrayOpacity10 = 0x10FFFFFF;
+  static const bgLightGrayOpacity20 = 0x20FFFFFF;
 
   static const bgLightGray = 0x41FFFFFF;
 

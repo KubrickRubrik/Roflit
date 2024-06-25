@@ -108,3 +108,11 @@ enum IconSourceType {
 
   bool get isFolder => this == folder;
 }
+
+enum BucketCreateStatus {
+  public,
+  private;
+
+  bool get isPublic => this == public;
+  bool get isPrivate => this == private;
+}
