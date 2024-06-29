@@ -35,13 +35,13 @@ class HomeContentCreateBucket extends HookConsumerWidget {
 
     final stateHover = useState(false);
     final stateOpenMenu = useState(false);
-    final stateActiveStatus = useState(BucketCreateStatus.private);
+    final stateActiveStatus = useState(BucketCreateAccess.private);
 
     useInitState(
       onBuild: () {
         if (!isHoverBuckets) {
           stateOpenMenu.value = false;
-          stateActiveStatus.value = BucketCreateStatus.private;
+          stateActiveStatus.value = BucketCreateAccess.private;
         }
       },
       keys: [isHoverBuckets],
@@ -55,11 +55,22 @@ class HomeContentCreateBucket extends HookConsumerWidget {
           stateBucketStatus: stateActiveStatus,
         ),
         InkWell(
-          onTap: () {
-            // bloc.createBucket(bucketName: controller.text);
+          onTap: () async {
+            if (!stateOpenMenu.value) {
+              stateOpenMenu.value = true;
+            } else {
+              final result = await bloc.createBucket(
+                bucketName: controller.text,
+                access: stateActiveStatus.value,
+              );
+              if (result) {
+                controller.text = '';
+                stateOpenMenu.value = false;
+                stateActiveStatus.value = BucketCreateAccess.private;
+              }
+            }
           },
           onHover: (value) {
-            stateOpenMenu.value = true;
             stateHover.value = value;
           },
           child: AnimatedContainer(
@@ -86,7 +97,7 @@ class HomeContentCreateBucket extends HookConsumerWidget {
 class _HomeContentCreateBucket extends StatelessWidget {
   final TextEditingController controller;
   final ValueNotifier<bool> stateOpen;
-  final ValueNotifier<BucketCreateStatus> stateBucketStatus;
+  final ValueNotifier<BucketCreateAccess> stateBucketStatus;
 
   const _HomeContentCreateBucket({
     required this.controller,
@@ -128,7 +139,7 @@ class _HomeContentCreateBucket extends StatelessWidget {
               Expanded(
                 child: InkWell(
                   onTap: () {
-                    stateBucketStatus.value = BucketCreateStatus.public;
+                    stateBucketStatus.value = BucketCreateAccess.public;
                   },
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
@@ -152,7 +163,7 @@ class _HomeContentCreateBucket extends StatelessWidget {
               Expanded(
                 child: InkWell(
                   onTap: () {
-                    stateBucketStatus.value = BucketCreateStatus.private;
+                    stateBucketStatus.value = BucketCreateAccess.private;
                   },
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),

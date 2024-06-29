@@ -10,6 +10,7 @@ class HomeContentTextField extends HookWidget {
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final int maxLength;
+  final int? minLength;
   final void Function(String)? onSubmitted;
 
   const HomeContentTextField({
@@ -21,6 +22,7 @@ class HomeContentTextField extends HookWidget {
     this.suffixIcon,
     this.onSubmitted,
     this.maxLength = 32,
+    this.minLength,
     super.key,
   });
 
@@ -50,6 +52,7 @@ class HomeContentTextField extends HookWidget {
       textAlign: TextAlign.center,
       obscureText: obscure.value,
       onSubmitted: onSubmitted,
+      keyboardType: TextInputType.text,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         prefixIcon: prefixIcon,

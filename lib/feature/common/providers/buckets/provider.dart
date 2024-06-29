@@ -100,21 +100,54 @@ final class BucketsBloc extends _$BucketsBloc {
     );
   }
 
-  Future<void> createBucket({required String bucketName}) async {
-    if (bucketName.isEmpty) return;
+  Future<bool> createBucket({
+    required String bucketName,
+    required BucketCreateAccess access,
+  }) async {
+    if (bucketName.isEmpty || bucketName.length < 3) {
+      //TODO add snackbar
+      return false;
+    }
+    final currentIdStorage = state.activeStorage!.idStorage;
 
     final roflitService = ref.read(roflitServiceProvider(state.activeStorage));
+
+    final headerAcl = switch (access) {
+      BucketCreateAccess.public => 'public-read',
+      BucketCreateAccess.private => 'bucket-owner-full-control'
+    };
+
     final dto = roflitService.roflit.buckets.create(
       bucketName: bucketName,
       headers: {
-        // 'X-Amz-Acl': 'private bucket-owner-full-control',"
-        'X-Amz-Grant-Read': 'id=ajep2ma0d8h9oumgiuuq'
+        'X-Amz-Acl': headerAcl,
       },
     );
-    // http://acs.amazonaws.com/groups/global/AllUsers
-    // uri=http://acs.amazonaws.com/groups/global/AuthenticatedUsers
+    final response = await ref.watch(diServiceProvider).apiRemoteClient.get(
+          dto,
+        );
 
-    final response = await ref.watch(diServiceProvider).apiRemoteClient.get(dto);
+    print('>>>> ${response.statusCode}');
+    if (response.statusCode != 200) {
+      //TODO add snackbar
+      return false;
+    }
+
+    final dtoBucket = roflitService.roflit.buckets.get();
+
+    final responseBucket = await ref.watch(diServiceProvider).apiRemoteClient.get(dtoBucket);
+
+    if (currentIdStorage != state.activeStorage?.idStorage) return false;
+
+    final buckets = roflitService.serizalizer.buckets(responseBucket.success);
+
+    state = state.copyWith(buckets: buckets);
+    final indexBucket = state.buckets.indexWhere((bucket) {
+      return bucket.bucket == bucketName;
+    });
+    unawaited(setActiveBucket(indexBucket));
+
+    return true;
   }
   // state = state.copyWith(loaderPage: ContentStatus.loading);
 

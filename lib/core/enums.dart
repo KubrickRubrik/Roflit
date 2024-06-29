@@ -109,7 +109,7 @@ enum IconSourceType {
   bool get isFolder => this == folder;
 }
 
-enum BucketCreateStatus {
+enum BucketCreateAccess {
   public,
   private;
 
