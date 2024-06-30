@@ -26,5 +26,5 @@ final class VKCloud implements StorageInterface {
   StorageBucketRequestsInterface get buckets => YandexRequestsBucket(_access);
 
   @override
-  StorageObjectRequestsInterface get object => YandexRequestsObject(_access);
+  StorageObjectRequestsInterface get objects => YandexRequestsObject(_access);
 }

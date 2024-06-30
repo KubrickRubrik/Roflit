@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart' as drift;
@@ -7,11 +8,13 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:roflit/core/config/tag_debounce.dart';
 import 'package:roflit/core/entity/bucket.dart';
+import 'package:roflit/core/entity/meta_object.dart';
 import 'package:roflit/core/entity/storage.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/providers/di_service.dart';
 import 'package:roflit/core/providers/roflit_service.dart';
 import 'package:roflit/data/local/api_db.dart';
+import 'package:s3roflit/s3roflit.dart';
 
 part 'provider.freezed.dart';
 part 'provider.g.dart';
@@ -66,7 +69,7 @@ final class BucketsBloc extends _$BucketsBloc {
 
     final dto = roflitService.roflit.buckets.get();
 
-    final response = await ref.watch(diServiceProvider).apiRemoteClient.get(dto);
+    final response = await ref.watch(diServiceProvider).apiRemoteClient.send(dto);
 
     state = state.copyWith(loaderPage: ContentStatus.loaded);
 
@@ -123,19 +126,19 @@ final class BucketsBloc extends _$BucketsBloc {
         'X-Amz-Acl': headerAcl,
       },
     );
-    final response = await ref.watch(diServiceProvider).apiRemoteClient.get(
+    final response = await ref.watch(diServiceProvider).apiRemoteClient.send(
           dto,
         );
 
-    print('>>>> ${response.statusCode}');
-    if (response.statusCode != 200) {
+    print('>>>> ${response.sendOk} ${response.statusCode}');
+    if (!response.sendOk) {
       //TODO add snackbar
       return false;
     }
 
     final dtoBucket = roflitService.roflit.buckets.get();
 
-    final responseBucket = await ref.watch(diServiceProvider).apiRemoteClient.get(dtoBucket);
+    final responseBucket = await ref.watch(diServiceProvider).apiRemoteClient.send(dtoBucket);
 
     if (currentIdStorage != state.activeStorage?.idStorage) return false;
 
@@ -147,6 +150,61 @@ final class BucketsBloc extends _$BucketsBloc {
     });
     unawaited(setActiveBucket(indexBucket));
 
+    return true;
+  }
+
+  Future<bool> deleteBucket() async {
+    if (state.activeStorage?.activeBucket?.isNotEmpty == false) {
+      return false;
+    }
+
+    final roflitService = ref.read(roflitServiceProvider(state.activeStorage));
+    final currentIdStorage = state.activeStorage!.idStorage;
+    final activeBucket = state.activeStorage!.activeBucket!;
+
+    // Запрос всех обьектов
+    final resultDeleteObjects = await _deleteAllObject(activeBucket: activeBucket);
+    if (resultDeleteObjects == false) {
+      return false;
+    }
+
+    final dto = roflitService.roflit.buckets.delete(bucketName: activeBucket);
+    final response = await ref.watch(diServiceProvider).apiRemoteClient.send(dto);
+
+    if (!response.sendOk) {
+      if (response.statusCode == 409) {
+        //TODO add snackbar удалить все обьекты сначала
+      }
+      //TODO add snackbar
+      return false;
+    }
+
+    if (currentIdStorage != state.activeStorage?.idStorage) return false;
+
+    final updatedStorage = StorageTableCompanion(
+      idStorage: drift.Value(state.activeStorage!.idStorage),
+      activeBucket: const drift.Value(null),
+    );
+
+    final responseBucket =
+        await ref.read(diServiceProvider).apiLocalClient.storageDao.updateStorage(
+              storage: updatedStorage,
+            );
+
+    if (!responseBucket) {
+      //TODO SNACKBAR
+      return false;
+    }
+
+    final bucketList = state.buckets.toList();
+    bucketList.removeWhere((v) => v.bucket == activeBucket);
+
+    state = state.copyWith(
+      activeStorage: state.activeStorage!.copyWith(
+        activeBucket: null,
+      ),
+      buckets: bucketList,
+    );
     return true;
   }
   // state = state.copyWith(loaderPage: ContentStatus.loading);
@@ -170,4 +228,81 @@ final class BucketsBloc extends _$BucketsBloc {
 
   // state = state.copyWith(buckets: serializer(response.success));
   // }
+
+  Future<bool?> _deleteAllObject({required String activeBucket}) async {
+    final roflitService = ref.read(roflitServiceProvider(state.activeStorage));
+
+    final listAllObjects = <String>[];
+    var metaObjects = MetaObjectEntity.empty();
+    var conditionToRead = true;
+    var conditionToDelete = true;
+
+    do {
+      final dto = roflitService.roflit.buckets.getObjects(
+        bucketName: activeBucket,
+        queryParameters: BucketListObjectParameters(
+          maxKeys: 1000,
+          continuationToken: metaObjects.nextContinuationToken,
+        ),
+      );
+
+      final response = await ref.watch(diServiceProvider).apiRemoteClient.send(dto);
+
+      if (!response.sendOk) {
+        conditionToRead = false;
+        break;
+      }
+      //TODO Serial
+      metaObjects = roflitService.serizalizer.metaObjects(response.success);
+      final objects = roflitService.serizalizer.objects(response.success);
+
+      if (objects.isEmpty) {
+        conditionToRead = false;
+        break;
+      }
+      listAllObjects.addAll(objects.map((e) => e.objectKey));
+      if (!metaObjects.isTruncated) {
+        conditionToRead = false;
+        break;
+      }
+      break;
+    } while (conditionToRead);
+
+    if (listAllObjects.isEmpty) return null;
+    var result = true;
+
+    do {
+      final end = listAllObjects.length < 1000 ? listAllObjects.length : 1000;
+
+      final objectKeysString = listAllObjects.getRange(0, end).map((e) {
+        return '<Object><Key>$e</Key></Object>';
+      }).join('');
+
+      final objectKeysXmlDoc =
+          '<?xml version="1.0" encoding="UTF-8"?><Delete><Quiet>true</Quiet>$objectKeysString</Delete>';
+
+      log('>>>> MESS $objectKeysXmlDoc');
+      final dto = roflitService.roflit.objects.deleteMultiple(
+        bucketName: activeBucket,
+        objectKeysXmlDoc: objectKeysXmlDoc,
+      );
+
+      final response = await ref.watch(diServiceProvider).apiRemoteClient.send(dto);
+
+      if (!response.sendOk) {
+        conditionToDelete = false;
+        result = false;
+        break;
+      }
+
+      listAllObjects.removeRange(0, end);
+
+      if (listAllObjects.isEmpty) {
+        conditionToDelete = false;
+        break;
+      }
+    } while (conditionToDelete);
+
+    return result;
+  }
 }

@@ -3,16 +3,15 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/extension/estring.dart';
-import 'package:roflit/core/utils/hooks.dart';
 import 'package:roflit/feature/common/providers/buckets/provider.dart';
+import 'package:roflit/feature/common/providers/ui/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 import 'package:roflit/feature/common/widgets/home_content_text_field.dart';
 
 class HomeContentCreateBucket extends HookConsumerWidget {
-  final bool isHoverBuckets;
-  const HomeContentCreateBucket({required this.isHoverBuckets});
+  const HomeContentCreateBucket();
 
   String title({required bool isOpen}) {
     if (isOpen) return 'Создать бакет'.translate;
@@ -20,10 +19,6 @@ class HomeContentCreateBucket extends HookConsumerWidget {
   }
 
   Color? _color({required bool buttonHover, required bool menuHover}) {
-    if (menuHover) {
-      if (buttonHover) return const Color(AppColors.bgLightGrayOpacity20);
-      return const Color(AppColors.bgLightGrayOpacity10);
-    }
     if (buttonHover) return const Color(AppColors.bgLightGrayOpacity10);
     return null;
   }
@@ -31,47 +26,47 @@ class HomeContentCreateBucket extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bloc = ref.watch(bucketsBlocProvider.notifier);
+    final blocUI = ref.watch(uiBlocProvider.notifier);
     final controller = useTextEditingController();
 
-    final stateHover = useState(false);
-    final stateOpenMenu = useState(false);
+    final stateCreateButtonHover = useState(false);
+    final stateDeleteButtonHover = useState(false);
     final stateActiveStatus = useState(BucketCreateAccess.private);
+    final stateOpenSubMenu = useState(false);
 
-    useInitState(
-      onBuild: () {
-        if (!isHoverBuckets) {
-          stateOpenMenu.value = false;
-          stateActiveStatus.value = BucketCreateAccess.private;
-        }
-      },
-      keys: [isHoverBuckets],
-    );
+    ref.listen(uiBlocProvider.select((v) => v.isDisplayBucketMenu), (previous, next) {
+      if (!next) {
+        controller.text = '';
+        stateActiveStatus.value = BucketCreateAccess.private;
+        stateOpenSubMenu.value = false;
+        stateCreateButtonHover.value = false;
+        stateDeleteButtonHover.value = false;
+      }
+    });
 
     return Column(
       children: [
         _HomeContentCreateBucket(
           controller: controller,
-          stateOpen: stateOpenMenu,
+          stateOpenSubMenu: stateOpenSubMenu,
           stateBucketStatus: stateActiveStatus,
         ),
         InkWell(
           onTap: () async {
-            if (!stateOpenMenu.value) {
-              stateOpenMenu.value = true;
+            if (!stateOpenSubMenu.value) {
+              stateOpenSubMenu.value = true;
             } else {
               final result = await bloc.createBucket(
                 bucketName: controller.text,
                 access: stateActiveStatus.value,
               );
               if (result) {
-                controller.text = '';
-                stateOpenMenu.value = false;
-                stateActiveStatus.value = BucketCreateAccess.private;
+                blocUI.menuBucket(action: ActionMenu.close);
               }
             }
           },
           onHover: (value) {
-            stateHover.value = value;
+            stateCreateButtonHover.value = value;
           },
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 250),
@@ -79,15 +74,20 @@ class HomeContentCreateBucket extends HookConsumerWidget {
             height: 40,
             margin: const EdgeInsets.only(left: 8, right: 8, bottom: 0),
             decoration: BoxDecoration(
-              color: _color(buttonHover: stateHover.value, menuHover: stateOpenMenu.value),
+              color: _color(
+                  buttonHover: stateCreateButtonHover.value, menuHover: stateOpenSubMenu.value),
               borderRadius: borderRadius4,
             ),
             alignment: Alignment.center,
             child: Text(
-              title(isOpen: stateOpenMenu.value),
+              title(isOpen: stateOpenSubMenu.value),
               style: appTheme.textTheme.control2.onDark1,
             ),
           ),
+        ),
+        _HomeContentDeleteBucket(
+          stateOpenSubMenu: stateOpenSubMenu,
+          stateDeleteButtonHover: stateDeleteButtonHover,
         ),
       ],
     );
@@ -96,12 +96,12 @@ class HomeContentCreateBucket extends HookConsumerWidget {
 
 class _HomeContentCreateBucket extends StatelessWidget {
   final TextEditingController controller;
-  final ValueNotifier<bool> stateOpen;
+  final ValueNotifier<bool> stateOpenSubMenu;
   final ValueNotifier<BucketCreateAccess> stateBucketStatus;
 
   const _HomeContentCreateBucket({
     required this.controller,
-    required this.stateOpen,
+    required this.stateOpenSubMenu,
     required this.stateBucketStatus,
   });
 
@@ -110,7 +110,8 @@ class _HomeContentCreateBucket extends StatelessWidget {
     return AnimatedCrossFade(
       duration: const Duration(milliseconds: 300),
       sizeCurve: Curves.ease,
-      crossFadeState: (!stateOpen.value) ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+      crossFadeState:
+          (!stateOpenSubMenu.value) ? CrossFadeState.showFirst : CrossFadeState.showSecond,
       firstChild: const SizedBox.shrink(),
       secondChild: secondChild,
     );
@@ -123,7 +124,7 @@ class _HomeContentCreateBucket extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: stateOpen.value ? const Color(AppColors.bgDarkGray2) : null,
+              color: stateOpenSubMenu.value ? const Color(AppColors.bgDarkGray2) : null,
               borderRadius: BorderRadius.circular(8),
             ),
             child: HomeContentTextField(
@@ -186,6 +187,61 @@ class _HomeContentCreateBucket extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _HomeContentDeleteBucket extends ConsumerWidget {
+  final ValueNotifier<bool> stateOpenSubMenu;
+  final ValueNotifier<bool> stateDeleteButtonHover;
+
+  const _HomeContentDeleteBucket({
+    required this.stateOpenSubMenu,
+    required this.stateDeleteButtonHover,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final blocUI = ref.watch(uiBlocProvider.notifier);
+    final bloc = ref.watch(bucketsBlocProvider.notifier);
+    final isActiveBucket = ref.watch(bucketsBlocProvider.select((v) {
+      return v.activeStorage?.activeBucket?.isNotEmpty == true;
+    }));
+
+    return AnimatedCrossFade(
+      duration: const Duration(milliseconds: 300),
+      sizeCurve: Curves.ease,
+      crossFadeState: (!stateOpenSubMenu.value && isActiveBucket)
+          ? CrossFadeState.showSecond
+          : CrossFadeState.showFirst,
+      firstChild: const SizedBox.shrink(),
+      secondChild: InkWell(
+        onTap: () async {
+          final result = await bloc.deleteBucket();
+          if (result) {
+            blocUI.menuBucket(action: ActionMenu.close);
+          }
+        },
+        onHover: (value) {
+          stateDeleteButtonHover.value = value;
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.ease,
+          height: 40,
+          margin: const EdgeInsets.only(left: 8, right: 8, top: 8),
+          decoration: BoxDecoration(
+            color:
+                stateDeleteButtonHover.value ? const Color(AppColors.bgLightGrayOpacity10) : null,
+            borderRadius: borderRadius4,
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            'Удалить бакет'.translate,
+            style: appTheme.textTheme.control2.onDark1,
+          ),
+        ),
       ),
     );
   }

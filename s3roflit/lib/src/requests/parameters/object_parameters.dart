@@ -1,5 +1,9 @@
 // ignore_for_file: constant_identifier_names
 
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
+
 final class ObjectGetParameters {
   /// Sets the `Content-Type` response header.
   final bool responseContentType;
@@ -88,4 +92,38 @@ enum ClassOfStorage {
   STANDARD,
   COLD,
   ICE,
+}
+
+final class DeleteObjectHeadersParameters {
+  final bool useXAmzBypassGovernanceRetention;
+
+  const DeleteObjectHeadersParameters({
+    this.useXAmzBypassGovernanceRetention = true,
+  });
+
+  Map<String, String> get _xAmzBypassGovernanceRetentionHeader {
+    if (useXAmzBypassGovernanceRetention) {
+      return {'X-Amz-Bypass-Governance-Retention': 'true'};
+    }
+    return {};
+  }
+
+  Map<String, String> _contentMD5({required String inputStringDoc}) {
+    final md5Hash = md5.convert(utf8.encode(inputStringDoc)).toString();
+
+    return {'Content-MD5': md5Hash};
+  }
+
+  Map<String, String> _contentLength({required String inputStringDoc}) {
+    final contentLength = utf8.encode(inputStringDoc).length;
+    return {'Content-Length': contentLength.toString()};
+  }
+
+  Map<String, String> getHeaders({required String inputStringDoc}) {
+    return {
+      ..._xAmzBypassGovernanceRetentionHeader,
+      ..._contentMD5(inputStringDoc: inputStringDoc),
+      ..._contentLength(inputStringDoc: inputStringDoc),
+    };
+  }
 }

@@ -127,9 +127,23 @@ final class UiBloc extends _$UiBloc {
     }
   }
 
-  // bool login(){
-  //   // if( )
-  // }
+  void menuBucket({
+    ActionMenu? action,
+  }) {
+    var currentAction = action;
+    currentAction ??= state.isDisplayBucketMenu ? ActionMenu.close : ActionMenu.open;
+    switch (currentAction) {
+      case ActionMenu.open:
+        state = state.copyWith(isDisplayBucketMenu: true);
+        break;
+      case ActionMenu.hoverLeave:
+        state = state.copyWith(isDisplayBucketMenu: false);
+        break;
+      case ActionMenu.close:
+        state = state.copyWith(isDisplayBucketMenu: false);
+        break;
+    }
+  }
 }
 
 enum TypeMenu {

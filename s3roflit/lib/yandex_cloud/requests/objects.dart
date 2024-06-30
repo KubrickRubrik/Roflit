@@ -68,4 +68,24 @@ final class YandexRequestsObject implements StorageObjectRequestsInterface {
     );
     return s3Config.signing();
   }
+
+  @override
+  StorageBucketRequestsDtoInterface deleteMultiple({
+    required String bucketName,
+    required String objectKeysXmlDoc,
+    DeleteObjectHeadersParameters headers = const DeleteObjectHeadersParameters(),
+  }) {
+    final canonicalRequest = '/$bucketName?delete';
+    const requestType = RequestType.post;
+
+    final s3Config = S3Config(
+      access: _access,
+      canonicalRequest: canonicalRequest,
+      requestType: requestType,
+      // bucketName: bucketName,
+      headers: headers.getHeaders(inputStringDoc: objectKeysXmlDoc),
+      requestBody: objectKeysXmlDoc,
+    );
+    return s3Config.signing();
+  }
 }

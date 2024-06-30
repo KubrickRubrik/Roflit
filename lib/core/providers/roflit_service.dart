@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:roflit/core/entity/bucket.dart';
+import 'package:roflit/core/entity/meta_object.dart';
 import 'package:roflit/core/entity/object.dart';
 import 'package:roflit/core/entity/storage.dart';
 import 'package:roflit/core/enums.dart';
@@ -96,7 +97,7 @@ final class _YCSerializer implements StorageSerializerInterface {
           type: FormatConverter.converter(object['Key']),
           nesting: FormatConverter.nesting(object['Key']),
           remotePath: '$host/$bucket/${object['Key']}',
-          size: int.parse(object['Size']),
+          size: int.tryParse(object['Size']) ?? 0,
           lastModified: object['LastModified'],
         );
       });
@@ -104,6 +105,23 @@ final class _YCSerializer implements StorageSerializerInterface {
       return newObjects;
     } catch (e) {
       return [];
+    }
+  }
+
+  @override
+  MetaObjectEntity metaObjects(Object? value) {
+    try {
+      _parser.parse(value as String);
+      final json = jsonDecode(_parser.toParker());
+      final document = json['ListBucketResult'];
+
+      return MetaObjectEntity(
+        nextContinuationToken: document['NextContinuationToken'],
+        keyCount: int.tryParse(document['KeyCount']) ?? 0,
+        isTruncated: bool.tryParse(document['IsTruncated']) ?? false,
+      );
+    } catch (e) {
+      return MetaObjectEntity.empty();
     }
   }
 }
@@ -139,9 +157,15 @@ final class _VKSerializer implements StorageSerializerInterface {
   List<ObjectEntity> objects(Object? value) {
     return [];
   }
+
+  @override
+  MetaObjectEntity metaObjects(Object? value) {
+    return MetaObjectEntity.empty();
+  }
 }
 
 abstract interface class StorageSerializerInterface {
   List<BucketEntity> buckets(Object? value);
   List<ObjectEntity> objects(Object? value);
+  MetaObjectEntity metaObjects(Object? value);
 }

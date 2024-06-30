@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -23,7 +24,7 @@ class BucketItem extends HookConsumerWidget {
     final bloc = ref.watch(bucketsBlocProvider.notifier);
 
     final bucket = ref.watch(bucketsBlocProvider.select((value) {
-      return value.buckets[index];
+      return value.buckets.elementAtOrNull(index);
     }));
 
     final isActiveBucket = ref.watch(bucketsBlocProvider.select((v) {
@@ -45,6 +46,8 @@ class BucketItem extends HookConsumerWidget {
       },
       [isActiveBucket, stateHover.value],
     );
+
+    if (bucket == null) return const SizedBox();
 
     return InkWell(
       onTap: () {

@@ -63,10 +63,10 @@ final class ObjectsBloc extends _$ObjectsBloc {
 
     final dto = roflitService.roflit.buckets.getObjects(
       bucketName: currentActiveBucket,
-      queryParameters: const BucketListObjectParameters(maxKeys: 20),
+      queryParameters: const BucketListObjectParameters(maxKeys: 100),
     );
 
-    final response = await ref.watch(diServiceProvider).apiRemoteClient.get(dto);
+    final response = await ref.watch(diServiceProvider).apiRemoteClient.send(dto);
     state = state.copyWith(loaderPage: ContentStatus.loaded);
 
     if (currentIdStorage != state.activeStorage?.idStorage ||

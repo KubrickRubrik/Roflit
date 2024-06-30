@@ -7,7 +7,7 @@ import 'package:s3roflit/src/requests/parameters/object_parameters.dart';
 abstract interface class StorageInterface {
   String get host;
   StorageBucketRequestsInterface get buckets;
-  StorageObjectRequestsInterface get object;
+  StorageObjectRequestsInterface get objects;
 }
 
 abstract interface class StorageBucketRequestsInterface {
@@ -51,6 +51,12 @@ abstract interface class StorageObjectRequestsInterface {
     required String bucketName,
     required String objectKey,
     Map<String, String> headers = const {},
+  });
+
+  StorageBucketRequestsDtoInterface deleteMultiple({
+    required String bucketName,
+    required String objectKeysXmlDoc,
+    DeleteObjectHeadersParameters headers,
   });
 
   StorageBucketRequestsDtoInterface upload({
