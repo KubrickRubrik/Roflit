@@ -108,22 +108,21 @@ final class DeleteObjectHeadersParameters {
     return {};
   }
 
-  Map<String, String> _contentMD5({required String inputStringDoc}) {
-    final md5Hash = md5.convert(utf8.encode(inputStringDoc)).toString();
-
-    return {'Content-MD5': md5Hash};
+  Map<String, String> _contentMD5({required String input}) {
+    final md5Hash = md5.convert(utf8.encode(input)).toString();
+    return {'Content-MD5': base64Encode(utf8.encode(md5Hash))};
   }
 
-  Map<String, String> _contentLength({required String inputStringDoc}) {
-    final contentLength = utf8.encode(inputStringDoc).length;
+  Map<String, String> _contentLength({required String input}) {
+    final contentLength = utf8.encode(input).length;
     return {'Content-Length': contentLength.toString()};
   }
 
   Map<String, String> getHeaders({required String inputStringDoc}) {
     return {
-      ..._xAmzBypassGovernanceRetentionHeader,
-      ..._contentMD5(inputStringDoc: inputStringDoc),
-      ..._contentLength(inputStringDoc: inputStringDoc),
+      // ..._xAmzBypassGovernanceRetentionHeader,
+      // ..._contentMD5(input: inputStringDoc),
+      // ..._contentLength(input: inputStringDoc),
     };
   }
 }

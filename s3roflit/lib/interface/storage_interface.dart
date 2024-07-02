@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:s3roflit/src/config/s3/request_type.dart';
 import 'package:s3roflit/src/requests/parameters/bucket_parameters.dart';
 import 'package:s3roflit/src/requests/parameters/object_parameters.dart';
@@ -55,7 +53,7 @@ abstract interface class StorageObjectRequestsInterface {
 
   StorageBucketRequestsDtoInterface deleteMultiple({
     required String bucketName,
-    required String objectKeysXmlDoc,
+    required String body,
     DeleteObjectHeadersParameters headers,
   });
 
@@ -71,5 +69,5 @@ abstract interface class StorageBucketRequestsDtoInterface {
   Uri get url;
   Map<String, String> get headers;
   RequestType get typeRequest;
-  Uint8List? get body;
+  Object? get body;
 }

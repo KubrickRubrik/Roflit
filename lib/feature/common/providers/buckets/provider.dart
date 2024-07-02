@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart' as drift;
@@ -278,17 +277,16 @@ final class BucketsBloc extends _$BucketsBloc {
         return '<Object><Key>$e</Key></Object>';
       }).join('');
 
-      final objectKeysXmlDoc =
+      final doc =
           '<?xml version="1.0" encoding="UTF-8"?><Delete><Quiet>true</Quiet>$objectKeysString</Delete>';
 
-      log('>>>> MESS $objectKeysXmlDoc');
       final dto = roflitService.roflit.objects.deleteMultiple(
         bucketName: activeBucket,
-        objectKeysXmlDoc: objectKeysXmlDoc,
+        body: doc,
       );
 
       final response = await ref.watch(diServiceProvider).apiRemoteClient.send(dto);
-
+      return false;
       if (!response.sendOk) {
         conditionToDelete = false;
         result = false;

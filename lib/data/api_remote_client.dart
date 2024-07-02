@@ -37,7 +37,9 @@ final class ApiRemoteClient {
           headers: client.headers,
         );
       case RequestType.post:
-        print('>>>> URL ${client.url}');
+        print('>>>> SEND URL ${client.url}');
+        print('>>>> SEND HEADERS ${client.headers}');
+        print('>>>> SEND BODY ${client.body}');
         response = await http.delete(
           client.url,
           headers: client.headers,

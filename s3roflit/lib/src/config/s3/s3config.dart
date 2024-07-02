@@ -38,7 +38,7 @@ final class S3Config with PreparedData {
       xAmzDateHeader: xAmzDateHeader,
       bucket: bucket,
     );
-    log('>>> Headers: $headersS3Signature');
+    log('>>> S3 HEADERS: $headersS3Signature');
     final canonicalS3Request = _canonicalS3Request(
       requestType: requestType,
       requestBody: requestBody,
@@ -46,7 +46,7 @@ final class S3Config with PreparedData {
       canonicalRequest: canonicalRequest,
       canonicalQuerystring: canonicalQuerystring,
     );
-    log('>>> Canonical: $canonicalS3Request');
+    log('>>> S3 CANONICAL: $canonicalS3Request');
     final s3Signature = _signature(
       access: access,
       headersS3Signature: headersS3Signature,
@@ -54,19 +54,20 @@ final class S3Config with PreparedData {
       dateYYYYmmDD: dateYYYYmmDD,
       xAmzDateHeader: xAmzDateHeader,
     );
-    log('>>> Signature: $s3Signature');
+    log('>>> S3 SIGNATURE: $s3Signature');
     final s3Headers = _header(
       headersS3Signature: headersS3Signature,
       signature: s3Signature,
     );
-    log('>>> Header: $s3Headers');
+    log('>>> S3 HEADER: $s3Headers');
     final queryString = canonicalQuerystring.isNotEmpty ? '?$canonicalQuerystring' : '';
 
     return YandexRequestDto(
       url: Uri.parse('https://$bucket${YCConstant.host}$canonicalRequest$queryString'),
       headers: s3Headers,
       typeRequest: requestType,
-      body: utf8.encode(requestBody),
+      // body: utf8.encode(requestBody),
+      body: requestBody,
     );
   }
 }
@@ -82,6 +83,7 @@ mixin PreparedData {
     final defaultHeaders = {
       'host': '$bucket${access.host}',
       'x-amz-date': xAmzDateHeader,
+      // 'Content-MD5': '',
     };
 
     for (var key in headers.keys) {
@@ -109,6 +111,7 @@ mixin PreparedData {
     headersS3Signature.forEach((key, value) {
       canonicalHeaders.add('$key:$value\n');
     });
+
     final canonicalHeadersString = (canonicalHeaders..sort()).join('');
     //
     final keyList = headersS3Signature.keys.map((e) => e.toLowerCase()).toList()..sort();
