@@ -1,6 +1,8 @@
 import 'dart:async';
+
 import 'dart:io';
 import 'dart:math';
+
 
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart' as drift;
@@ -267,7 +269,7 @@ final class BucketsBloc extends _$BucketsBloc {
       );
 
       final response = await ref.watch(diServiceProvider).apiRemoteClient.send(dto);
-
+      return false;
       if (!response.sendOk) {
         conditionToDelete = false;
         result = false;

@@ -68,7 +68,6 @@ final class S3Config with PreparedData {
       url: Uri.parse('https://$bucket${YCConstant.host}$canonicalRequest$queryString'),
       headers: s3Headers,
       typeRequest: requestType,
-      // body: utf8.encode(requestBody), // return sha256.convert(utf8.encode(value)).toString();
       body: requestBody,
     );
   }
@@ -86,6 +85,7 @@ mixin PreparedData {
     final defaultHeaders = {
       'host': '$bucket${access.host}',
       'x-amz-date': xAmzDateHeader,
+      // 'Content-MD5': '',
     };
 
     if (payloadHash.isNotEmpty) {

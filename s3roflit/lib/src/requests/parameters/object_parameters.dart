@@ -128,7 +128,7 @@ final class DeleteObjectHeadersParameters {
 
   Map<String, String> getHeaders({required Uint8List inputStringDoc}) {
     return {
-      // ..._xAmzBypassGovernanceRetentionHeader,
+      ..._xAmzBypassGovernanceRetentionHeader,
       ..._contentMD5(input: inputStringDoc),
       ..._contentLength(input: inputStringDoc),
     };
