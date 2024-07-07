@@ -1,9 +1,11 @@
 import 'dart:async';
-import 'dart:developer';
+import 'dart:io';
+import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:easy_debounce/easy_debounce.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:roflit/core/config/tag_debounce.dart';
@@ -53,12 +55,12 @@ final class BucketsBloc extends _$BucketsBloc {
       EasyDebounce.debounce(Tags.updateBuckets, const Duration(milliseconds: 500), () {
         state = state.copyWith(activeStorage: event);
 
-        _updateContentBuckets();
+        _getBuckets();
       });
     });
   }
 
-  Future<void> _updateContentBuckets() async {
+  Future<void> _getBuckets() async {
     final roflitService = ref.read(roflitServiceProvider(state.activeStorage));
 
     final currentIdStorage = state.activeStorage!.idStorage;
@@ -207,27 +209,6 @@ final class BucketsBloc extends _$BucketsBloc {
     );
     return true;
   }
-  // state = state.copyWith(loaderPage: ContentStatus.loading);
-
-  // final objectsDto =
-  //     state.roflit.buckets.getObjects(bucketName: state.activeStorage!.activeBucket!);
-
-  // final response2 = await ref.watch(diServiceProvider).apiRemoteClient.send(objectsDto);
-
-  // if (response2.failed) {
-  //   //TODO Add snackbar
-  //   state = state.copyWith(loaderPage: ContentStatus.error);
-  //   return;
-  // }
-
-  // final serializer = state.serizalizer.bucketObjects;
-
-  // state = state.copyWith(loaderPage: ContentStatus.loaded);
-
-  // if (currentIdStorage != state.activeStorage?.idStorage) return;
-
-  // state = state.copyWith(buckets: serializer(response.success));
-  // }
 
   Future<bool?> _deleteAllObject({required String activeBucket}) async {
     final roflitService = ref.read(roflitServiceProvider(state.activeStorage));
@@ -265,7 +246,6 @@ final class BucketsBloc extends _$BucketsBloc {
         conditionToRead = false;
         break;
       }
-      break;
     } while (conditionToRead);
 
     if (listAllObjects.isEmpty) return null;
@@ -278,13 +258,12 @@ final class BucketsBloc extends _$BucketsBloc {
         return '<Object><Key>$e</Key></Object>';
       }).join('');
 
-      final objectKeysXmlDoc =
+      final doc =
           '<?xml version="1.0" encoding="UTF-8"?><Delete><Quiet>true</Quiet>$objectKeysString</Delete>';
 
-      log('>>>> MESS $objectKeysXmlDoc');
       final dto = roflitService.roflit.objects.deleteMultiple(
         bucketName: activeBucket,
-        objectKeysXmlDoc: objectKeysXmlDoc,
+        body: doc,
       );
 
       final response = await ref.watch(diServiceProvider).apiRemoteClient.send(dto);
@@ -304,5 +283,36 @@ final class BucketsBloc extends _$BucketsBloc {
     } while (conditionToDelete);
 
     return result;
+  }
+
+  Future<void> getFile() async {
+    final result = await FilePicker.platform.pickFiles();
+    if (result == null) {
+      //TODO: snackbar
+      return;
+    }
+
+    final file = File(result.files.single.path!);
+    await _upload(file);
+  }
+
+  Future<bool> _upload(File file) async {
+    if (state.activeStorage?.activeBucket?.isNotEmpty == false) {
+      return false;
+    }
+    final roflitService = ref.read(roflitServiceProvider(state.activeStorage));
+    final currentIdStorage = state.activeStorage!.idStorage;
+    final activeBucket = state.activeStorage!.activeBucket!;
+    final mime = file.path.split('.').last;
+    final mimeType = mime.isNotEmpty ? '.$mime' : '';
+    final dto = roflitService.roflit.objects.upload(
+      bucketName: activeBucket,
+      objectKey: Random().nextInt(999).toString() + mimeType,
+      headers: ObjectUploadHadersParameters(bodyBytes: file.readAsBytesSync()),
+      body: file.readAsBytesSync(),
+    );
+
+    final response = await ref.watch(diServiceProvider).apiRemoteClient.send(dto);
+    return false;
   }
 }

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:s3roflit/interface/storage_interface.dart';
 import 'package:s3roflit/src/config/s3/request_type.dart';
 
@@ -28,13 +27,13 @@ final class YandexRequestDto implements StorageBucketRequestsDtoInterface {
   final Uri _url;
   final Map<String, String> _headers;
   final RequestType _typeRequest;
-  final Uint8List? _body;
+  final Object? _body;
 
   YandexRequestDto({
     required Uri url,
     required Map<String, String> headers,
     required RequestType typeRequest,
-    Uint8List? body,
+    Object? body,
   })  : _url = url,
         _headers = headers,
         _typeRequest = typeRequest,
@@ -47,5 +46,5 @@ final class YandexRequestDto implements StorageBucketRequestsDtoInterface {
   @override
   RequestType get typeRequest => _typeRequest;
   @override
-  Uint8List? get body => _body;
+  Object? get body => _body;
 }

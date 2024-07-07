@@ -24,8 +24,24 @@ void main() async {
   if (Platform.isWindows) {
     await DesktopWindow.setMinWindowSize(Constants.minimumSizeWindow);
     await DesktopWindow.setMaxWindowSize(Constants.maximumSizeWindow);
+
     // DesktopWindow.setFullScreen(true);
   }
+//     final request = AWSHttpRequest(
+//       method: AWSHttpMethod.post,
+//       uri: Uri.https('cognito-idp.$region.amazonaws.com', '/'),
+//       headers: const {
+//         AWSHeaders.target: 'AWSCognitoIdentityProviderService.DescribeUserPool',
+//         AWSHeaders.contentType: 'application/x-amz-json-1.1',
+//       },
+//       body: json.encode({
+//         'UserPoolId': '<YOUR-USER-POOL-ID>',
+//       }).codeUnits,
+//     );
+  // const signer = AWSSigV4Signer(
+  //   credentialsProvider: AWSCredentialsProvider.environment(),
+  // );
+  // signer.signSync(request, credentialScope: credentialScope)
   // if (Platform.isWindows) {
   //   await windowManager.ensureInitialized();
   //   const windowOptions = WindowOptions(

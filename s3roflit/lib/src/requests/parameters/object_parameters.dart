@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
+import 'package:flutter/services.dart';
 
 final class ObjectGetParameters {
   /// Sets the `Content-Type` response header.
@@ -67,23 +68,30 @@ final class ObjectGetParameters {
 }
 
 final class ObjectUploadHadersParameters {
-  const ObjectUploadHadersParameters({required this.contentMD5, this.xAmzStorageClass});
+  const ObjectUploadHadersParameters({
+    required this.bodyBytes,
+    this.xAmzStorageClass = ClassOfStorage.STANDARD,
+  });
 
   /// Cooler classes are intended for long-term storage of objects that are planned
   /// to be workedwith less frequently. The colder the storage, the cheaper it is to
   /// store data in it, but the more expensive it is to read and write it.
   /// If the header is not specified, then the object is saved in the
   /// storage set in the bucket settings.
-  final ClassOfStorage? xAmzStorageClass;
+  final ClassOfStorage xAmzStorageClass;
 
   /// Object Storage will calculate the MD5 for the stored object and if the calculated MD5
   /// does not match the one passed in the header, it will return an error.
-  final String contentMD5;
+  final List<int> bodyBytes;
 
-  Map<String, String> get _xAmzStorageClass =>
-      (xAmzStorageClass != null) ? {'X-Amz-Storage-Class': xAmzStorageClass.toString()} : {};
+  Map<String, String> get _xAmzStorageClass {
+    return {'X-Amz-Storage-Class': xAmzStorageClass.name};
+  }
 
-  Map<String, String> get _contentMD5 => {'Content-MD5': contentMD5};
+  Map<String, String> get _contentMD5 {
+    final digest = md5.convert(bodyBytes);
+    return {'Content-MD5': base64Encode(digest.bytes)};
+  }
 
   Map<String, String> get getHeaders => {..._xAmzStorageClass, ..._contentMD5};
 }
@@ -108,22 +116,21 @@ final class DeleteObjectHeadersParameters {
     return {};
   }
 
-  Map<String, String> _contentMD5({required String inputStringDoc}) {
-    final md5Hash = md5.convert(utf8.encode(inputStringDoc)).toString();
-
-    return {'Content-MD5': md5Hash};
+  Map<String, String> _contentMD5({required List<int> input}) {
+    Digest digest = md5.convert(input);
+    return {'Content-MD5': base64Encode(digest.bytes)};
   }
 
-  Map<String, String> _contentLength({required String inputStringDoc}) {
-    final contentLength = utf8.encode(inputStringDoc).length;
+  Map<String, String> _contentLength({required Uint8List input}) {
+    final contentLength = input.length;
     return {'Content-Length': contentLength.toString()};
   }
 
-  Map<String, String> getHeaders({required String inputStringDoc}) {
+  Map<String, String> getHeaders({required Uint8List inputStringDoc}) {
     return {
-      ..._xAmzBypassGovernanceRetentionHeader,
-      ..._contentMD5(inputStringDoc: inputStringDoc),
-      ..._contentLength(inputStringDoc: inputStringDoc),
+      // ..._xAmzBypassGovernanceRetentionHeader,
+      ..._contentMD5(input: inputStringDoc),
+      ..._contentLength(input: inputStringDoc),
     };
   }
 }
