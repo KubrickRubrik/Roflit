@@ -60,7 +60,7 @@ abstract interface class StorageObjectRequestsInterface {
   StorageBucketRequestsDtoInterface upload({
     required String bucketName,
     required String objectKey,
-    required String body,
+    required List<int> body,
     required ObjectUploadHadersParameters headers,
   });
 }

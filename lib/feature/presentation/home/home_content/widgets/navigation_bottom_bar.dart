@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:roflit/feature/common/providers/buckets/provider.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
@@ -41,7 +42,9 @@ class SectionContentNavigationBottomBar extends HookConsumerWidget {
           const SizedBox(width: 8),
           Expanded(
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                ref.read(bucketsBlocProvider.notifier).getFile();
+              },
               onHover: (value) {
                 stateCenterButtonHover.value = value;
               },

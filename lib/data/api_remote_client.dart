@@ -22,14 +22,23 @@ final class ApiRemoteClient {
     Response? response;
     switch (client.typeRequest) {
       case RequestType.get:
+        print('>>>> GET URL ${client.url}');
+        print('>>>> GET HEADERS ${client.headers}');
+        print('>>>> GET BODY ${client.body}');
         response = await http.get(
           client.url,
           headers: client.headers,
         );
+        log('>>>> GET CODE ${response.statusCode}');
+        log('>>>> GET ${response.body}');
       case RequestType.put:
+        print('>>>> PUT URL ${client.url}');
+        print('>>>> PUT HEADERS ${client.headers}');
+        print('>>>> PUT BODY ${client.body}');
         response = await http.put(
           client.url,
           headers: client.headers,
+          body: client.body,
         );
       case RequestType.delete:
         response = await http.delete(
@@ -37,16 +46,18 @@ final class ApiRemoteClient {
           headers: client.headers,
         );
       case RequestType.post:
-        print('>>>> SEND URL ${client.url}');
-        print('>>>> SEND HEADERS ${client.headers}');
-        print('>>>> SEND BODY ${client.body}');
-        response = await http.delete(
+        print('>>>> SEND POST URL ${client.url}');
+        print('>>>> SEND POST HEADERS ${client.headers}');
+        print('>>>> SEND POST BODY ${client.body}');
+        response = await http.post(
+
           client.url,
           headers: client.headers,
           body: client.body,
         );
+        log('>>>> POST CODE ${response.statusCode}');
+        log('>>>> POST ${response.body}');
     }
-    log('>>>> RESPONSE ${response?.body}');
 
     return Result.success(
       statusCode: response?.statusCode,

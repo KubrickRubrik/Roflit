@@ -12,7 +12,7 @@ final class S3Config with PreparedData {
   final String canonicalRequest;
   final String canonicalQuerystring;
 
-  final String requestBody;
+  final List<int> requestBody;
   final RequestType requestType;
   final Map<String, String> headers;
   final String bucketName;
@@ -23,7 +23,7 @@ final class S3Config with PreparedData {
     required this.headers,
     required this.access,
     this.canonicalQuerystring = '',
-    this.requestBody = '',
+    this.requestBody = const [],
     this.bucketName = '',
   });
 
@@ -31,17 +31,19 @@ final class S3Config with PreparedData {
     final dateYYYYmmDD = Utility.dateYYYYmmDD;
     final xAmzDateHeader = Utility.xAmzDateHeader;
     final bucket = bucketName.isNotEmpty ? '$bucketName.' : '';
+    final payloadHash = S3Utility.hashSha256(requestBody);
     //
     final headersS3Signature = _headersS3Signature(
       access: access,
       headers: headers,
       xAmzDateHeader: xAmzDateHeader,
       bucket: bucket,
+      payloadHash: payloadHash,
     );
     log('>>> S3 HEADERS: $headersS3Signature');
     final canonicalS3Request = _canonicalS3Request(
       requestType: requestType,
-      requestBody: requestBody,
+      payloadHash: payloadHash,
       headersS3Signature: headersS3Signature,
       canonicalRequest: canonicalRequest,
       canonicalQuerystring: canonicalQuerystring,
@@ -66,7 +68,6 @@ final class S3Config with PreparedData {
       url: Uri.parse('https://$bucket${YCConstant.host}$canonicalRequest$queryString'),
       headers: s3Headers,
       typeRequest: requestType,
-      // body: utf8.encode(requestBody),
       body: requestBody,
     );
   }
@@ -79,12 +80,17 @@ mixin PreparedData {
     required Map<String, String> headers,
     required String xAmzDateHeader,
     String bucket = '',
+    String payloadHash = '',
   }) {
     final defaultHeaders = {
       'host': '$bucket${access.host}',
       'x-amz-date': xAmzDateHeader,
       // 'Content-MD5': '',
     };
+
+    if (payloadHash.isNotEmpty) {
+      defaultHeaders.addAll({'x-amz-content-sha256': payloadHash});
+    }
 
     for (var key in headers.keys) {
       final titleKey = key.toLowerCase();
@@ -102,7 +108,7 @@ mixin PreparedData {
   // Definition of a canonical query.
   String _canonicalS3Request({
     required RequestType requestType,
-    required String requestBody,
+    required String payloadHash,
     required Map<String, String> headersS3Signature,
     required String canonicalRequest,
     required String canonicalQuerystring,
@@ -117,7 +123,6 @@ mixin PreparedData {
     final keyList = headersS3Signature.keys.map((e) => e.toLowerCase()).toList()..sort();
     final signedHeaderKeys = keyList.join(';');
     //
-    final payloadHash = S3Utility.hashSha256(requestBody);
     //
     return '${requestType.value}\n'
         '$canonicalRequest\n'
@@ -139,7 +144,7 @@ mixin PreparedData {
         '$dateYYYYmmDD/${access.region}/${YCConstant.service}/${YCConstant.aws4Request}';
     //
     final stringToSign = '$algorithm\n$xAmzDateHeader\n$credentialScope\n'
-        '${S3Utility.hashSha256(canonicalS3Request)}';
+        '${S3Utility.hashSha256(utf8.encode(canonicalS3Request))}';
 
     //
     final signature = S3Utility.getSignature(
@@ -172,8 +177,8 @@ mixin PreparedData {
 }
 
 abstract final class S3Utility {
-  static String hashSha256(String value) {
-    return sha256.convert(utf8.encode(value)).toString();
+  static String hashSha256(List<int> value) {
+    return sha256.convert(value).toString();
   }
 
   static dynamic sign({required List<int> key, required String msg}) {

@@ -4,10 +4,11 @@ publish_to: "none"
 version: 0.1.0
 
 environment:
-  sdk: ">=3.3.0 <4.0.0"
+  sdk: ">=3.4.0 <4.0.0"
 
 dependencies:
   # aws_signature_v4: ^0.5.1
+  file_picker: ^8.0.6
   # chopper: ^7.1.1
   flutter:
     sdk: flutter
@@ -29,7 +30,6 @@ dependencies:
   window_manager: ^0.3.8
   desktop_window: ^0.4.0
   file_selector: ^1.0.3
-  file_picker: ^6.1.1
   flutter_screenutil: ^5.9.0
   flutter_svg: ^2.0.10+1
   connectivity_plus: ^6.0.3
@@ -46,6 +46,8 @@ dependencies:
   xml2json: ^6.2.3
   s3roflit:
     path: ./s3roflit
+  
+
 
 
 dev_dependencies:
