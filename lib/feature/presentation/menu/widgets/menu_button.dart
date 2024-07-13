@@ -16,12 +16,12 @@ class MainMenuButton extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isHover = useState(false);
+    final stateHover = useState(false);
 
     return InkWell(
       onTap: onTap,
       onHover: (value) {
-        isHover.value = value;
+        stateHover.value = value;
       },
       child: AnimatedContainer(
           duration: const Duration(milliseconds: 250),
@@ -30,7 +30,7 @@ class MainMenuButton extends HookWidget {
           height: 56,
           decoration: BoxDecoration(
             borderRadius: borderRadius8,
-            color: isHover.value
+            color: stateHover.value
                 ? const Color(AppColors.bgDarkGrayHover)
                 : const Color(AppColors.bgDarkGray1),
           ),

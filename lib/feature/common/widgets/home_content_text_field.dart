@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 
 class HomeContentTextField extends HookWidget {
   final TextEditingController controller;
+  final TextAlign? textAlign;
   final String hint;
   final TextStyle? style;
   final TextStyle? hintStyle;
@@ -13,18 +15,25 @@ class HomeContentTextField extends HookWidget {
   final int maxLength;
   final int? minLength;
   final void Function(String)? onSubmitted;
+  final void Function(String)? onChanged;
+  final double? cursorWidth;
+  final Color? cursorColor;
 
   const HomeContentTextField({
     required this.controller,
     required this.hint,
+    this.textAlign,
     this.style,
     this.hintStyle,
     this.obscureText = false,
     this.prefixIcon,
     this.suffixIcon,
+    this.onChanged,
     this.onSubmitted,
     this.maxLength = 32,
     this.minLength,
+    this.cursorWidth,
+    this.cursorColor,
     super.key,
   });
 
@@ -51,10 +60,13 @@ class HomeContentTextField extends HookWidget {
       maxLength: maxLength,
       maxLines: 1,
       style: style ?? appTheme.textTheme.title2.onDark1,
-      textAlign: TextAlign.center,
+      textAlign: textAlign ?? TextAlign.center,
       obscureText: obscure.value,
       onSubmitted: onSubmitted,
       keyboardType: TextInputType.text,
+      onChanged: onChanged,
+      cursorWidth: cursorWidth ?? 2,
+      cursorColor: cursorColor ?? Color(AppColors.borderLineOnDart0),
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         prefixIcon: prefixIcon,

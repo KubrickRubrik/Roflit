@@ -1,6 +1,8 @@
+import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:roflit/core/config/tag_debounce.dart';
 import 'package:roflit/feature/common/providers/file_manager/provider.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
@@ -43,7 +45,13 @@ class SectionContentNavigationBottomBar extends HookConsumerWidget {
           Expanded(
             child: InkWell(
               onTap: () {
-                ref.read(fileManagerBlocProvider.notifier).getFiles();
+                EasyThrottle.throttle(
+                  Tags.selectFileManager,
+                  const Duration(seconds: 1),
+                  () {
+                    ref.read(fileManagerBlocProvider.notifier).getFiles();
+                  },
+                );
               },
               onHover: (value) {
                 stateCenterButtonHover.value = value;

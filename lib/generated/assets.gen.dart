@@ -18,6 +18,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/bucket.svg
   SvgGenImage get bucket => const SvgGenImage('assets/icons/bucket.svg');
 
+  /// File path: assets/icons/close.svg
+  SvgGenImage get close => const SvgGenImage('assets/icons/close.svg');
+
   /// File path: assets/icons/cloud.svg
   SvgGenImage get cloud => const SvgGenImage('assets/icons/cloud.svg');
 
@@ -54,6 +57,7 @@ class $AssetsIconsGen {
   /// List of all assets
   List<SvgGenImage> get values => [
         bucket,
+        close,
         cloud,
         fileArchive,
         fileDoc,

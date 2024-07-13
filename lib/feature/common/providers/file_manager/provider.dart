@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -59,6 +60,7 @@ final class FileManagerBloc extends _$FileManagerBloc {
       closMenu();
       return;
     }
+
     final roflitService = ref.read(roflitServiceProvider(state.activeStorage));
     final result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
@@ -79,6 +81,26 @@ final class FileManagerBloc extends _$FileManagerBloc {
     );
     ref.read(uiBlocProvider.notifier).menuFileManager(action: ActionMenu.open);
     // await _upload(file);
+  }
+
+  Future<void> addMoreFiles() async {
+    final roflitService = ref.read(roflitServiceProvider(state.activeStorage));
+    final result = await FilePicker.platform.pickFiles(
+      allowMultiple: true,
+      initialDirectory: state.activeStorage?.pathSelectFiles,
+    );
+    if (result == null) {
+      //TODO: snackbar
+      return;
+    }
+
+    final files = result.paths.map((path) => File(path!)).toList();
+
+    final objects = await roflitService.serizalizer.objectsFromFiles(files);
+    final currentObjects = state.objects.toList();
+    currentObjects.addAll(objects);
+
+    state = state.copyWith(objects: currentObjects.toSet().toList());
   }
 
   Future<bool> _upload(File file) async {
@@ -109,5 +131,21 @@ final class FileManagerBloc extends _$FileManagerBloc {
         loaderPage: ContentStatus.loading,
       );
     });
+  }
+
+  void renameObject({required int index, required String name}) {
+    final object = state.objects.elementAtOrNull(index);
+    if (object == null) return;
+
+    final mimeType = object.objectKey.split('.').last;
+
+    final newObject = object.copyWith(objectKey: '$name.$mimeType');
+
+    final currentObjects = state.objects.toList();
+
+    currentObjects[index] = newObject;
+    state = state.copyWith(
+      objects: currentObjects,
+    );
   }
 }

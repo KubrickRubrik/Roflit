@@ -15,13 +15,21 @@ class MenuFileList extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final bloc = ref.watch(fileManagerBlocProvider.notifier);
 
-    final titleStorage = ref.watch(fileManagerBlocProvider.select((v) {
-      final title = v.activeStorage?.title ?? '';
-      final bucket = switch (v.activeStorage?.activeBucket) {
-        null => '',
-        _ => ' / ${v.activeStorage?.activeBucket}',
-      };
-      return '$title$bucket';
+    final titleStorage = ref.watch(
+      fileManagerBlocProvider.select(
+        (v) {
+          final title = v.activeStorage?.title ?? '';
+          final bucket = switch (v.activeStorage?.activeBucket) {
+            null => '',
+            _ => ' / ${v.activeStorage?.activeBucket}',
+          };
+          return '$title$bucket';
+        },
+      ),
+    );
+
+    final isEmpty = ref.watch(fileManagerBlocProvider.select((v) {
+      return v.objects.isEmpty;
     }));
 
     return InkWell(
@@ -76,14 +84,19 @@ class MenuFileList extends HookConsumerWidget {
                   child: const MenuFileListContent(),
                 ),
                 Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: MainMenuButton(
-                    title: 'Продолжить'.translate,
-                    onTap: () async {},
-                  ),
-                ),
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: switch (isEmpty) {
+                      true => MainMenuButton(
+                          title: 'Добавить'.translate,
+                          onTap: bloc.addMoreFiles,
+                        ),
+                      false => MainMenuButton(
+                          title: 'Продолжить'.translate,
+                          onTap: () async {},
+                        ),
+                    }),
               ],
             ),
           ),
