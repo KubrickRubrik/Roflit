@@ -7,6 +7,7 @@ class UiState with _$UiState {
     @Default(false) bool isDisplayedStorageMenu,
     @Default(false) bool isDisplayedMainMenu,
     @Default(false) bool isDisplayBucketMenu,
+    @Default(false) bool isDisplayedFileManagerMenu,
   }) = UiActionState;
 }
 

@@ -5,11 +5,13 @@ import 'package:roflit/generated/assets.gen.dart';
 
 class LabelBannerItem extends StatelessWidget {
   final IconSourceType type;
-  final String? path;
+  final String? remotePath;
+  final String? localPath;
 
   const LabelBannerItem({
     required this.type,
-    this.path,
+    this.remotePath,
+    this.localPath,
     super.key,
   });
 
@@ -18,7 +20,8 @@ class LabelBannerItem extends StatelessWidget {
     return switch (type) {
       IconSourceType.bucket => Assets.icons.bucket.svg(),
       IconSourceType.image => ImageSection(
-          mainRemoteImage: path,
+          mainRemoteImage: remotePath,
+          mainLocalImage: localPath,
           errorWidget: Assets.icons.fileImage.svg(),
         ),
       IconSourceType.doc => Assets.icons.fileDoc.svg(),

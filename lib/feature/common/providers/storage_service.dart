@@ -52,6 +52,8 @@ final class StorageService {
       secretKey: secretKey,
       region: region,
       activeBucket: '',
+      pathSelectFiles: null,
+      pathSaveFiles: null,
     ).toDto();
 
     final insertStorage = StorageTableCompanion.insert(
@@ -96,6 +98,8 @@ final class StorageService {
       accessKey: accessKey,
       secretKey: secretKey,
       region: region,
+      pathSelectFiles: null,
+      pathSaveFiles: null,
     ).toDto();
 
     final updateStorage = StorageTableCompanion(

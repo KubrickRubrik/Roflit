@@ -4,6 +4,7 @@ import 'package:easy_debounce/easy_debounce.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:roflit/core/config/tag_debounce.dart';
+import 'package:roflit/core/entity/meta_object.dart';
 import 'package:roflit/core/entity/object.dart';
 import 'package:roflit/core/entity/storage.dart';
 import 'package:roflit/core/enums.dart';
@@ -33,7 +34,10 @@ final class ObjectsBloc extends _$ObjectsBloc {
     await _listenerActiveStorage?.cancel();
 
     _listenerActiveStorage = watchingDao.watchActiveStorage().listen((event) {
-      if (event == null) return;
+      if (event == null) {
+        state = state.copyWith(loaderPage: ContentStatus.empty);
+        return;
+      }
       if (state.activeStorage?.idStorage == event.idStorage &&
           state.activeStorage?.activeBucket == event.activeBucket) return;
       EasyDebounce.debounce(Tags.updateObjects, const Duration(milliseconds: 500), () {
@@ -74,5 +78,79 @@ final class ObjectsBloc extends _$ObjectsBloc {
 
     final objects = roflitService.serizalizer.objects(response.success);
     state = state.copyWith(objects: objects);
+  }
+
+  Future<bool?> deleteAllObject({required String activeBucket}) async {
+    final roflitService = ref.read(roflitServiceProvider(state.activeStorage));
+
+    final listAllObjects = <String>[];
+    var metaObjects = MetaObjectEntity.empty();
+    var conditionToRead = true;
+    var conditionToDelete = true;
+
+    do {
+      final dto = roflitService.roflit.buckets.getObjects(
+        bucketName: activeBucket,
+        queryParameters: BucketListObjectParameters(
+          maxKeys: 1000,
+          continuationToken: metaObjects.nextContinuationToken,
+        ),
+      );
+
+      final response = await ref.watch(diServiceProvider).apiRemoteClient.send(dto);
+
+      if (!response.sendOk) {
+        conditionToRead = false;
+        break;
+      }
+      //TODO Serial
+      metaObjects = roflitService.serizalizer.metaObjects(response.success);
+      final objects = roflitService.serizalizer.objects(response.success);
+
+      if (objects.isEmpty) {
+        conditionToRead = false;
+        break;
+      }
+      listAllObjects.addAll(objects.map((e) => e.objectKey));
+      if (!metaObjects.isTruncated) {
+        conditionToRead = false;
+        break;
+      }
+    } while (conditionToRead);
+
+    if (listAllObjects.isEmpty) return null;
+    var result = true;
+
+    do {
+      final end = listAllObjects.length < 1000 ? listAllObjects.length : 1000;
+
+      final objectKeysString = listAllObjects.getRange(0, end).map((e) {
+        return '<Object><Key>$e</Key></Object>';
+      }).join('');
+
+      final doc =
+          '<?xml version="1.0" encoding="UTF-8"?><Delete><Quiet>true</Quiet>$objectKeysString</Delete>';
+
+      final dto = roflitService.roflit.objects.deleteMultiple(
+        bucketName: activeBucket,
+        body: doc,
+      );
+
+      final response = await ref.watch(diServiceProvider).apiRemoteClient.send(dto);
+      if (!response.sendOk) {
+        conditionToDelete = false;
+        result = false;
+        break;
+      }
+
+      listAllObjects.removeRange(0, end);
+
+      if (listAllObjects.isEmpty) {
+        conditionToDelete = false;
+        break;
+      }
+    } while (conditionToDelete);
+
+    return result;
   }
 }

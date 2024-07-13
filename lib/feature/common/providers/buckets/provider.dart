@@ -1,24 +1,18 @@
 import 'dart:async';
 
-import 'dart:io';
-import 'dart:math';
-
-
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:easy_debounce/easy_debounce.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:roflit/core/config/tag_debounce.dart';
 import 'package:roflit/core/entity/bucket.dart';
-import 'package:roflit/core/entity/meta_object.dart';
 import 'package:roflit/core/entity/storage.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/providers/di_service.dart';
 import 'package:roflit/core/providers/roflit_service.dart';
 import 'package:roflit/data/local/api_db.dart';
-import 'package:s3roflit/s3roflit.dart';
+import 'package:roflit/feature/common/providers/objects/provider.dart';
 
 part 'provider.freezed.dart';
 part 'provider.g.dart';
@@ -52,7 +46,10 @@ final class BucketsBloc extends _$BucketsBloc {
     await _listenerActiveStorage?.cancel();
 
     _listenerActiveStorage = watchingDao.watchActiveStorage().listen((event) {
-      if (event == null) return;
+      if (event == null) {
+        state = state.copyWith(loaderPage: ContentStatus.empty);
+        return;
+      }
       if (state.activeStorage?.idStorage == event.idStorage) return;
       EasyDebounce.debounce(Tags.updateBuckets, const Duration(milliseconds: 500), () {
         state = state.copyWith(activeStorage: event);
@@ -134,7 +131,6 @@ final class BucketsBloc extends _$BucketsBloc {
           dto,
         );
 
-    print('>>>> ${response.sendOk} ${response.statusCode}');
     if (!response.sendOk) {
       //TODO add snackbar
       return false;
@@ -167,7 +163,10 @@ final class BucketsBloc extends _$BucketsBloc {
     final activeBucket = state.activeStorage!.activeBucket!;
 
     // Запрос всех обьектов
-    final resultDeleteObjects = await _deleteAllObject(activeBucket: activeBucket);
+    final resultDeleteObjects = await ref.read(objectsBlocProvider.notifier).deleteAllObject(
+          activeBucket: activeBucket,
+        );
+
     if (resultDeleteObjects == false) {
       return false;
     }
@@ -210,111 +209,5 @@ final class BucketsBloc extends _$BucketsBloc {
       buckets: bucketList,
     );
     return true;
-  }
-
-  Future<bool?> _deleteAllObject({required String activeBucket}) async {
-    final roflitService = ref.read(roflitServiceProvider(state.activeStorage));
-
-    final listAllObjects = <String>[];
-    var metaObjects = MetaObjectEntity.empty();
-    var conditionToRead = true;
-    var conditionToDelete = true;
-
-    do {
-      final dto = roflitService.roflit.buckets.getObjects(
-        bucketName: activeBucket,
-        queryParameters: BucketListObjectParameters(
-          maxKeys: 1000,
-          continuationToken: metaObjects.nextContinuationToken,
-        ),
-      );
-
-      final response = await ref.watch(diServiceProvider).apiRemoteClient.send(dto);
-
-      if (!response.sendOk) {
-        conditionToRead = false;
-        break;
-      }
-      //TODO Serial
-      metaObjects = roflitService.serizalizer.metaObjects(response.success);
-      final objects = roflitService.serizalizer.objects(response.success);
-
-      if (objects.isEmpty) {
-        conditionToRead = false;
-        break;
-      }
-      listAllObjects.addAll(objects.map((e) => e.objectKey));
-      if (!metaObjects.isTruncated) {
-        conditionToRead = false;
-        break;
-      }
-    } while (conditionToRead);
-
-    if (listAllObjects.isEmpty) return null;
-    var result = true;
-
-    do {
-      final end = listAllObjects.length < 1000 ? listAllObjects.length : 1000;
-
-      final objectKeysString = listAllObjects.getRange(0, end).map((e) {
-        return '<Object><Key>$e</Key></Object>';
-      }).join('');
-
-      final doc =
-          '<?xml version="1.0" encoding="UTF-8"?><Delete><Quiet>true</Quiet>$objectKeysString</Delete>';
-
-      final dto = roflitService.roflit.objects.deleteMultiple(
-        bucketName: activeBucket,
-        body: doc,
-      );
-
-      final response = await ref.watch(diServiceProvider).apiRemoteClient.send(dto);
-      return false;
-      if (!response.sendOk) {
-        conditionToDelete = false;
-        result = false;
-        break;
-      }
-
-      listAllObjects.removeRange(0, end);
-
-      if (listAllObjects.isEmpty) {
-        conditionToDelete = false;
-        break;
-      }
-    } while (conditionToDelete);
-
-    return result;
-  }
-
-  Future<void> getFile() async {
-    final result = await FilePicker.platform.pickFiles();
-    if (result == null) {
-      //TODO: snackbar
-      return;
-    }
-
-    final file = File(result.files.single.path!);
-    await _upload(file);
-  }
-
-  Future<bool> _upload(File file) async {
-    if (state.activeStorage?.activeBucket?.isNotEmpty == false) {
-      return false;
-    }
-    final roflitService = ref.read(roflitServiceProvider(state.activeStorage));
-    final currentIdStorage = state.activeStorage!.idStorage;
-    final activeBucket = state.activeStorage!.activeBucket!;
-    final mime = file.path.split('.').last;
-    final mimeType = mime.isNotEmpty ? '.$mime' : '';
-    final dto = roflitService.roflit.objects.upload(
-      bucketName: activeBucket,
-      objectKey: Random().nextInt(999).toString() + mimeType,
-      headers: ObjectUploadHadersParameters(bodyBytes: file.readAsBytesSync()),
-      body: file.readAsBytesSync(),
-    );
-
-    final response = await ref.watch(diServiceProvider).apiRemoteClient.send(dto);
-    return false;
   }
 }

@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:roflit/feature/common/providers/file_manager/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 import 'package:roflit/generated/assets.gen.dart';
 
-class SectionContentNavigationHeaderBar extends StatefulWidget {
+class SectionContentNavigationHeaderBar extends ConsumerWidget {
   const SectionContentNavigationHeaderBar({super.key});
 
   @override
-  State<SectionContentNavigationHeaderBar> createState() =>
-      _SectionContentNavigationHeaderBarState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final defaultDirectory = ref.watch(fileManagerBlocProvider.select((v) {
+      return (
+        pathSelectFiles: v.activeStorage?.pathSelectFiles,
+        pathSaveFiles: v.activeStorage?.pathSaveFiles,
+      );
+    }));
 
-class _SectionContentNavigationHeaderBarState extends State<SectionContentNavigationHeaderBar> {
-  @override
-  Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constr) {
       return Flex(
         direction: Axis.horizontal,
@@ -22,10 +25,25 @@ class _SectionContentNavigationHeaderBarState extends State<SectionContentNaviga
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Text(
-                'CD: /Пользователь/Мои документы/файлы',
-                overflow: TextOverflow.ellipsis,
-                style: appTheme.textTheme.title2.bold.onDark2,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (defaultDirectory.pathSelectFiles != null) ...[
+                    Text(
+                      'CD: ${defaultDirectory.pathSelectFiles ?? ''}',
+                      overflow: TextOverflow.ellipsis,
+                      style: appTheme.textTheme.title2.bold.onDark2,
+                    ),
+                  ],
+                  if (defaultDirectory.pathSaveFiles != null) ...[
+                    Text(
+                      'CD: ${defaultDirectory.pathSaveFiles ?? ''}',
+                      overflow: TextOverflow.ellipsis,
+                      style: appTheme.textTheme.title2.bold.onDark2,
+                    ),
+                  ],
+                ],
               ),
             ),
           ),

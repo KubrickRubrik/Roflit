@@ -5,6 +5,7 @@ import 'package:roflit/feature/common/themes/text.dart';
 class HomeContentTextField extends HookWidget {
   final TextEditingController controller;
   final String hint;
+  final TextStyle? style;
   final TextStyle? hintStyle;
   final bool obscureText;
   final Widget? prefixIcon;
@@ -16,6 +17,7 @@ class HomeContentTextField extends HookWidget {
   const HomeContentTextField({
     required this.controller,
     required this.hint,
+    this.style,
     this.hintStyle,
     this.obscureText = false,
     this.prefixIcon,
@@ -48,7 +50,7 @@ class HomeContentTextField extends HookWidget {
       controller: controller,
       maxLength: maxLength,
       maxLines: 1,
-      style: appTheme.textTheme.title2.onDark1,
+      style: style ?? appTheme.textTheme.title2.onDark1,
       textAlign: TextAlign.center,
       obscureText: obscure.value,
       onSubmitted: onSubmitted,

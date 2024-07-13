@@ -144,6 +144,24 @@ final class UiBloc extends _$UiBloc {
         break;
     }
   }
+
+  void menuFileManager({
+    ActionMenu? action,
+  }) {
+    var currentAction = action;
+    currentAction ??= state.isDisplayedFileManagerMenu ? ActionMenu.close : ActionMenu.open;
+    switch (currentAction) {
+      case ActionMenu.open:
+        state = state.copyWith(isDisplayedFileManagerMenu: true);
+        break;
+      case ActionMenu.hoverLeave:
+        // state = state.copyWith(isDisplayBucketMenu: false);
+        break;
+      case ActionMenu.close:
+        state = state.copyWith(isDisplayedFileManagerMenu: false);
+        break;
+    }
+  }
 }
 
 enum TypeMenu {

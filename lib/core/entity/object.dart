@@ -11,10 +11,10 @@ class ObjectEntity with _$ObjectEntity {
     required String objectKey,
     required String bucket,
     required int size,
-    required String lastModified,
     required IconSourceType type,
     @Default(0) int nesting,
     @Default(0) int idObject,
+    String? lastModified,
     String? remotePath,
     String? localPath,
   }) = _ObjectEntity;

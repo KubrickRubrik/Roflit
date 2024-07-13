@@ -22,8 +22,8 @@ class ObjectItem extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final bloc = ref.watch(objectsBlocProvider.notifier);
 
-    final object = ref.watch(objectsBlocProvider.select((value) {
-      return value.objects[index];
+    final object = ref.watch(objectsBlocProvider.select((v) {
+      return v.objects.elementAtOrNull(index);
     }));
 
     final stateHover = useState(false);
@@ -40,6 +40,7 @@ class ObjectItem extends HookConsumerWidget {
       [stateHover.value],
     );
 
+    if (object == null) return const SizedBox();
     return InkWell(
       onTap: () {},
       onHover: (value) {
@@ -64,7 +65,10 @@ class ObjectItem extends HookConsumerWidget {
               height: 30,
               width: 30,
               margin: const EdgeInsets.only(left: 6),
-              child: LabelBannerItem(type: object.type, path: object.remotePath ?? ''),
+              child: LabelBannerItem(
+                type: object.type,
+                remotePath: object.remotePath ?? '',
+              ),
             ),
             const SizedBox(width: 8),
             Expanded(

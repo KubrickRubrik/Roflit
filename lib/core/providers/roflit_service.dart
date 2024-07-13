@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:roflit/core/entity/bucket.dart';
@@ -109,6 +110,31 @@ final class _YCSerializer implements StorageSerializerInterface {
   }
 
   @override
+  Future<List<ObjectEntity>> objectsFromFiles(List<File> files) async {
+    try {
+      final objects = <ObjectEntity>[];
+      for (final file in files) {
+        final objectKey = file.path.split('/').lastOrNull ?? '';
+        final size = await file.length();
+        objects.add(
+          ObjectEntity(
+            objectKey: objectKey,
+            type: FormatConverter.converter(file.path),
+            bucket: '',
+            size: size,
+            lastModified: '',
+            localPath: file.path,
+          ),
+        );
+      }
+
+      return objects;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  @override
   MetaObjectEntity metaObjects(Object? value) {
     try {
       _parser.parse(value as String);
@@ -159,6 +185,11 @@ final class _VKSerializer implements StorageSerializerInterface {
   }
 
   @override
+  Future<List<ObjectEntity>> objectsFromFiles(List<File>? value) async {
+    return [];
+  }
+
+  @override
   MetaObjectEntity metaObjects(Object? value) {
     return MetaObjectEntity.empty();
   }
@@ -167,5 +198,6 @@ final class _VKSerializer implements StorageSerializerInterface {
 abstract interface class StorageSerializerInterface {
   List<BucketEntity> buckets(Object? value);
   List<ObjectEntity> objects(Object? value);
+  Future<List<ObjectEntity>> objectsFromFiles(List<File> files);
   MetaObjectEntity metaObjects(Object? value);
 }

@@ -17,6 +17,8 @@ class StorageEntity with _$StorageEntity {
     required String accessKey,
     required String secretKey,
     required String region,
+    required String? pathSelectFiles,
+    required String? pathSaveFiles,
   }) = _StorageEntity;
 
   const StorageEntity._();
@@ -32,6 +34,8 @@ class StorageEntity with _$StorageEntity {
       accessKey: SecureService.encryptedSm(key: link, value: accessKey),
       secretKey: SecureService.encryptedSm(key: link, value: secretKey),
       region: SecureService.encryptedSm(key: link, value: region),
+      pathSelectFiles: pathSelectFiles,
+      pathSaveFiles: pathSaveFiles,
     );
   }
 
@@ -46,6 +50,8 @@ class StorageEntity with _$StorageEntity {
       accessKey: SecureService.decryptedSm(key: storageDto.link, value: storageDto.accessKey),
       secretKey: SecureService.decryptedSm(key: storageDto.link, value: storageDto.secretKey),
       region: SecureService.decryptedSm(key: storageDto.link, value: storageDto.region),
+      pathSelectFiles: storageDto.pathSelectFiles,
+      pathSaveFiles: storageDto.pathSaveFiles,
     );
   }
 }

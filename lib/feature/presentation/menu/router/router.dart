@@ -16,7 +16,7 @@ part 'end_points.dart';
 
 final GlobalKey<NavigatorState> rootMenuNavigatorKey = GlobalKey<NavigatorState>();
 
-abstract final class MainMenuRouter {
+abstract final class MenuSettingsRouter {
   static GoRouter getRoute() {
     return GoRouter(
       debugLogDiagnostics: false,

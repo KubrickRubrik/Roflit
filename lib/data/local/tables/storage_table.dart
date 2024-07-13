@@ -14,4 +14,6 @@ class StorageTable extends Table {
   TextColumn get accessKey => text().withLength(min: 1, max: 128)();
   TextColumn get secretKey => text().withLength(min: 1, max: 128)();
   TextColumn get region => text().withLength(min: 1, max: 128)();
+  TextColumn get pathSelectFiles => text().nullable().withLength(min: 1, max: 512)();
+  TextColumn get pathSaveFiles => text().nullable().withLength(min: 1, max: 512)();
 }

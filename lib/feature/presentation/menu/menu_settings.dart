@@ -6,8 +6,8 @@ import 'package:roflit/feature/common/themes/sizes.dart';
 
 import 'router/router.dart';
 
-class MainMenu extends ConsumerWidget {
-  const MainMenu({super.key});
+class MenuSettings extends ConsumerWidget {
+  const MenuSettings({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,7 +26,7 @@ class MainMenu extends ConsumerWidget {
         crossFadeState:
             (!isDisplayedMainMenu) ? CrossFadeState.showFirst : CrossFadeState.showSecond,
         firstChild: const SizedBox.shrink(),
-        secondChild: const _Menu(),
+        secondChild: const _MenuSettings(),
         layoutBuilder: (topChild, topChildKey, bottomChild, bottomChildKey) {
           return Stack(
             children: [
@@ -46,8 +46,8 @@ class MainMenu extends ConsumerWidget {
   }
 }
 
-class _Menu extends HookConsumerWidget {
-  const _Menu();
+class _MenuSettings extends HookConsumerWidget {
+  const _MenuSettings();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -86,7 +86,7 @@ class _Menu extends HookConsumerWidget {
             ),
             child: MaterialApp.router(
               debugShowCheckedModeBanner: false,
-              routerConfig: MainMenuRouter.getRoute(),
+              routerConfig: MenuSettingsRouter.getRoute(),
             ),
           ),
         ),

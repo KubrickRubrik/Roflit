@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/config/constants.dart';
 import 'package:roflit/core/providers/di_service.dart';
 import 'package:roflit/feature/common/providers/buckets/provider.dart';
+import 'package:roflit/feature/common/providers/file_manager/provider.dart';
 import 'package:roflit/feature/common/providers/objects/provider.dart';
 import 'package:roflit/feature/common/providers/observer/provider.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
@@ -27,40 +28,7 @@ void main() async {
 
     // DesktopWindow.setFullScreen(true);
   }
-//     final request = AWSHttpRequest(
-//       method: AWSHttpMethod.post,
-//       uri: Uri.https('cognito-idp.$region.amazonaws.com', '/'),
-//       headers: const {
-//         AWSHeaders.target: 'AWSCognitoIdentityProviderService.DescribeUserPool',
-//         AWSHeaders.contentType: 'application/x-amz-json-1.1',
-//       },
-//       body: json.encode({
-//         'UserPoolId': '<YOUR-USER-POOL-ID>',
-//       }).codeUnits,
-//     );
-  // const signer = AWSSigV4Signer(
-  //   credentialsProvider: AWSCredentialsProvider.environment(),
-  // );
-  // signer.signSync(request, credentialScope: credentialScope)
-  // if (Platform.isWindows) {
-  //   await windowManager.ensureInitialized();
-  //   const windowOptions = WindowOptions(
-  //     fullScreen: false,
-  //     skipTaskbar: true,
-  //     center: true,
-  //     minimumSize: Constants.minimumSizeWindow,
-  //     maximumSize: Constants.maximumSizeWindow,
-  //     alwaysOnTop: false,
-  //     backgroundColor: Colors.transparent,
-  //     titleBarStyle: TitleBarStyle.normal,
-  //     title: 'Roflit',
-  //     windowButtonVisibility: false,
-  //   );
-  //   await windowManager.waitUntilReadyToShow(windowOptions, () async {
-  //     await windowManager.show();
-  //     await windowManager.focus();
-  //   });
-  // }
+
   runApp(
     ProviderScope(
       observers: [
@@ -112,12 +80,14 @@ class _EagerInitialization extends HookConsumerWidget {
     final sessionBloc = ref.watch(sessionBlocProvider.notifier);
     final bucketsBloc = ref.watch(bucketsBlocProvider.notifier);
     final objectsBloc = ref.watch(objectsBlocProvider.notifier);
+    final fileManagerBloc = ref.watch(fileManagerBlocProvider.notifier);
 
     useInitState(
       onBuild: () {
         sessionBloc.watchSessionAndAccounts();
         bucketsBloc.watchStorages();
         objectsBloc.watchStorages();
+        fileManagerBloc.watchStorages();
       },
     );
 

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:roflit/feature/common/widgets/lines.dart';
-import 'package:roflit/feature/presentation/menu/menu.dart';
+import 'package:roflit/feature/presentation/menu/menu_settings.dart';
+import 'package:roflit/feature/presentation/menu_file/menu_file.dart';
 
 import 'home_content_buckets.dart';
 import 'home_content_objects.dart';
@@ -51,7 +52,8 @@ class HomeContent extends StatelessWidget {
                   ],
                 ),
               ),
-              MainMenu(),
+              MenuSettings(),
+              MenuFilesManager(),
             ],
           ),
         ),
