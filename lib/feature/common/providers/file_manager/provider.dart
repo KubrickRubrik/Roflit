@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
+import 'package:drift/drift.dart' as drift;
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -14,6 +15,7 @@ import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/providers/di_service.dart';
 import 'package:roflit/core/providers/roflit_service.dart';
 import 'package:roflit/core/utils/await.dart';
+import 'package:roflit/data/local/api_db.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
 import 'package:s3roflit/s3roflit.dart';
 
@@ -40,7 +42,8 @@ final class FileManagerBloc extends _$FileManagerBloc {
 
     _listenerActiveStorage = watchingDao.watchActiveStorage().listen((event) {
       if (event == null) return;
-      if (state.activeStorage?.idStorage == event.idStorage) return;
+      if (state.activeStorage?.idStorage == event.idStorage &&
+          state.activeStorage?.activeBucket == event.activeBucket) return;
       EasyDebounce.debounce(Tags.updateFileManager, const Duration(milliseconds: 500), () {
         state = state.copyWith(activeStorage: event);
       });
@@ -80,7 +83,6 @@ final class FileManagerBloc extends _$FileManagerBloc {
       loaderPage: ContentStatus.loaded,
     );
     ref.read(uiBlocProvider.notifier).menuFileManager(action: ActionMenu.open);
-    // await _upload(file);
   }
 
   Future<void> addMoreFiles() async {
@@ -103,24 +105,49 @@ final class FileManagerBloc extends _$FileManagerBloc {
     state = state.copyWith(objects: currentObjects.toSet().toList());
   }
 
-  Future<bool> _upload(File file) async {
-    if (state.activeStorage?.activeBucket?.isNotEmpty == false) {
-      return false;
+  Future<void> nextUploadFiles() async {
+    if (state.activeStorage?.storageType == null ||
+        state.activeStorage?.activeBucket?.isEmpty == true) {
+      //TODO: snackbar
+      return;
     }
-    final roflitService = ref.read(roflitServiceProvider(state.activeStorage));
-    final currentIdStorage = state.activeStorage!.idStorage;
-    final activeBucket = state.activeStorage!.activeBucket!;
-    final mime = file.path.split('.').last;
-    final mimeType = mime.isNotEmpty ? '.$mime' : '';
-    final dto = roflitService.roflit.objects.upload(
-      bucketName: activeBucket,
-      objectKey: Random().nextInt(999).toString() + mimeType,
-      headers: ObjectUploadHadersParameters(bodyBytes: file.readAsBytesSync()),
-      body: file.readAsBytesSync(),
-    );
 
-    final response = await ref.watch(diServiceProvider).apiRemoteClient.send(dto);
-    return false;
+    final objects = state.objects.map((v) {
+      return ObjectTableCompanion.insert(
+        objectKey: v.objectKey,
+        bucket: state.activeStorage!.activeBucket!,
+        type: v.type.name,
+        storageType: state.activeStorage!.storageType.name,
+        localPath: drift.Value(v.localPath),
+      );
+    }).toList();
+
+    final objectWithError = objects.firstWhereOrNull((v) {
+      return v.objectKey.value.length < 3;
+    });
+
+    if (objectWithError != null) {
+      //TODO: snackbar
+      return;
+    }
+
+    final response =
+        await ref.read(diServiceProvider).apiLocalClient.objectUploadDao.saveUploadObject(objects);
+
+    if (!response) {
+      //TODO: snackbar
+      return;
+    }
+
+    closMenu();
+  }
+
+  Future<void> removeUploadObjects(List<int> removeUploadIds) async {
+    final response = await ref
+        .read(diServiceProvider)
+        .apiLocalClient
+        .objectUploadDao
+        .removeUploadObject(removeUploadIds);
   }
 
   void closMenu() {
@@ -147,5 +174,25 @@ final class FileManagerBloc extends _$FileManagerBloc {
     state = state.copyWith(
       objects: currentObjects,
     );
+  }
+
+  Future<bool> _upload(File file) async {
+    if (state.activeStorage?.activeBucket?.isNotEmpty == false) {
+      return false;
+    }
+    final roflitService = ref.read(roflitServiceProvider(state.activeStorage));
+    final currentIdStorage = state.activeStorage!.idStorage;
+    final activeBucket = state.activeStorage!.activeBucket!;
+    final mime = file.path.split('.').last;
+    final mimeType = mime.isNotEmpty ? '.$mime' : '';
+    final dto = roflitService.roflit.objects.upload(
+      bucketName: activeBucket,
+      objectKey: Random().nextInt(999).toString() + mimeType,
+      headers: ObjectUploadHadersParameters(bodyBytes: file.readAsBytesSync()),
+      body: file.readAsBytesSync(),
+    );
+
+    final response = await ref.watch(diServiceProvider).apiRemoteClient.send(dto);
+    return false;
   }
 }

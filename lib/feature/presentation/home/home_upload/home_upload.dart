@@ -1,4 +1,3 @@
-// ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,8 +12,8 @@ import 'widgets/config_button.dart';
 import 'widgets/objects_hover.dart';
 import 'widgets/objects_list.dart';
 
-class HomeLoading extends ConsumerWidget {
-  const HomeLoading({super.key});
+class HomeUpload extends ConsumerWidget {
+  const HomeUpload({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -84,9 +83,9 @@ class HomeLoading extends ConsumerWidget {
                 child: Stack(
                   children: [
                     Center(
-                      child: LoadingSectionObjectsList(),
+                      child: HomeUploadObjectsList(),
                     ),
-                    LoadingSectionAccountsMenu(width: constr.maxWidth),
+                    HomeUploadAccountsMenu(width: constr.maxWidth),
                   ],
                 ),
               ),
@@ -96,7 +95,7 @@ class HomeLoading extends ConsumerWidget {
           Container(
             height: 64,
             alignment: Alignment.topLeft,
-            child: const LoadingSectionConfigButton(),
+            child: const HomeUploadConfigButton(),
           ),
         ],
       );

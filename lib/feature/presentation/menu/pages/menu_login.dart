@@ -9,9 +9,9 @@ import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 import 'package:roflit/feature/common/widgets/action_menu_button.dart';
+import 'package:roflit/feature/common/widgets/content_text_field.dart';
 import 'package:roflit/feature/presentation/menu/widgets/menu_button.dart';
 import 'package:roflit/feature/presentation/menu/widgets/menu_item_button.dart';
-import 'package:roflit/feature/presentation/menu/widgets/menu_text_field.dart';
 
 class MenuLogin extends HookConsumerWidget {
   final MenuLoginDto menuLoginDto;
@@ -70,9 +70,9 @@ class MenuLogin extends HookConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   MainMenuItemButton(
-                    child: MainMenuTextField(
-                      hint: 'Пароль'.translate,
+                    child: ContentTextField(
                       controller: passwordController,
+                      hint: 'Пароль'.translate,
                       obscureText: true,
                       prefixIcon: const AspectRatio(aspectRatio: 1),
                       suffixIcon: const AspectRatio(

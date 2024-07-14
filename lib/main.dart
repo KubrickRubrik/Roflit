@@ -13,6 +13,7 @@ import 'package:roflit/feature/common/providers/file_manager/provider.dart';
 import 'package:roflit/feature/common/providers/objects/provider.dart';
 import 'package:roflit/feature/common/providers/observer/provider.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
+import 'package:roflit/feature/common/providers/upload/provider.dart';
 import 'package:roflit/feature/presentation/home/home.dart';
 
 import 'core/utils/hooks.dart';
@@ -81,6 +82,7 @@ class _EagerInitialization extends HookConsumerWidget {
     final bucketsBloc = ref.watch(bucketsBlocProvider.notifier);
     final objectsBloc = ref.watch(objectsBlocProvider.notifier);
     final fileManagerBloc = ref.watch(fileManagerBlocProvider.notifier);
+    final uploadBloc = ref.watch(uploadBlocProvider.notifier);
 
     useInitState(
       onBuild: () {
@@ -88,6 +90,7 @@ class _EagerInitialization extends HookConsumerWidget {
         bucketsBloc.watchStorages();
         objectsBloc.watchStorages();
         fileManagerBloc.watchStorages();
+        uploadBloc.watchUploadObjects();
       },
     );
 

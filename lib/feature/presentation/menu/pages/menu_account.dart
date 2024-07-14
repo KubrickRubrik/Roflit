@@ -11,10 +11,10 @@ import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 import 'package:roflit/feature/common/widgets/action_menu_button.dart';
+import 'package:roflit/feature/common/widgets/content_text_field.dart';
 import 'package:roflit/feature/presentation/menu/router/router.dart';
 import 'package:roflit/feature/presentation/menu/widgets/menu_button.dart';
 import 'package:roflit/feature/presentation/menu/widgets/menu_item_button.dart';
-import 'package:roflit/feature/presentation/menu/widgets/menu_text_field.dart';
 
 class MenuAccount extends HookConsumerWidget {
   final MenuAccountDto menuAccountDto;
@@ -97,9 +97,28 @@ class MenuAccount extends HookConsumerWidget {
                   //! Account name .
                   MainMenuItemButton(
                     onTap: () {},
-                    child: MainMenuTextField(
-                      hint: 'Имя'.translate,
+                    child: ContentTextField(
                       controller: nameController,
+                      hint: 'Имя'.translate,
+                    ),
+                  ),
+                  //! Password.
+                  MainMenuItemButton(
+                    onTap: () {},
+                    child: ContentTextField(
+                      controller: passwordController,
+                      hint: 'Пароль'.translate,
+                      obscureText: true,
+                      prefixIcon: const AspectRatio(aspectRatio: 1),
+                      suffixIcon: const AspectRatio(
+                        aspectRatio: 1,
+                        child: Icon(
+                          Icons.remove_red_eye,
+                          color: Color(
+                            AppColors.textOnDark1,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   //! Localization.
@@ -142,25 +161,6 @@ class MenuAccount extends HookConsumerWidget {
                       ),
                     ),
                   },
-                  //! Password.
-                  MainMenuItemButton(
-                    onTap: () {},
-                    child: MainMenuTextField(
-                      hint: 'Пароль'.translate,
-                      controller: passwordController,
-                      obscureText: true,
-                      prefixIcon: const AspectRatio(aspectRatio: 1),
-                      suffixIcon: const AspectRatio(
-                        aspectRatio: 1,
-                        child: Icon(
-                          Icons.remove_red_eye,
-                          color: Color(
-                            AppColors.textOnDark1,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),

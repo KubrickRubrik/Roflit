@@ -17,9 +17,9 @@ import 'package:roflit/feature/common/widgets/loader.dart';
 import 'package:roflit/feature/presentation/menu/router/router.dart';
 import 'package:roflit/generated/assets.gen.dart';
 
-class LoadingSectionAccountsMenu extends ConsumerWidget {
+class HomeUploadAccountsMenu extends ConsumerWidget {
   final double width;
-  const LoadingSectionAccountsMenu({required this.width, super.key});
+  const HomeUploadAccountsMenu({required this.width, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

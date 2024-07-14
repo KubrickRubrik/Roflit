@@ -9,6 +9,8 @@ import 'package:roflit/core/entity/account.dart';
 import 'package:roflit/core/entity/object.dart';
 import 'package:roflit/core/entity/session.dart';
 import 'package:roflit/core/entity/storage.dart';
+import 'package:roflit/core/entity/upload_object.dart';
+import 'package:roflit/core/utils/logger.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
@@ -17,7 +19,7 @@ part 'api_db.g.dart';
 part 'daos/account_dao.dart';
 part 'daos/bucket_dao.dart';
 part 'daos/objects_download_dao.dart';
-part 'daos/objects_load_dao.dart';
+part 'daos/objects_upload_dao.dart';
 part 'daos/session_dao.dart';
 part 'daos/storage_dao.dart';
 // Table
@@ -25,8 +27,8 @@ part 'daos/test.dart';
 part 'daos/watching_dao.dart';
 part 'tables/account_table.dart';
 part 'tables/object_download_table.dart';
-part 'tables/object_load_table.dart';
 part 'tables/object_table.dart';
+part 'tables/object_upload_table.dart';
 part 'tables/session_table.dart';
 part 'tables/storage_table.dart';
 part 'tables/test_table.dart';
@@ -39,7 +41,7 @@ part 'tables/test_table.dart';
     AccountTable,
     StorageTable,
     ObjectDownloadTable,
-    ObjectLoadTable,
+    ObjectUploadTable,
     ObjectTable,
   ],
   daos: [
@@ -48,7 +50,7 @@ part 'tables/test_table.dart';
     SessionDao,
     AccountDao,
     ObjectDownloadDao,
-    ObjectLoadDao,
+    ObjectUploadDao,
     StorageDao,
     BucketDao,
   ],

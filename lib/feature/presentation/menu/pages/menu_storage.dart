@@ -11,10 +11,10 @@ import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 import 'package:roflit/feature/common/widgets/action_menu_button.dart';
+import 'package:roflit/feature/common/widgets/content_text_field.dart';
 import 'package:roflit/feature/presentation/menu/router/router.dart';
 import 'package:roflit/feature/presentation/menu/widgets/menu_button.dart';
 import 'package:roflit/feature/presentation/menu/widgets/menu_item_button.dart';
-import 'package:roflit/feature/presentation/menu/widgets/menu_text_field.dart';
 
 class MenuStorage extends HookConsumerWidget {
   final MenuStorageDto menuStorageDto;
@@ -114,9 +114,9 @@ class MenuStorage extends HookConsumerWidget {
                   //! Title cloud.
                   MainMenuItemButton(
                     onTap: () {},
-                    child: MainMenuTextField(
-                      hint: 'Название'.translate,
+                    child: ContentTextField(
                       controller: titleStorageController,
+                      hint: 'Название'.translate,
                     ),
                   ),
                   //! Type Cloud.
@@ -138,27 +138,28 @@ class MenuStorage extends HookConsumerWidget {
                   //! Access key.
                   MainMenuItemButton(
                     onTap: () {},
-                    child: MainMenuTextField(
-                      hint: 'Ключ доступа'.translate,
+                    child: ContentTextField(
                       controller: accessKeyStorageController,
+                      hint: 'Ключ доступа'.translate,
                       maxLength: 128,
                     ),
                   ),
                   //! The secret key.
                   MainMenuItemButton(
                     onTap: () {},
-                    child: MainMenuTextField(
-                      hint: 'Секретный ключ'.translate,
+                    child: ContentTextField(
                       controller: secretKeyStorageController,
+                      hint: 'Секретный ключ'.translate,
                       maxLength: 128,
                     ),
                   ),
                   //! Cloud region.
                   MainMenuItemButton(
                     onTap: () {},
-                    child: MainMenuTextField(
-                      hint: 'Регион облака'.translate,
+                    child: ContentTextField(
                       controller: regionKeyStorageController,
+                      hint: 'Регион облака'.translate,
+                      maxLength: 128,
                     ),
                   ),
                 ],

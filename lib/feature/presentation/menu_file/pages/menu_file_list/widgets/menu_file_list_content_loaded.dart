@@ -2,13 +2,14 @@ import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:roflit/core/config/filter_text_constants.dart';
 import 'package:roflit/core/config/tag_debounce.dart';
 import 'package:roflit/core/extension/estring.dart';
 import 'package:roflit/feature/common/providers/file_manager/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 import 'package:roflit/feature/common/widgets/button.dart';
-import 'package:roflit/feature/common/widgets/home_content_text_field.dart';
+import 'package:roflit/feature/common/widgets/content_text_field.dart';
 import 'package:roflit/feature/common/widgets/label_banner_item.dart';
 import 'package:roflit/feature/presentation/menu_file/pages/menu_file_list/widgets/menu_file_list_content_empty.dart';
 import 'package:roflit/generated/assets.gen.dart';
@@ -114,12 +115,15 @@ class _MenuFileListItem extends HookConsumerWidget {
             ),
             const SizedBox(width: 8),
             Expanded(
-              child: HomeContentTextField(
+              child: ContentTextField(
                 controller: controller,
                 hint: 'Название объекта'.translate,
                 textAlign: TextAlign.start,
                 style: appTheme.textTheme.title3.bold.onDark1,
                 hintStyle: appTheme.textTheme.title3.bold.onDark2,
+                filterInputFormatters: [
+                  FilterTextConstant.nameObject,
+                ],
                 onChanged: (String name) {
                   bloc.renameObject(index: index, name: name);
                 },

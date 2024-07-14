@@ -50,7 +50,8 @@ final class BucketsBloc extends _$BucketsBloc {
         state = state.copyWith(loaderPage: ContentStatus.empty);
         return;
       }
-      if (state.activeStorage?.idStorage == event.idStorage) return;
+      if (state.activeStorage?.idStorage == event.idStorage &&
+          state.activeStorage?.activeBucket == event.activeBucket) return;
       EasyDebounce.debounce(Tags.updateBuckets, const Duration(milliseconds: 500), () {
         state = state.copyWith(activeStorage: event);
 
@@ -78,6 +79,10 @@ final class BucketsBloc extends _$BucketsBloc {
 
     final buckets = roflitService.serizalizer.buckets(response.success);
     state = state.copyWith(buckets: buckets);
+
+    if (buckets.isNotEmpty && state.activeStorage?.activeBucket?.isNotEmpty != true) {
+      await setActiveBucket(0);
+    }
   }
 
   Future<void> setActiveBucket(int indexBucket) async {

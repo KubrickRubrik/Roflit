@@ -7,7 +7,7 @@ import 'package:roflit/feature/common/widgets/lines.dart';
 
 import 'home_content/home_content.dart';
 import 'home_download/home_download.dart';
-import 'home_loading/home_loading.dart';
+import 'home_upload/home_upload.dart';
 
 class Home extends HookConsumerWidget {
   const Home({super.key});
@@ -38,7 +38,7 @@ class Home extends HookConsumerWidget {
                       Lines.vertical(),
                       Flexible(
                         flex: 3,
-                        child: HomeLoading(),
+                        child: HomeUpload(),
                       ),
                     ],
                   ),

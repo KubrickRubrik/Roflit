@@ -1,6 +1,6 @@
 part of '../api_db.dart';
 
-@DriftAccessor(tables: [SessionTable, AccountTable, StorageTable])
+@DriftAccessor(tables: [SessionTable, AccountTable, StorageTable, ObjectUploadTable, ObjectTable])
 class WatchingDao extends DatabaseAccessor<ApiDatabase> with _$WatchingDaoMixin {
   WatchingDao(super.db);
 
@@ -76,6 +76,33 @@ class WatchingDao extends DatabaseAccessor<ApiDatabase> with _$WatchingDaoMixin 
       final storageDto = row?.readTableOrNull(storageTable);
       if (storageDto == null) return null;
       return StorageEntity.fromDto(storageDto);
+    });
+  }
+
+  Stream<List<UploadObjectEntity>> watchUploadObjects() {
+    final query = select(objectUploadTable).join([
+      innerJoin(
+        objectTable,
+        objectTable.idObject.equalsExp(objectUploadTable.idObject),
+      )
+    ]);
+
+    query.orderBy([OrderingTerm.asc(objectUploadTable.idUpload)]);
+
+    return query.watch().map((rows) {
+      final listResult = <UploadObjectEntity>[];
+      for (final row in rows) {
+        final uploadDto = row.readTableOrNull(objectUploadTable);
+        final object = row.readTableOrNull(objectTable);
+        if (uploadDto != null && object != null) {
+          listResult.add(UploadObjectEntity.fromDto(
+            uploadDto: uploadDto,
+            objectDto: object,
+          ));
+        }
+      }
+
+      return listResult;
     });
   }
 }

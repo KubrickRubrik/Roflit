@@ -50,7 +50,6 @@ final class ApiRemoteClient {
         print('>>>> SEND POST HEADERS ${client.headers}');
         print('>>>> SEND POST BODY ${client.body}');
         response = await http.post(
-
           client.url,
           headers: client.headers,
           body: client.body,
@@ -60,8 +59,8 @@ final class ApiRemoteClient {
     }
 
     return Result.success(
-      statusCode: response?.statusCode,
-      success: response?.body,
+      statusCode: response.statusCode,
+      success: response.body,
     );
     // } catch (e) {
     //   logger.error(e);

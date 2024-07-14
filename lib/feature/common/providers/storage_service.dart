@@ -72,10 +72,8 @@ final class StorageService {
       return false;
       //TODO snackbar
     }
+    await sessionBloc.setActiveStorage(responseAccount.idStorage);
 
-    // await Future.delayed(Duration(seconds: 3), () {});
-    // await sessionBloc.loginFreeAccount(responseAccount);
-    // });
     //TODO snackbar
     return true;
   }

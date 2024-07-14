@@ -196,8 +196,7 @@ final class SessionBloc extends _$SessionBloc {
   Future<bool> setActiveStorage(int? idStorage) async {
     final apiSessionDao = ref.read(diServiceProvider).apiLocalClient.sessionDao;
     final account = getAccount(getActive: true);
-    if (account == null ||
-        account.storages.firstWhereOrNull((e) => e.idStorage == idStorage) == null) {
+    if (account == null) {
       //TODO: добавление снэкбара
       return false;
     }

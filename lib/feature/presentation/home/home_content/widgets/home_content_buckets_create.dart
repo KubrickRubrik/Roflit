@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:roflit/core/config/filter_text_constants.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/extension/estring.dart';
 import 'package:roflit/feature/common/providers/buckets/provider.dart';
@@ -8,7 +9,7 @@ import 'package:roflit/feature/common/providers/ui/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
-import 'package:roflit/feature/common/widgets/home_content_text_field.dart';
+import 'package:roflit/feature/common/widgets/content_text_field.dart';
 
 class HomeContentCreateBucket extends HookConsumerWidget {
   const HomeContentCreateBucket();
@@ -127,10 +128,13 @@ class _HomeContentCreateBucket extends StatelessWidget {
               color: stateOpenSubMenu.value ? const Color(AppColors.bgDarkGray2) : null,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: HomeContentTextField(
+            child: ContentTextField(
               controller: controller,
               hint: 'Название бакета'.translate,
               hintStyle: appTheme.textTheme.title2.onDark2,
+              filterInputFormatters: [
+                FilterTextConstant.nameBucket,
+              ],
             ),
           ),
           const SizedBox(height: 12),
