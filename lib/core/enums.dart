@@ -116,3 +116,11 @@ enum BucketCreateAccess {
   bool get isPublic => this == public;
   bool get isPrivate => this == private;
 }
+
+enum ActionBootloader {
+  upload,
+  download;
+
+  bool get isUpload => this == upload;
+  bool get isDownload => this == download;
+}

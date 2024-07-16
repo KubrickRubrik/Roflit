@@ -6,29 +6,27 @@ import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:roflit/core/entity/account.dart';
-import 'package:roflit/core/entity/object.dart';
+import 'package:roflit/core/entity/bootloader.dart';
 import 'package:roflit/core/entity/session.dart';
 import 'package:roflit/core/entity/storage.dart';
-import 'package:roflit/core/entity/upload_object.dart';
-import 'package:roflit/core/utils/logger.dart';
+import 'package:roflit/core/enums.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
 part 'api_db.g.dart';
 // Dao
 part 'daos/account_dao.dart';
+part 'daos/bootloader_dao.dart';
 part 'daos/bucket_dao.dart';
-part 'daos/objects_download_dao.dart';
-part 'daos/objects_upload_dao.dart';
 part 'daos/session_dao.dart';
 part 'daos/storage_dao.dart';
 // Table
 part 'daos/test.dart';
 part 'daos/watching_dao.dart';
 part 'tables/account_table.dart';
+part 'tables/bootloader_table.dart';
 part 'tables/object_download_table.dart';
 part 'tables/object_table.dart';
-part 'tables/object_upload_table.dart';
 part 'tables/session_table.dart';
 part 'tables/storage_table.dart';
 part 'tables/test_table.dart';
@@ -40,8 +38,7 @@ part 'tables/test_table.dart';
     SessionTable,
     AccountTable,
     StorageTable,
-    ObjectDownloadTable,
-    ObjectUploadTable,
+    BootloaderTable,
     ObjectTable,
   ],
   daos: [
@@ -49,8 +46,7 @@ part 'tables/test_table.dart';
     WatchingDao,
     SessionDao,
     AccountDao,
-    ObjectDownloadDao,
-    ObjectUploadDao,
+    BootloaderDao,
     StorageDao,
     BucketDao,
   ],

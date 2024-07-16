@@ -3,7 +3,8 @@ import 'dart:io';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:roflit/core/entity/upload_object.dart';
+import 'package:roflit/core/entity/bootloader.dart';
+import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/providers/di_service.dart';
 import 'package:roflit/feature/common/providers/file_manager/provider.dart';
 
@@ -22,18 +23,19 @@ final class UploadBloc extends _$UploadBloc {
   }
 
   // Removable listeners.
-  StreamSubscription<List<UploadObjectEntity>>? _listenerUploadsObjects;
+  StreamSubscription<List<BootloaderEntity>>? _listenerUploadsObjects;
 
   Future<void> watchUploadObjects() async {
     final watchingDao = ref.read(diServiceProvider).apiLocalClient.watchingDao;
     await _listenerUploadsObjects?.cancel();
 
-    _listenerUploadsObjects = watchingDao.watchUploadObjects().listen(_prepareUploadsFile);
+    _listenerUploadsObjects =
+        watchingDao.watchBootloader(ActionBootloader.upload).listen(_prepareUploadsFile);
   }
 
-  Future<void> _prepareUploadsFile(List<UploadObjectEntity> uploads) async {
-    final currentUploads = <UploadObjectEntity>[];
-    final removeErrorFileUploads = <UploadObjectEntity>[];
+  Future<void> _prepareUploadsFile(List<BootloaderEntity> uploads) async {
+    final currentUploads = <BootloaderEntity>[];
+    final removeErrorFileUploads = <BootloaderEntity>[];
 
     for (final upload in uploads) {
       try {
@@ -52,7 +54,7 @@ final class UploadBloc extends _$UploadBloc {
 
     if (removeErrorFileUploads.isNotEmpty) {
       final removeUploadIds = removeErrorFileUploads.map((v) {
-        return v.idUpload;
+        return v.id;
       }).toList();
 
       await ref.read(fileManagerBlocProvider.notifier).removeUploadObjects(removeUploadIds);

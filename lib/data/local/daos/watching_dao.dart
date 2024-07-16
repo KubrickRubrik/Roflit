@@ -1,6 +1,6 @@
 part of '../api_db.dart';
 
-@DriftAccessor(tables: [SessionTable, AccountTable, StorageTable, ObjectUploadTable, ObjectTable])
+@DriftAccessor(tables: [SessionTable, AccountTable, StorageTable, BootloaderTable, ObjectTable])
 class WatchingDao extends DatabaseAccessor<ApiDatabase> with _$WatchingDaoMixin {
   WatchingDao(super.db);
 
@@ -79,23 +79,27 @@ class WatchingDao extends DatabaseAccessor<ApiDatabase> with _$WatchingDaoMixin 
     });
   }
 
-  Stream<List<UploadObjectEntity>> watchUploadObjects() {
-    final query = select(objectUploadTable).join([
+  Stream<List<BootloaderEntity>> watchBootloader([ActionBootloader? action]) {
+    final query = select(bootloaderTable).join([
       innerJoin(
         objectTable,
-        objectTable.idObject.equalsExp(objectUploadTable.idObject),
+        objectTable.idObject.equalsExp(bootloaderTable.idObject),
       )
     ]);
 
-    query.orderBy([OrderingTerm.asc(objectUploadTable.idUpload)]);
+    if (action != null) {
+      query.where(bootloaderTable.action.equals(action.name));
+    }
+
+    query.orderBy([OrderingTerm.asc(bootloaderTable.id)]);
 
     return query.watch().map((rows) {
-      final listResult = <UploadObjectEntity>[];
+      final listResult = <BootloaderEntity>[];
       for (final row in rows) {
-        final uploadDto = row.readTableOrNull(objectUploadTable);
+        final uploadDto = row.readTableOrNull(bootloaderTable);
         final object = row.readTableOrNull(objectTable);
         if (uploadDto != null && object != null) {
-          listResult.add(UploadObjectEntity.fromDto(
+          listResult.add(BootloaderEntity.fromDto(
             uploadDto: uploadDto,
             objectDto: object,
           ));

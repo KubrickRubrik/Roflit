@@ -94,7 +94,7 @@ class MenuFileList extends HookConsumerWidget {
                         ),
                       false => MainMenuButton(
                           title: 'Продолжить'.translate,
-                          onTap: bloc.nextUploadFiles,
+                          onTap: bloc.addBootloader,
                         ),
                     }),
               ],

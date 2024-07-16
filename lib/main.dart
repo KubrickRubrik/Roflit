@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/config/constants.dart';
 import 'package:roflit/core/providers/di_service.dart';
+import 'package:roflit/feature/common/providers/bootloader/provider.dart';
 import 'package:roflit/feature/common/providers/buckets/provider.dart';
 import 'package:roflit/feature/common/providers/file_manager/provider.dart';
 import 'package:roflit/feature/common/providers/objects/provider.dart';
@@ -83,6 +84,7 @@ class _EagerInitialization extends HookConsumerWidget {
     final objectsBloc = ref.watch(objectsBlocProvider.notifier);
     final fileManagerBloc = ref.watch(fileManagerBlocProvider.notifier);
     final uploadBloc = ref.watch(uploadBlocProvider.notifier);
+    final bootloaderBloc = ref.watch(bootloaderBlocProvider.notifier);
 
     useInitState(
       onBuild: () {
@@ -91,6 +93,7 @@ class _EagerInitialization extends HookConsumerWidget {
         objectsBloc.watchStorages();
         fileManagerBloc.watchStorages();
         uploadBloc.watchUploadObjects();
+        bootloaderBloc.watchBootloader();
       },
     );
 
