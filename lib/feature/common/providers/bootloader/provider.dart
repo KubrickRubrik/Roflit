@@ -1,10 +1,15 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:roflit/core/entity/bootloader.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/providers/di_service.dart';
+import 'package:roflit/core/providers/roflit_service.dart';
+import 'package:roflit/core/utils/await.dart';
+import 'package:s3roflit/s3roflit.dart';
 
 part 'provider.freezed.dart';
 part 'provider.g.dart';
@@ -26,7 +31,7 @@ final class BootloaderBloc extends _$BootloaderBloc {
   Future<void> watchBootloader() async {
     final watchingDao = ref.read(diServiceProvider).apiLocalClient.watchingDao;
     await _listenerBootloaders?.cancel();
-
+    await Await.second(3);
     _listenerBootloaders = watchingDao.watchBootloader().listen((event) {
       state = state.copyWith(bootloaders: event);
       _startBootloaderEngine();
@@ -35,44 +40,91 @@ final class BootloaderBloc extends _$BootloaderBloc {
 
   Future<void> _startBootloaderEngine() async {
     if (state.config.isActiveProccess) return;
+    if (state.bootloaders.isEmpty) return;
     if (!state.config.isOn) return;
     state = state.copyWith(config: state.config.copyWith(isActiveProccess: true));
     do {
       // Формирование списка активности
-      final bootloaders = _getBootloaders();
-      if (bootloaders.isEmpty) {
-        break;
-      }
+      final bootloader = _getBootloader();
+      if (bootloader == null) break;
+
       // Выполнение активности над списком.
-      final response = switch (bootloaders.first.action) {
-        ActionBootloader.upload => await _uploadObject(bootloaders.first),
-        ActionBootloader.download => await _downloadObject(bootloaders.first),
+      final response = switch (bootloader.action) {
+        ActionBootloader.upload => await _uploadObject(bootloader),
+        ActionBootloader.download => await _downloadObject(bootloader),
       };
 
-      if (!response) break;
+      if (!response) {
+        if (bootloader.action.isUpload) {
+          //TODO add snackbar
+        } else {
+          //TODO add snackbar
+        }
+        break;
+      }
+      final bootloaders = state.bootloaders.toList();
+      state = state.copyWith(
+        bootloaders: bootloaders..remove(bootloader),
+      );
     } while (state.config.isOn && state.bootloaders.isNotEmpty);
 
     state = state.copyWith(config: state.config.copyWith(isActiveProccess: false));
   }
 
-  List<BootloaderEntity> _getBootloaders() {
-    final bootloaders = <BootloaderEntity>[];
+  BootloaderEntity? _getBootloader() {
+    BootloaderEntity? bootloader;
     if (state.config.first.isUpload) {
-      bootloaders.addAll(state.bootloaders.where((v) => v.action.isUpload));
-      if (bootloaders.isEmpty) {
-        bootloaders.addAll(state.bootloaders.where((v) => v.action.isDownload));
-      }
+      bootloader = state.bootloaders.firstWhereOrNull((v) => v.action.isUpload);
+      bootloader ??= state.bootloaders.firstWhereOrNull((v) => v.action.isDownload);
     } else {
-      bootloaders.addAll(state.bootloaders.where((v) => v.action.isDownload));
-      if (bootloaders.isEmpty) {
-        bootloaders.addAll(state.bootloaders.where((v) => v.action.isUpload));
-      }
+      bootloader = state.bootloaders.firstWhereOrNull((v) => v.action.isDownload);
+      bootloader ??= state.bootloaders.firstWhereOrNull((v) => v.action.isUpload);
     }
-    return bootloaders;
+    return bootloader;
   }
 
   Future<bool> _uploadObject(BootloaderEntity bootloader) async {
-    return false;
+    final storage = await ref.read(diServiceProvider).apiLocalClient.storageDao.get(
+          bootloader.idStorage,
+        );
+
+    if (storage == null) return false;
+    File? file;
+    try {
+      file = File(bootloader.object.localPath!);
+      if (!file.existsSync()) {
+        await ref
+            .read(diServiceProvider)
+            .apiLocalClient
+            .bootloaderDao
+            .removeBootloader([bootloader.id]);
+
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+
+    final roflitService = ref.read(roflitServiceProvider(storage));
+
+    final dto = roflitService.roflit.objects.upload(
+      bucketName: bootloader.object.bucket,
+      objectKey: bootloader.object.objectKey,
+      headers: ObjectUploadHadersParameters(bodyBytes: file.readAsBytesSync()),
+      body: file.readAsBytesSync(),
+    );
+
+    final response = await ref.watch(diServiceProvider).apiRemoteClient.send(dto);
+
+    if (!response.sendOk) return false;
+
+    await ref
+        .read(diServiceProvider)
+        .apiLocalClient
+        .bootloaderDao
+        .removeBootloader([bootloader.id]);
+
+    return true;
   }
 
   Future<bool> _downloadObject(BootloaderEntity bootloader) async {

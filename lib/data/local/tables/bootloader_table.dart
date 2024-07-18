@@ -6,6 +6,7 @@ class BootloaderTable extends Table {
   String get tableName => 'object_upload';
 
   IntColumn get id => integer().autoIncrement()();
+  IntColumn get idStorage => integer().references(StorageTable, #idStorage)();
   IntColumn get idObject => integer().references(ObjectTable, #idObject)();
   TextColumn get action => textEnum<ActionBootloader>()();
 }

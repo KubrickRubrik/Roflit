@@ -4,6 +4,17 @@ part of '../api_db.dart';
 class StorageDao extends DatabaseAccessor<ApiDatabase> with _$StorageDaoMixin {
   StorageDao(super.db);
 
+  Future<StorageEntity?> get(int idStorage) async {
+    final querySelect = select(storageTable);
+    querySelect.where((t) => t.idStorage.equals(idStorage));
+    final response = await querySelect.getSingleOrNull();
+
+    if (response != null) {
+      return StorageEntity.fromDto(response);
+    }
+    return null;
+  }
+
   Future<StorageEntity?> createStorage({required StorageTableCompanion storage}) async {
     final storageDto = await into(storageTable).insertReturningOrNull(storage);
 

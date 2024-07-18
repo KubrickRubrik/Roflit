@@ -40,6 +40,8 @@ final class ApiRemoteClient {
           headers: client.headers,
           body: client.body,
         );
+        log('>>>> PUT CODE ${response.statusCode}');
+        log('>>>> PUT ${response.body}');
       case RequestType.delete:
         response = await http.delete(
           client.url,

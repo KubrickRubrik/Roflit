@@ -6,7 +6,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:roflit/core/entity/bootloader.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/providers/di_service.dart';
-import 'package:roflit/feature/common/providers/file_manager/provider.dart';
 
 part 'provider.freezed.dart';
 part 'provider.g.dart';
@@ -56,8 +55,11 @@ final class UploadBloc extends _$UploadBloc {
       final removeUploadIds = removeErrorFileUploads.map((v) {
         return v.id;
       }).toList();
-
-      await ref.read(fileManagerBlocProvider.notifier).removeUploadObjects(removeUploadIds);
+      await ref
+          .read(diServiceProvider)
+          .apiLocalClient
+          .bootloaderDao
+          .removeBootloader(removeUploadIds);
     }
 
     state = state.copyWith(

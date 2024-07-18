@@ -130,8 +130,9 @@ final class FileManagerBloc extends _$FileManagerBloc {
     }
 
     final response = await ref.read(diServiceProvider).apiLocalClient.bootloaderDao.saveBootloader(
-          objects,
-          ActionBootloader.upload,
+          idStorage: state.activeStorage!.idStorage,
+          objects: objects,
+          action: ActionBootloader.upload,
         );
 
     if (!response) {
@@ -140,14 +141,6 @@ final class FileManagerBloc extends _$FileManagerBloc {
     }
 
     closMenu();
-  }
-
-  Future<void> removeUploadObjects(List<int> removeUploadIds) async {
-    final response = await ref
-        .read(diServiceProvider)
-        .apiLocalClient
-        .bootloaderDao
-        .removeBootloader(removeUploadIds);
   }
 
   void closMenu() {
@@ -175,24 +168,4 @@ final class FileManagerBloc extends _$FileManagerBloc {
       objects: currentObjects,
     );
   }
-
-  // Future<bool> _upload(File file) async {
-  //   if (state.activeStorage?.activeBucket?.isNotEmpty == false) {
-  //     return false;
-  //   }
-  //   final roflitService = ref.read(roflitServiceProvider(state.activeStorage));
-  //   final currentIdStorage = state.activeStorage!.idStorage;
-  //   final activeBucket = state.activeStorage!.activeBucket!;
-  //   final mime = file.path.split('.').last;
-  //   final mimeType = mime.isNotEmpty ? '.$mime' : '';
-  //   final dto = roflitService.roflit.objects.upload(
-  //     bucketName: activeBucket,
-  //     objectKey: Random().nextInt(999).toString() + mimeType,
-  //     headers: ObjectUploadHadersParameters(bodyBytes: file.readAsBytesSync()),
-  //     body: file.readAsBytesSync(),
-  //   );
-
-  //   final response = await ref.watch(diServiceProvider).apiRemoteClient.send(dto);
-  //   return false;
-  // }
 }

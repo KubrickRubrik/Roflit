@@ -9,6 +9,7 @@ part 'bootloader.freezed.dart';
 class BootloaderEntity with _$BootloaderEntity {
   const factory BootloaderEntity({
     required int id,
+    required int idStorage,
     required ObjectEntity object,
     required ActionBootloader action,
   }) = _BootloaderEntity;
@@ -19,6 +20,7 @@ class BootloaderEntity with _$BootloaderEntity {
   }) {
     return BootloaderEntity(
       id: uploadDto.id,
+      idStorage: uploadDto.idStorage,
       object: ObjectEntity.fromDto(objectDto),
       action: ActionBootloader.values.byName(uploadDto.action.name),
     );

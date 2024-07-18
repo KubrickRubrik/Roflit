@@ -1,16 +1,24 @@
 part of '../api_db.dart';
 
-@DriftAccessor(tables: [BootloaderTable, ObjectTable])
+@DriftAccessor(tables: [BootloaderTable, StorageTable, ObjectTable])
 class BootloaderDao extends DatabaseAccessor<ApiDatabase> with _$BootloaderDaoMixin {
   BootloaderDao(super.db);
 
-  Future<bool> saveBootloader(List<ObjectTableCompanion> objects, ActionBootloader ation) async {
+  Future<bool> saveBootloader({
+    required int idStorage,
+    required List<ObjectTableCompanion> objects,
+    required ActionBootloader action,
+  }) async {
     return transaction<bool>(() async {
       final uploadObject = <BootloaderTableCompanion>[];
       for (final object in objects) {
         final idObject = await into(objectTable).insert(object);
         uploadObject.add(
-          BootloaderTableCompanion.insert(idObject: idObject, action: ation),
+          BootloaderTableCompanion.insert(
+            idStorage: idStorage,
+            idObject: idObject,
+            action: action,
+          ),
         );
       }
 
