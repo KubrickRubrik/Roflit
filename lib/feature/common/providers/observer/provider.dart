@@ -11,7 +11,7 @@ final class BlocObserver extends ProviderObserver {
     ProviderContainer container,
   ) {
     if (isUsed) {
-      logger.info('Provider $provider was initialized with $value');
+      logger.info('Provider ${provider.runtimeType} was initialized with $value');
     }
   }
 
@@ -21,7 +21,7 @@ final class BlocObserver extends ProviderObserver {
     ProviderContainer container,
   ) {
     if (isUsed) {
-      logger.info('Provider $provider was disposed');
+      logger.info('Provider ${provider.runtimeType} was disposed');
     }
   }
 
@@ -33,7 +33,7 @@ final class BlocObserver extends ProviderObserver {
     ProviderContainer container,
   ) {
     if (isUsed) {
-      logger.info('Provider $provider updated from $previousValue to $newValue');
+      // logger.info('Provider $provider updated from $previousValue to $newValue');
     }
   }
 
@@ -45,7 +45,7 @@ final class BlocObserver extends ProviderObserver {
     ProviderContainer container,
   ) {
     if (isUsed) {
-      logger.error('Provider $provider threw $error at $stackTrace');
+      // logger.error('Provider $provider threw $error at $stackTrace');
     }
   }
 }

@@ -91,7 +91,11 @@ class WatchingDao extends DatabaseAccessor<ApiDatabase> with _$WatchingDaoMixin 
       query.where(bootloaderTable.action.equals(action.name));
     }
 
-    query.orderBy([OrderingTerm.asc(bootloaderTable.id)]);
+    query.orderBy([
+      OrderingTerm.asc(bootloaderTable.idStorage),
+      OrderingTerm.asc(objectTable.bucket),
+      OrderingTerm.asc(bootloaderTable.id),
+    ]);
 
     return query.watch().map((rows) {
       final listResult = <BootloaderEntity>[];

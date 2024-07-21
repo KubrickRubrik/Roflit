@@ -33,6 +33,17 @@ class BootloaderDao extends DatabaseAccessor<ApiDatabase> with _$BootloaderDaoMi
     });
   }
 
+  Future<bool> updateBootloader({
+    required List<ObjectTableCompanion> objects,
+  }) async {
+    return transaction<bool>(() async {
+      await batch((batch) {
+        batch.replaceAll(objectTable, objects);
+      });
+      return true;
+    });
+  }
+
   Future<bool> removeBootloader(List<int> ids) async {
     return transaction<bool>(() async {
       final query = select(bootloaderTable).join([

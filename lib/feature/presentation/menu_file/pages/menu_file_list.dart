@@ -15,22 +15,20 @@ class MenuFileList extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final bloc = ref.watch(fileManagerBlocProvider.notifier);
 
-    final titleStorage = ref.watch(
+    final managerState = ref.watch(
       fileManagerBlocProvider.select(
         (v) {
-          final title = v.activeStorage?.title ?? '';
+          var title = v.activeStorage?.title ?? '';
           final bucket = switch (v.activeStorage?.activeBucket) {
             null => '',
             _ => ' / ${v.activeStorage?.activeBucket}',
           };
-          return '$title$bucket';
+          title = '$title$bucket';
+
+          return (isEmpty: v.bootloaders.isEmpty, isEdit: v.action.isEditBootloader, title: title);
         },
       ),
     );
-
-    final isEmpty = ref.watch(fileManagerBlocProvider.select((v) {
-      return v.objects.isEmpty;
-    }));
 
     return InkWell(
       onTap: bloc.closMenu,
@@ -73,7 +71,7 @@ class MenuFileList extends HookConsumerWidget {
                     ),
                     alignment: Alignment.center,
                     child: Text(
-                      titleStorage,
+                      managerState.title,
                       overflow: TextOverflow.fade,
                       style: appTheme.textTheme.title2.bold.onDark1,
                     ),
@@ -87,14 +85,18 @@ class MenuFileList extends HookConsumerWidget {
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    child: switch (isEmpty) {
-                      true => MainMenuButton(
-                          title: 'Добавить'.translate,
-                          onTap: bloc.addMoreFiles,
+                    child: switch ((managerState)) {
+                      (isEdit: true, isEmpty: _, title: _) => MainMenuButton(
+                          title: 'Редактировать'.translate,
+                          onTap: bloc.onNextEditBootloader,
                         ),
-                      false => MainMenuButton(
+                      (isEdit: _, isEmpty: true, title: _) => MainMenuButton(
+                          title: 'Добавить'.translate,
+                          onTap: bloc.onAddMoreFiles,
+                        ),
+                      (isEdit: _, isEmpty: false, title: _) => MainMenuButton(
                           title: 'Продолжить'.translate,
-                          onTap: bloc.addBootloader,
+                          onTap: bloc.onNextBootloader,
                         ),
                     }),
               ],

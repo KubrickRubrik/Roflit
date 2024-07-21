@@ -9,6 +9,7 @@ import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/providers/di_service.dart';
 import 'package:roflit/core/providers/roflit_service.dart';
 import 'package:roflit/core/utils/await.dart';
+import 'package:roflit/feature/common/providers/api_observer/provider.dart';
 import 'package:s3roflit/s3roflit.dart';
 
 part 'provider.freezed.dart';
@@ -34,7 +35,7 @@ final class BootloaderBloc extends _$BootloaderBloc {
     await Await.second(3);
     _listenerBootloaders = watchingDao.watchBootloader().listen((event) {
       state = state.copyWith(bootloaders: event);
-      _startBootloaderEngine();
+      // _startBootloaderEngine();
     });
   }
 
@@ -43,7 +44,9 @@ final class BootloaderBloc extends _$BootloaderBloc {
     if (state.bootloaders.isEmpty) return;
     if (!state.config.isOn) return;
     state = state.copyWith(config: state.config.copyWith(isActiveProccess: true));
-    do {
+
+    for (var i = 0; i < state.bootloaders.length; i++) {
+      if (!state.config.isOn || state.bootloaders.isEmpty) return;
       // Формирование списка активности
       final bootloader = _getBootloader();
       if (bootloader == null) break;
@@ -66,7 +69,7 @@ final class BootloaderBloc extends _$BootloaderBloc {
       state = state.copyWith(
         bootloaders: bootloaders..remove(bootloader),
       );
-    } while (state.config.isOn && state.bootloaders.isNotEmpty);
+    }
 
     state = state.copyWith(config: state.config.copyWith(isActiveProccess: false));
   }
@@ -105,6 +108,11 @@ final class BootloaderBloc extends _$BootloaderBloc {
       return false;
     }
 
+    setBootloadersStatus(bootloader, status: BootloaderStatus.proccess);
+
+    final observer = ref.watch(apiObserverBlocProvider.notifier);
+
+    observer.createUploadObserver(bootloader.id);
     final roflitService = ref.read(roflitServiceProvider(storage));
 
     final dto = roflitService.roflit.objects.upload(
@@ -114,10 +122,15 @@ final class BootloaderBloc extends _$BootloaderBloc {
       body: file.readAsBytesSync(),
     );
 
-    final response = await ref.watch(diServiceProvider).apiRemoteClient.send(dto);
+    final response = await ref.read(diServiceProvider).apiRemoteClient.send(dto);
 
-    if (!response.sendOk) return false;
+    observer.removeUploadObserver();
 
+    if (!response.sendOk) {
+      setBootloadersStatus(bootloader, status: BootloaderStatus.error);
+      return false;
+    }
+    setBootloadersStatus(bootloader, status: BootloaderStatus.done);
     await ref
         .read(diServiceProvider)
         .apiLocalClient
@@ -129,5 +142,19 @@ final class BootloaderBloc extends _$BootloaderBloc {
 
   Future<bool> _downloadObject(BootloaderEntity bootloader) async {
     return false;
+  }
+
+  void setBootloadersStatus(
+    BootloaderEntity bootloader, {
+    required BootloaderStatus status,
+  }) {
+    final bootloaders = state.bootloaders.map((v) {
+      if (v.id != bootloader.id) return v;
+      return v.copyWith(status: status);
+    }).toList();
+
+    state = state.copyWith(
+      bootloaders: bootloaders,
+    );
   }
 }

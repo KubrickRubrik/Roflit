@@ -19,19 +19,19 @@ class MenuFileListContentLoaded extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final objects = ref.watch(fileManagerBlocProvider.select((v) {
-      return v.objects;
+    final bootloaders = ref.watch(fileManagerBlocProvider.select((v) {
+      return v.bootloaders;
     }));
 
-    if (objects.isEmpty) {
+    if (bootloaders.isEmpty) {
       return const MenuFileListContentEmpty();
     }
 
     return ListView.builder(
       shrinkWrap: true,
-      itemCount: objects.length,
+      itemCount: bootloaders.length,
       itemBuilder: (context, index) {
-        if (index < objects.length - 1) {
+        if (index < bootloaders.length - 1) {
           return _MenuFileListItem(index);
         }
         return Column(
@@ -45,7 +45,7 @@ class MenuFileListContentLoaded extends ConsumerWidget {
                   Tags.selectFileManager,
                   const Duration(seconds: 1),
                   () {
-                    ref.read(fileManagerBlocProvider.notifier).addMoreFiles();
+                    ref.read(fileManagerBlocProvider.notifier).onAddMoreFiles();
                   },
                 );
               },
@@ -71,16 +71,16 @@ class _MenuFileListItem extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final bloc = ref.watch(fileManagerBlocProvider.notifier);
 
-    final object = ref.watch(fileManagerBlocProvider.select((v) {
-      return v.objects.elementAtOrNull(index);
+    final bootloader = ref.watch(fileManagerBlocProvider.select((v) {
+      return v.bootloaders.elementAtOrNull(index);
     }));
     final controller = useTextEditingController(
-      text: object?.objectKey.objectName.split('.').firstOrNull ?? '',
+      text: bootloader?.object.objectKey.objectName.split('.').firstOrNull ?? '',
     );
 
     final stateHover = useState(false);
 
-    if (object == null) return const SizedBox();
+    if (bootloader == null) return const SizedBox();
     return InkWell(
       onTap: () {},
       onHover: (value) {
@@ -109,8 +109,8 @@ class _MenuFileListItem extends HookConsumerWidget {
               width: 30,
               margin: const EdgeInsets.only(left: 6),
               child: LabelBannerItem(
-                type: object.type,
-                localPath: object.localPath ?? '',
+                type: bootloader.object.type,
+                localPath: bootloader.object.localPath ?? '',
               ),
             ),
             const SizedBox(width: 8),

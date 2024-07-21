@@ -49,7 +49,7 @@ class SectionContentNavigationBottomBar extends HookConsumerWidget {
                   Tags.selectFileManager,
                   const Duration(seconds: 1),
                   () {
-                    ref.read(fileManagerBlocProvider.notifier).getFiles();
+                    ref.read(fileManagerBlocProvider.notifier).onGetFiles();
                   },
                 );
               },

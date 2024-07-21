@@ -118,7 +118,7 @@ final class _YCSerializer implements StorageSerializerInterface {
         final size = await file.length();
         objects.add(
           ObjectEntity(
-            objectKey: objectKey,
+            objectKey: objectKey.toLowerCase(),
             type: FormatConverter.converter(file.path),
             bucket: '',
             size: size,

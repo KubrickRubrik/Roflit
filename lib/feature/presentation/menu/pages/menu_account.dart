@@ -102,25 +102,6 @@ class MenuAccount extends HookConsumerWidget {
                       hint: 'Имя'.translate,
                     ),
                   ),
-                  //! Password.
-                  MainMenuItemButton(
-                    onTap: () {},
-                    child: ContentTextField(
-                      controller: passwordController,
-                      hint: 'Пароль'.translate,
-                      obscureText: true,
-                      prefixIcon: const AspectRatio(aspectRatio: 1),
-                      suffixIcon: const AspectRatio(
-                        aspectRatio: 1,
-                        child: Icon(
-                          Icons.remove_red_eye,
-                          color: Color(
-                            AppColors.textOnDark1,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
                   //! Localization.
                   MainMenuItemButton(
                     onTap: onTapLocalization,
@@ -158,6 +139,25 @@ class MenuAccount extends HookConsumerWidget {
                             );
                           }),
                         ],
+                      ),
+                    ),
+                    //! Password.
+                    MainMenuItemButton(
+                      onTap: () {},
+                      child: ContentTextField(
+                        controller: passwordController,
+                        hint: 'Пароль'.translate,
+                        obscureText: true,
+                        prefixIcon: const AspectRatio(aspectRatio: 1),
+                        suffixIcon: const AspectRatio(
+                          aspectRatio: 1,
+                          child: Icon(
+                            Icons.remove_red_eye,
+                            color: Color(
+                              AppColors.textOnDark1,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   },

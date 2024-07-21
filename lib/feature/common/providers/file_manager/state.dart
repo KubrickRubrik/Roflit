@@ -4,7 +4,16 @@ part of 'provider.dart';
 class FileManagerState with _$FileManagerState {
   const factory FileManagerState({
     @Default(null) StorageEntity? activeStorage,
-    @Default([]) List<ObjectEntity> objects,
+    @Default([]) List<BootloaderEntity> bootloaders,
     @Default(ContentStatus.loading) ContentStatus loaderPage,
+    @Default(FileManagerAction.addBootloader) FileManagerAction action,
   }) = _FileManagerState;
+}
+
+enum FileManagerAction {
+  addBootloader,
+  editBootloader;
+
+  bool get isAddBootloader => this == addBootloader;
+  bool get isEditBootloader => this == editBootloader;
 }

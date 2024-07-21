@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/config/constants.dart';
 import 'package:roflit/core/providers/di_service.dart';
+import 'package:roflit/feature/common/providers/api_observer/provider.dart';
 import 'package:roflit/feature/common/providers/bootloader/provider.dart';
 import 'package:roflit/feature/common/providers/buckets/provider.dart';
 import 'package:roflit/feature/common/providers/file_manager/provider.dart';
@@ -23,7 +24,6 @@ import 'feature/common/providers/session/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
-
   if (Platform.isWindows) {
     await DesktopWindow.setMinWindowSize(Constants.minimumSizeWindow);
     await DesktopWindow.setMaxWindowSize(Constants.maximumSizeWindow);
@@ -31,11 +31,10 @@ void main() async {
     // DesktopWindow.setFullScreen(true);
   }
 
+  final observer = BlocObserver(isUsed: true);
   runApp(
     ProviderScope(
-      observers: [
-        BlocObserver(isUsed: false),
-      ],
+      observers: [observer],
       child: EasyLocalization(
         supportedLocales: Constants.supportedLocales,
         path: Constants.supportedLocalesPath,
@@ -85,6 +84,7 @@ class _EagerInitialization extends HookConsumerWidget {
     final fileManagerBloc = ref.watch(fileManagerBlocProvider.notifier);
     final uploadBloc = ref.watch(uploadBlocProvider.notifier);
     final bootloaderBloc = ref.watch(bootloaderBlocProvider.notifier);
+    ref.watch(apiObserverBlocProvider.notifier);
 
     useInitState(
       onBuild: () {

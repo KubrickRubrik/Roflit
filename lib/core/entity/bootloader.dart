@@ -12,6 +12,7 @@ class BootloaderEntity with _$BootloaderEntity {
     required int idStorage,
     required ObjectEntity object,
     required ActionBootloader action,
+    @Default(BootloaderStatus.none) BootloaderStatus status,
   }) = _BootloaderEntity;
 
   factory BootloaderEntity.fromDto({
@@ -25,4 +26,16 @@ class BootloaderEntity with _$BootloaderEntity {
       action: ActionBootloader.values.byName(uploadDto.action.name),
     );
   }
+}
+
+enum BootloaderStatus {
+  proccess,
+  error,
+  done,
+  none;
+
+  bool get isProccess => this == proccess;
+  bool get isError => this == error;
+  bool get isDone => this == done;
+  bool get isNone => this == none;
 }
