@@ -31,7 +31,7 @@ void main() async {
     // DesktopWindow.setFullScreen(true);
   }
 
-  final observer = BlocObserver(isUsed: true);
+  final observer = BlocObserver(isUsed: false);
   runApp(
     ProviderScope(
       observers: [observer],

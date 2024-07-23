@@ -42,6 +42,7 @@ final class ApiObjectValue {
   }
 
   int get percentage {
+    if (total == 0) return 0;
     return (count * 100) ~/ total;
   }
 }

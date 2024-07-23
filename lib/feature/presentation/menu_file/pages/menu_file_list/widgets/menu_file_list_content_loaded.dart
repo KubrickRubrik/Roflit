@@ -105,10 +105,10 @@ class _MenuFileListItem extends HookConsumerWidget {
         child: Row(
           children: [
             Container(
-              height: 30,
-              width: 30,
+              height: 36,
+              width: 36,
               margin: const EdgeInsets.only(left: 6),
-              child: LabelBannerItem(
+              child: ObjectItemBunner(
                 type: bootloader.object.type,
                 localPath: bootloader.object.localPath ?? '',
               ),

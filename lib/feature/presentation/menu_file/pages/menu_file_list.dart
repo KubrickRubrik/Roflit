@@ -86,13 +86,13 @@ class MenuFileList extends HookConsumerWidget {
                     left: 0,
                     right: 0,
                     child: switch ((managerState)) {
-                      (isEdit: true, isEmpty: _, title: _) => MainMenuButton(
-                          title: 'Редактировать'.translate,
-                          onTap: bloc.onNextEditBootloader,
-                        ),
                       (isEdit: _, isEmpty: true, title: _) => MainMenuButton(
                           title: 'Добавить'.translate,
                           onTap: bloc.onAddMoreFiles,
+                        ),
+                      (isEdit: true, isEmpty: _, title: _) => MainMenuButton(
+                          title: 'Редактировать'.translate,
+                          onTap: bloc.onNextEditBootloader,
                         ),
                       (isEdit: _, isEmpty: false, title: _) => MainMenuButton(
                           title: 'Продолжить'.translate,

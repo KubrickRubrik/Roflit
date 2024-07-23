@@ -51,9 +51,9 @@ final class FileManagerBloc extends _$FileManagerBloc {
 
   Future<void> deleteFileFromList(int index) async {
     final list = state.bootloaders.toList();
+    final bootloader = list.removeAt(index);
+
     if (state.action.isEditBootloader) {
-      final bootloader = list.firstWhereIndexedOrNull((currentIndex, v) => currentIndex == index);
-      if (bootloader == null) return;
       final insertsResponse = await ref
           .read(diServiceProvider)
           .apiLocalClient
@@ -61,9 +61,15 @@ final class FileManagerBloc extends _$FileManagerBloc {
           .removeBootloader([bootloader.id]);
       if (!insertsResponse) return;
     }
-    list.removeAt(index);
+
+    final action = switch (list.isEmpty) {
+      true => FileManagerAction.addBootloader,
+      false => state.action,
+    };
+
     state = state.copyWith(
       bootloaders: list,
+      action: action,
     );
   }
 

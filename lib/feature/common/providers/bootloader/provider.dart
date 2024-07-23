@@ -35,7 +35,7 @@ final class BootloaderBloc extends _$BootloaderBloc {
     await Await.second(3);
     _listenerBootloaders = watchingDao.watchBootloader().listen((event) {
       state = state.copyWith(bootloaders: event);
-      // _startBootloaderEngine();
+      _startBootloaderEngine();
     });
   }
 
@@ -43,31 +43,40 @@ final class BootloaderBloc extends _$BootloaderBloc {
     if (state.config.isActiveProccess) return;
     if (state.bootloaders.isEmpty) return;
     if (!state.config.isOn) return;
-    state = state.copyWith(config: state.config.copyWith(isActiveProccess: true));
+    state = state.copyWith(
+      config: state.config.copyWith(
+        isActiveProccess: true,
+      ),
+    );
 
     for (var i = 0; i < state.bootloaders.length; i++) {
       if (!state.config.isOn || state.bootloaders.isEmpty) return;
       // Формирование списка активности
       final bootloader = _getBootloader();
       if (bootloader == null) break;
-
       // Выполнение активности над списком.
-      final response = switch (bootloader.action) {
-        ActionBootloader.upload => await _uploadObject(bootloader),
-        ActionBootloader.download => await _downloadObject(bootloader),
+      final response = await switch (bootloader.action) {
+        ActionBootloader.upload => _uploadObject(bootloader),
+        ActionBootloader.download => _downloadObject(bootloader),
       };
 
       if (!response) {
         if (bootloader.action.isUpload) {
           //TODO add snackbar
+          print('>>>> Error 1');
         } else {
           //TODO add snackbar
+          print('>>>> Error 2');
         }
         break;
       }
       final bootloaders = state.bootloaders.toList();
+      bootloaders.removeWhere((v) {
+        return v.id == bootloader.id;
+      });
+
       state = state.copyWith(
-        bootloaders: bootloaders..remove(bootloader),
+        bootloaders: bootloaders,
       );
     }
 

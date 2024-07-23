@@ -3,12 +3,12 @@ import 'package:roflit/core/enums.dart';
 import 'package:roflit/feature/common/widgets/image.dart';
 import 'package:roflit/generated/assets.gen.dart';
 
-class LabelBannerItem extends StatelessWidget {
+class ObjectItemBunner extends StatelessWidget {
   final IconSourceType type;
   final String? remotePath;
   final String? localPath;
 
-  const LabelBannerItem({
+  const ObjectItemBunner({
     required this.type,
     this.remotePath,
     this.localPath,

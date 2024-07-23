@@ -65,7 +65,7 @@ class ObjectItem extends HookConsumerWidget {
               height: 30,
               width: 30,
               margin: const EdgeInsets.only(left: 6),
-              child: LabelBannerItem(
+              child: ObjectItemBunner(
                 type: object.type,
                 remotePath: object.remotePath ?? '',
               ),

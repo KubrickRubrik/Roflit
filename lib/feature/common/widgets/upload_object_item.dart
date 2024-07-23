@@ -8,6 +8,7 @@ import 'package:roflit/feature/common/providers/upload/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
+import 'package:roflit/feature/common/widgets/label_banner_item.dart';
 
 class UploadObjectItem extends HookConsumerWidget {
   final int index;
@@ -38,6 +39,7 @@ class UploadObjectItem extends HookConsumerWidget {
     );
 
     if (uploadObject == null) return const SizedBox();
+
     return UploaderProgressBar(
       idBootloader: uploadObject.id,
       child: InkWell(
@@ -59,14 +61,18 @@ class UploadObjectItem extends HookConsumerWidget {
             direction: Axis.horizontal,
             children: [
               Container(
-                height: 40,
-                width: 40,
+                height: 36,
+                width: 36,
                 margin: const EdgeInsets.only(left: 6),
                 decoration: BoxDecoration(
                   borderRadius: borderRadius8,
                   color: const Color(
                     AppColors.bgDarkGray1,
                   ),
+                ),
+                child: ObjectItemBunner(
+                  type: uploadObject.object.type,
+                  localPath: uploadObject.object.localPath ?? '',
                 ),
               ),
               const SizedBox(width: 10),
@@ -111,6 +117,7 @@ class UploaderProgressBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final percentage = ref.watch(apiObserverBlocProvider.select((v) {
+      // return 80;
       if (v.upload?.idBootloader == idBootloader) {
         return v.upload?.observe.percentage;
       }
@@ -139,7 +146,7 @@ class UploaderProgressBar extends ConsumerWidget {
                         end: Alignment.centerRight,
                         colors: [
                           Color(0x42000000),
-                          Color(0x12000000),
+                          Color(0x0A000000),
                         ],
                       ),
                     ),

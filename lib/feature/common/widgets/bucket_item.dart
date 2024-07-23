@@ -71,7 +71,7 @@ class BucketItem extends HookConsumerWidget {
               height: 40,
               width: 40,
               margin: const EdgeInsets.only(left: 6),
-              child: const LabelBannerItem(type: IconSourceType.bucket),
+              child: const ObjectItemBunner(type: IconSourceType.bucket),
             ),
             const SizedBox(width: 10),
             Expanded(
