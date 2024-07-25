@@ -13,8 +13,8 @@ class SectionContentNavigationHeaderBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final defaultDirectory = ref.watch(fileManagerBlocProvider.select((v) {
       return (
-        pathSelectFiles: v.activeStorage?.pathSelectFiles,
-        pathSaveFiles: v.activeStorage?.pathSaveFiles,
+        pathSelectFiles: v.account?.activeStorage?.pathSelectFiles,
+        pathSaveFiles: v.account?.activeStorage?.pathSaveFiles,
       );
     }));
 

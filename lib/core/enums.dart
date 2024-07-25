@@ -124,3 +124,11 @@ enum ActionBootloader {
   bool get isUpload => this == upload;
   bool get isDownload => this == download;
 }
+
+enum ActionFirst {
+  upload,
+  download;
+
+  bool get isUpload => this == upload;
+  bool get isDownload => this == download;
+}

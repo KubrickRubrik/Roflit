@@ -8,6 +8,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:roflit/core/config/tag_debounce.dart';
+import 'package:roflit/core/entity/account.dart';
 import 'package:roflit/core/entity/bootloader.dart';
 import 'package:roflit/core/entity/storage.dart';
 import 'package:roflit/core/enums.dart';
@@ -27,26 +28,34 @@ final class FileManagerBloc extends _$FileManagerBloc {
   @override
   FileManagerState build() {
     ref.onCancel(() async {
+      await _listenerActiveAccount?.cancel();
       await _listenerActiveStorage?.cancel();
     });
     return const FileManagerState();
   }
 
   // Removable listeners.
+  StreamSubscription<AccountEntity?>? _listenerActiveAccount;
   StreamSubscription<StorageEntity?>? _listenerActiveStorage;
 
   Future<void> watchStorages() async {
     final watchingDao = ref.read(diServiceProvider).apiLocalClient.watchingDao;
     await _listenerActiveStorage?.cancel();
 
-    _listenerActiveStorage = watchingDao.watchActiveStorage().listen((event) {
-      if (event == null) return;
-      if (state.activeStorage?.idStorage == event.idStorage &&
-          state.activeStorage?.activeBucket == event.activeBucket) return;
+    _listenerActiveAccount = watchingDao.watchActiveAccount().listen((event) {
+      if (event == null) {
+        state = state.copyWith(account: null);
+        return;
+      }
       EasyDebounce.debounce(Tags.updateFileManager, const Duration(milliseconds: 500), () {
-        state = state.copyWith(activeStorage: event);
+        state = state.copyWith(account: event);
       });
     });
+
+    // _listenerActiveStorage = watchingDao.watchActiveStorage().listen((event) {
+    //   if (state.activeStorage?.idStorage == event.idStorage &&
+    //       state.activeStorage?.activeBucket == event.activeBucket) return;
+    // });
   }
 
   Future<void> deleteFileFromList(int index) async {
@@ -78,13 +87,14 @@ final class FileManagerBloc extends _$FileManagerBloc {
       closMenu();
       return;
     }
-
-    final roflitService = ref.read(roflitServiceProvider(state.activeStorage));
+    final idStorage = state.account?.activeStorage?.idStorage;
+    final roflitService = ref.read(roflitServiceProvider(state.account?.storages.first));
     final result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
-      initialDirectory: state.activeStorage?.pathSelectFiles,
+      initialDirectory: state.account?.activeStorage?.pathSelectFiles,
     );
-    if (result == null) {
+
+    if (result == null || idStorage == null) {
       //TODO: snackbar
       return;
     }
@@ -95,7 +105,7 @@ final class FileManagerBloc extends _$FileManagerBloc {
     final bootloaders = objects.mapIndexed((index, object) {
       return BootloaderEntity(
         id: 0,
-        idStorage: state.activeStorage!.idStorage,
+        idStorage: idStorage,
         object: object,
         action: ActionBootloader.upload,
       );
@@ -110,12 +120,15 @@ final class FileManagerBloc extends _$FileManagerBloc {
   }
 
   Future<void> onAddMoreFiles() async {
-    final roflitService = ref.read(roflitServiceProvider(state.activeStorage));
+    final roflitService = ref.read(roflitServiceProvider(state.account?.activeStorage));
+
+    final idStorage = state.account?.activeStorage?.idStorage;
     final result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
-      initialDirectory: state.activeStorage?.pathSelectFiles,
+      initialDirectory: state.account?.activeStorage?.pathSelectFiles,
     );
-    if (result == null) {
+
+    if (result == null || idStorage == null) {
       //TODO: snackbar
       return;
     }
@@ -126,7 +139,7 @@ final class FileManagerBloc extends _$FileManagerBloc {
     final bootloaders = objects.mapIndexed((index, object) {
       return BootloaderEntity(
         id: 0,
-        idStorage: state.activeStorage!.idStorage,
+        idStorage: idStorage,
         object: object,
         action: ActionBootloader.upload,
       );
@@ -139,8 +152,10 @@ final class FileManagerBloc extends _$FileManagerBloc {
   }
 
   Future<void> onNextBootloader() async {
-    if (state.activeStorage?.storageType == null ||
-        state.activeStorage?.activeBucket?.isEmpty == true) {
+    final storage = state.account?.activeStorage;
+    final storageType = state.account?.activeStorage?.storageType;
+
+    if (storage?.activeBucket?.isNotEmpty != true || storageType == null) {
       //TODO: snackbar
       return;
     }
@@ -148,9 +163,9 @@ final class FileManagerBloc extends _$FileManagerBloc {
     final objects = state.bootloaders.map((v) {
       return ObjectTableCompanion.insert(
         objectKey: v.object.objectKey,
-        bucket: state.activeStorage!.activeBucket!,
+        bucket: storage!.activeBucket!,
         type: v.object.type.name,
-        storageType: state.activeStorage!.storageType.name,
+        storageType: storageType.name,
         localPath: drift.Value(v.object.localPath),
       );
     }).toList();
@@ -165,7 +180,7 @@ final class FileManagerBloc extends _$FileManagerBloc {
     }
 
     final response = await ref.read(diServiceProvider).apiLocalClient.bootloaderDao.saveBootloader(
-          idStorage: state.activeStorage!.idStorage,
+          idStorage: storage!.idStorage,
           objects: objects,
           action: ActionBootloader.upload,
         );
@@ -210,8 +225,10 @@ final class FileManagerBloc extends _$FileManagerBloc {
   }
 
   Future<void> onNextEditBootloader() async {
-    if (state.activeStorage?.storageType == null ||
-        state.activeStorage?.activeBucket?.isEmpty == true) {
+    final storage = state.account?.activeStorage;
+    final storageType = state.account?.activeStorage?.storageType;
+
+    if (storage?.activeBucket?.isNotEmpty != true || storage?.storageType == null) {
       //TODO: snackbar
       return;
     }
@@ -232,9 +249,9 @@ final class FileManagerBloc extends _$FileManagerBloc {
       return ObjectTableCompanion(
         idObject: drift.Value(v.object.idObject),
         objectKey: drift.Value(v.object.objectKey),
-        bucket: drift.Value(state.activeStorage!.activeBucket!),
+        bucket: drift.Value(storage!.activeBucket!),
         type: drift.Value(v.object.type.name),
-        storageType: drift.Value(state.activeStorage!.storageType.name),
+        storageType: drift.Value(storage!.storageType.name),
         localPath: drift.Value(v.object.localPath),
       );
     }).toList();
@@ -242,9 +259,9 @@ final class FileManagerBloc extends _$FileManagerBloc {
     final insertsObjects = forInserts.map((v) {
       return ObjectTableCompanion.insert(
         objectKey: v.object.objectKey,
-        bucket: state.activeStorage!.activeBucket!,
+        bucket: storage!.activeBucket!,
         type: v.object.type.name,
-        storageType: state.activeStorage!.storageType.name,
+        storageType: storage!.storageType.name,
         localPath: drift.Value(v.object.localPath),
       );
     }).toList();
@@ -263,7 +280,7 @@ final class FileManagerBloc extends _$FileManagerBloc {
     if (insertsObjects.isNotEmpty) {
       final insertsResponse =
           await ref.read(diServiceProvider).apiLocalClient.bootloaderDao.saveBootloader(
-                idStorage: state.activeStorage!.idStorage,
+                idStorage: storage!.idStorage,
                 objects: insertsObjects,
                 action: ActionBootloader.upload,
               );

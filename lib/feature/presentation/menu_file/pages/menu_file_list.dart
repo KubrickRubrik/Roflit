@@ -18,10 +18,10 @@ class MenuFileList extends HookConsumerWidget {
     final managerState = ref.watch(
       fileManagerBlocProvider.select(
         (v) {
-          var title = v.activeStorage?.title ?? '';
-          final bucket = switch (v.activeStorage?.activeBucket) {
+          var title = v.account?.activeStorage?.title ?? '';
+          final bucket = switch (v.account?.activeStorage?.activeBucket) {
             null => '',
-            _ => ' / ${v.activeStorage?.activeBucket}',
+            _ => ' / ${v.account?.activeStorage?.activeBucket}',
           };
           title = '$title$bucket';
 

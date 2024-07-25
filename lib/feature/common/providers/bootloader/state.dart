@@ -21,11 +21,3 @@ class BootloaderConfig with _$BootloaderConfig {
 
   bool get isOn => isOnUpload || isOnDownload;
 }
-
-enum ActionFirst {
-  upload,
-  download;
-
-  bool get isUpload => this == upload;
-  bool get isDownload => this == download;
-}

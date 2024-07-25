@@ -64,6 +64,34 @@ class WatchingDao extends DatabaseAccessor<ApiDatabase> with _$WatchingDaoMixin 
     });
   }
 
+  Stream<AccountEntity?> watchActiveAccount() {
+    final query = select(accountTable).join([
+      innerJoin(
+        sessionTable,
+        sessionTable.activeIdAccount.equalsExp(accountTable.idAccount),
+        useColumns: false,
+      ),
+      leftOuterJoin(
+        storageTable,
+        storageTable.idAccount.equalsExp(accountTable.idAccount) &
+            storageTable.idStorage.equalsExp(sessionTable.activeIdStorage),
+      )
+    ]);
+
+    return query.watchSingleOrNull().map((row) {
+      final account = row?.readTableOrNull(accountTable);
+      final storage = row?.readTableOrNull(storageTable);
+
+      if (account != null) {
+        return AccountEntity.fromDto(
+          accountDto: account,
+          storageDto: storage,
+        );
+      }
+      return null;
+    });
+  }
+
   Stream<StorageEntity?> watchActiveStorage() {
     final query = select(sessionTable).join([
       leftOuterJoin(
