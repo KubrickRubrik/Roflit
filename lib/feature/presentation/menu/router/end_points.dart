@@ -7,6 +7,7 @@ abstract class RouteEndPoints {
   static const _localization = 'localization';
   static const _password = 'password';
   static const _storages = 'storages';
+  static const _bootloader = 'bootloader';
   static const _storage = 'storage';
   static const _type = 'type';
   //
@@ -33,11 +34,6 @@ abstract class RouteEndPoints {
         path: _localization,
         go: '/$_account/$_localization',
       ),
-      password: (
-        name: _password,
-        path: _password,
-        go: '/$_account/$_password',
-      ),
       storages: (
         name: _storages,
         path: _storages,
@@ -52,6 +48,16 @@ abstract class RouteEndPoints {
             go: '/$_account/$_storages/$_storage/$_type',
           ),
         ),
+      ),
+      password: (
+        name: _password,
+        path: _password,
+        go: '/$_account/$_password',
+      ),
+      bootloader: (
+        name: _bootloader,
+        path: _bootloader,
+        go: '/$_account/$_bootloader',
       ),
     ),
     storageEdit: (

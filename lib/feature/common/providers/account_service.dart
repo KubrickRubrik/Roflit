@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:drift/drift.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:roflit/core/entity/account.dart';
 import 'package:roflit/core/enums.dart';
@@ -76,11 +77,11 @@ final class AccountService {
       return false;
     }
 
-    final account = AccountEntity(
-      idAccount: idAccount,
-      name: name,
-      localization: localization,
-      password: password.isEmpty ? null : password,
+    final account = AccountTableCompanion(
+      idAccount: Value(idAccount),
+      name: Value(name),
+      localization: Value(localization.name),
+      password: Value(password.isEmpty ? null : password),
     );
 
     final response = await apiLocalClient.updateAccount(account: account);
@@ -109,5 +110,28 @@ final class AccountService {
     }
 
     return response;
+  }
+
+  Future<bool> setConfig({
+    required int idAccount,
+    bool? isOnUpload,
+    bool? isOnDownload,
+    ActionFirst? action,
+  }) async {
+    final account = AccountTableCompanion(
+      idAccount: Value(idAccount),
+      isOnUpload: Value.absentIfNull(isOnUpload),
+      isOnDownload: Value.absentIfNull(isOnDownload),
+      action: Value.absentIfNull(action),
+    );
+
+    final response = await apiLocalClient.updateAccount(account: account);
+
+    if (!response) {
+      return false;
+      //TODO snackbar
+    }
+    //TODO snackbar
+    return true;
   }
 }

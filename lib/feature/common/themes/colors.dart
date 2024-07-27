@@ -10,6 +10,7 @@ abstract final class AppColors {
   static const bgDarkGray2 = 0x4D20293F;
   static const bgDarkGray3 = 0xFF3B3B3B;
   static const bgDarkGray4 = 0xFF585858;
+  static const bgSuccess = 0xFF67EA10;
 
   static const bgDarkSelected1 = 0xFFC7C7C7;
 

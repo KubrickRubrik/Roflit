@@ -51,11 +51,6 @@ final class FileManagerBloc extends _$FileManagerBloc {
         state = state.copyWith(account: event);
       });
     });
-
-    // _listenerActiveStorage = watchingDao.watchActiveStorage().listen((event) {
-    //   if (state.activeStorage?.idStorage == event.idStorage &&
-    //       state.activeStorage?.activeBucket == event.activeBucket) return;
-    // });
   }
 
   Future<void> deleteFileFromList(int index) async {

@@ -12,9 +12,9 @@ import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 import 'package:roflit/feature/common/widgets/action_menu_button.dart';
 import 'package:roflit/feature/common/widgets/content_text_field.dart';
+import 'package:roflit/feature/common/widgets/menu_item_button.dart';
 import 'package:roflit/feature/presentation/menu/router/router.dart';
 import 'package:roflit/feature/presentation/menu/widgets/menu_button.dart';
-import 'package:roflit/feature/presentation/menu/widgets/menu_item_button.dart';
 
 class MenuAccount extends HookConsumerWidget {
   final MenuAccountDto menuAccountDto;
@@ -30,7 +30,7 @@ class MenuAccount extends HookConsumerWidget {
     final blocAccount = ref.read(accountServiceProvider);
 
     final account = ref.watch(sessionBlocProvider.select((v) {
-      return blocSession.getAccount(getActive: !menuAccountDto.isCreateAccount);
+      return blocSession.getAccount(getActive: !menuAccountDto.isCreateProccessAccount);
     }));
 
     final nameController = useTextEditingController(
@@ -119,7 +119,7 @@ class MenuAccount extends HookConsumerWidget {
                     ),
                   ),
                   //! Account storages.
-                  if (!menuAccountDto.isCreateAccount) ...{
+                  if (!menuAccountDto.isCreateProccessAccount) ...{
                     MainMenuItemButton(
                       onTap: () {
                         context.pushNamed(RouteEndPoints.accounts.account.storages.name);
@@ -160,6 +160,30 @@ class MenuAccount extends HookConsumerWidget {
                         ),
                       ),
                     ),
+                    //! Bootloader.
+                    MainMenuItemButton(
+                      onTap: () {
+                        context.pushNamed(
+                          RouteEndPoints.accounts.account.bootloader.name,
+                        );
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const AspectRatio(aspectRatio: 1),
+                          Text(
+                            'Загрузчик'.translate,
+                            overflow: TextOverflow.fade,
+                            style: appTheme.textTheme.title2.onDark1,
+                          ),
+                          ActionMenuButton(onTap: () {
+                            context.pushNamed(
+                              RouteEndPoints.accounts.account.bootloader.name,
+                            );
+                          }),
+                        ],
+                      ),
+                    ),
                   },
                 ],
               ),
@@ -169,7 +193,7 @@ class MenuAccount extends HookConsumerWidget {
           Flex(
             direction: Axis.horizontal,
             children: [
-              if (!menuAccountDto.isCreateAccount) ...{
+              if (!menuAccountDto.isCreateProccessAccount) ...{
                 Flexible(
                   child: MainMenuButton(
                     title: 'Удалить'.translate,
@@ -186,12 +210,12 @@ class MenuAccount extends HookConsumerWidget {
               },
               Flexible(
                 child: MainMenuButton(
-                  title: switch (menuAccountDto.isCreateAccount) {
+                  title: switch (menuAccountDto.isCreateProccessAccount) {
                     true => 'Создать'.translate,
                     _ => 'Сохранить'.translate,
                   },
                   onTap: () async {
-                    if (menuAccountDto.isCreateAccount) {
+                    if (menuAccountDto.isCreateProccessAccount) {
                       final response = await blocAccount.createAccount(
                         name: nameController.text,
                         localization: account?.localization ?? AppLocalization.ru,

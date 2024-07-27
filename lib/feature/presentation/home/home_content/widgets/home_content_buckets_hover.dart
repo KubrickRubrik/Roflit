@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:roflit/feature/common/providers/search/provider.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/presentation/home/home_content/home_content_buckets.dart';
@@ -20,6 +21,7 @@ class HomeContentBucketsHover extends HookConsumerWidget {
       onTap: () {},
       onHover: (value) {
         stateHover.value = value;
+        ref.read(searchBlocProvider.notifier).onSetBucketSource();
       },
       child: Flex(
         direction: Axis.vertical,

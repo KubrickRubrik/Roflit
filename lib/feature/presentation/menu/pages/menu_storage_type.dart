@@ -7,7 +7,7 @@ import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 import 'package:roflit/feature/common/widgets/action_menu_button.dart';
-import 'package:roflit/feature/presentation/menu/widgets/menu_item_button.dart';
+import 'package:roflit/feature/common/widgets/menu_item_button.dart';
 
 class MenuStorageType extends StatelessWidget {
   const MenuStorageType({super.key});

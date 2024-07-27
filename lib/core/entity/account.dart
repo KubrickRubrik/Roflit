@@ -19,6 +19,8 @@ class AccountEntity with _$AccountEntity {
     @Default(AccountConfigEntity()) AccountConfigEntity config,
   }) = _AccountEntity;
 
+  const AccountEntity._();
+
   factory AccountEntity.fromDto({
     required AccountDto accountDto,
     StorageDto? storageDto,
@@ -40,8 +42,6 @@ class AccountEntity with _$AccountEntity {
       ),
     );
   }
-
-  AccountEntity._();
 
   factory AccountEntity.empty() {
     return const AccountEntity(

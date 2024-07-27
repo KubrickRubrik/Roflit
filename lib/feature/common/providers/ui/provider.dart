@@ -12,16 +12,18 @@ final class UiBloc extends _$UiBloc {
   @override
   UiState build() {
     ref.onCancel(() {
-      _leaveAccountMenu.cancel();
-      _leaveStorageMenu.cancel();
-      _leaveMainMenu.cancel();
+      _leaveAccountMenu?.cancel();
+      _leaveStorageMenu?.cancel();
+      _leaveMainMenu?.cancel();
     });
     return const UiState();
   }
 
-  var _leaveAccountMenu = Timer(Duration.zero, () {});
-  var _leaveStorageMenu = Timer(Duration.zero, () {});
-  var _leaveMainMenu = Timer(Duration.zero, () {});
+  Timer? _leaveAccountMenu;
+  Timer? _leaveUploadConfigMenu;
+  Timer? _leaveDownloadConfigMenu;
+  Timer? _leaveStorageMenu;
+  Timer? _leaveMainMenu;
 
   void menuActivity({
     required TypeMenu typeMenu,
@@ -34,27 +36,85 @@ final class UiBloc extends _$UiBloc {
         switch (action) {
           case ActionMenu.open:
             state = state.copyWith(isDisplayedAccountMenu: true);
-            _leaveAccountMenu.cancel();
+            _leaveAccountMenu?.cancel();
             _leaveAccountMenu = Timer.periodic(const Duration(seconds: 3), (_) {
               state = state.copyWith(isDisplayedAccountMenu: false);
-              _leaveAccountMenu.cancel();
+              _leaveAccountMenu?.cancel();
             });
 
             break;
           case ActionMenu.hoverLeave:
             if (isHover) {
-              _leaveAccountMenu.cancel();
+              _leaveAccountMenu?.cancel();
             } else {
-              _leaveAccountMenu.cancel();
+              _leaveAccountMenu?.cancel();
               _leaveAccountMenu = Timer.periodic(const Duration(seconds: 2), (_) {
                 state = state.copyWith(isDisplayedAccountMenu: false);
-                _leaveAccountMenu.cancel();
+                _leaveAccountMenu?.cancel();
               });
             }
             break;
           case ActionMenu.close:
             state = state.copyWith(isDisplayedAccountMenu: false);
-            _leaveAccountMenu.cancel();
+            _leaveAccountMenu?.cancel();
+            break;
+        }
+        break;
+      //! Upload config menu
+      case TypeMenu.uploadConfig:
+        switch (action) {
+          case ActionMenu.open:
+            state = state.copyWith(isDisplayedUploadConfigMenu: true);
+            _leaveUploadConfigMenu?.cancel();
+            _leaveUploadConfigMenu = Timer.periodic(const Duration(seconds: 3), (_) {
+              state = state.copyWith(isDisplayedUploadConfigMenu: false);
+              _leaveUploadConfigMenu?.cancel();
+            });
+
+            break;
+          case ActionMenu.hoverLeave:
+            if (isHover) {
+              _leaveUploadConfigMenu?.cancel();
+            } else {
+              _leaveUploadConfigMenu?.cancel();
+              _leaveUploadConfigMenu = Timer.periodic(const Duration(seconds: 2), (_) {
+                state = state.copyWith(isDisplayedUploadConfigMenu: false);
+                _leaveUploadConfigMenu?.cancel();
+              });
+            }
+            break;
+          case ActionMenu.close:
+            state = state.copyWith(isDisplayedUploadConfigMenu: false);
+            _leaveUploadConfigMenu?.cancel();
+            break;
+        }
+        break;
+      //! Download config menu
+      case TypeMenu.downloadConfig:
+        switch (action) {
+          case ActionMenu.open:
+            state = state.copyWith(isDisplayedDownloadConfigMenu: true);
+            _leaveDownloadConfigMenu?.cancel();
+            _leaveDownloadConfigMenu = Timer.periodic(const Duration(seconds: 3), (_) {
+              state = state.copyWith(isDisplayedDownloadConfigMenu: false);
+              _leaveDownloadConfigMenu?.cancel();
+            });
+
+            break;
+          case ActionMenu.hoverLeave:
+            if (isHover) {
+              _leaveDownloadConfigMenu?.cancel();
+            } else {
+              _leaveDownloadConfigMenu?.cancel();
+              _leaveDownloadConfigMenu = Timer.periodic(const Duration(seconds: 2), (_) {
+                state = state.copyWith(isDisplayedDownloadConfigMenu: false);
+                _leaveDownloadConfigMenu?.cancel();
+              });
+            }
+            break;
+          case ActionMenu.close:
+            state = state.copyWith(isDisplayedDownloadConfigMenu: false);
+            _leaveDownloadConfigMenu?.cancel();
             break;
         }
         break;
@@ -64,27 +124,27 @@ final class UiBloc extends _$UiBloc {
           case ActionMenu.open:
             state = state.copyWith(isDisplayedStorageMenu: true);
 
-            _leaveStorageMenu.cancel();
+            _leaveStorageMenu?.cancel();
             _leaveStorageMenu = Timer.periodic(const Duration(seconds: 3), (_) {
               state = state.copyWith(isDisplayedStorageMenu: false);
-              _leaveStorageMenu.cancel();
+              _leaveStorageMenu?.cancel();
             });
 
             break;
           case ActionMenu.hoverLeave:
             if (isHover) {
-              _leaveStorageMenu.cancel();
+              _leaveStorageMenu?.cancel();
             } else {
-              _leaveStorageMenu.cancel();
+              _leaveStorageMenu?.cancel();
               _leaveStorageMenu = Timer.periodic(const Duration(seconds: 2), (_) {
                 state = state.copyWith(isDisplayedStorageMenu: false);
-                _leaveStorageMenu.cancel();
+                _leaveStorageMenu?.cancel();
               });
             }
             break;
           case ActionMenu.close:
             state = state.copyWith(isDisplayedStorageMenu: false);
-            _leaveStorageMenu.cancel();
+            _leaveStorageMenu?.cancel();
             break;
         }
         break;
@@ -107,7 +167,7 @@ final class UiBloc extends _$UiBloc {
             break;
           case ActionMenu.hoverLeave:
             if (isHover) {
-              _leaveMainMenu.cancel();
+              _leaveMainMenu?.cancel();
             } else {
               // _leaveMainMenu.cancel();
               // _leaveMainMenu = Timer.periodic(const Duration(seconds: 2), (_) {
@@ -120,7 +180,7 @@ final class UiBloc extends _$UiBloc {
             state = state.copyWith(
               isDisplayedMainMenu: false,
             );
-            _leaveMainMenu.cancel();
+            _leaveMainMenu?.cancel();
             break;
         }
         break;
@@ -166,10 +226,13 @@ final class UiBloc extends _$UiBloc {
 
 enum TypeMenu {
   account,
+  uploadConfig,
+  downloadConfig,
   storage,
   main;
 
   bool get isAccount => this == account;
+  bool get isUploadConfig => this == uploadConfig;
   bool get isStorage => this == storage;
   bool get isMain => this == main;
 

@@ -24,19 +24,21 @@ final class ApiRemoteClient {
     StorageBucketRequestsDtoInterface client,
   ) async {
     // try {
-    Response<Object>? response;
+    Response<dynamic>? response;
     switch (client.typeRequest) {
       case RequestType.get:
         // print('>>>> GET URL ${client.url.origin}');
         // print('>>>> GET HEADERS ${client.headers}');
         // print('>>>> GET BODY ${client.body}');
 
-        response = await _dio.get(
-          client.url.toString(),
-          options: Options(
-            headers: client.headers,
-          ),
-        );
+        response = await _dio
+            .get<dynamic>(
+              client.url.toString(),
+              options: Options(
+                headers: client.headers,
+              ),
+            )
+            .timeout(const Duration(seconds: 10));
 
         print('>>>> GET CODE ${response.statusCode}');
         print('>>>> GET ${response.data}');

@@ -19,15 +19,12 @@ class AccountDao extends DatabaseAccessor<ApiDatabase> with _$AccountDaoMixin {
   }
 
   Future<bool> updateAccount({
-    required AccountEntity account,
+    required AccountTableCompanion account,
   }) async {
     final accountUpdate = update(accountTable);
-    accountUpdate.where((t) => t.idAccount.equals(account.idAccount));
-    final response = await accountUpdate.write(AccountTableCompanion(
-      name: Value(account.name),
-      localization: Value(account.localization.name),
-      password: Value(account.password),
-    ));
+    accountUpdate.where((t) => t.idAccount.equals(account.idAccount.value));
+
+    final response = await accountUpdate.write(account);
 
     return response == 1;
   }

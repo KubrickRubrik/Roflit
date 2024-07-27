@@ -16,11 +16,11 @@ import 'package:roflit/feature/common/widgets/loader.dart';
 import 'package:roflit/feature/presentation/menu/router/router.dart';
 import 'package:roflit/generated/assets.gen.dart';
 
-class DownloadSectionStorageMenu extends ConsumerWidget {
-  final double width;
+class HomeDownloadStorageMenu extends ConsumerWidget {
+  final BoxConstraints constrains;
 
-  const DownloadSectionStorageMenu({
-    required this.width,
+  const HomeDownloadStorageMenu({
+    required this.constrains,
     super.key,
   });
 
@@ -33,8 +33,8 @@ class DownloadSectionStorageMenu extends ConsumerWidget {
 
     return AnimatedPositioned(
       top: 0,
-      left: isDisplayedStorageMenu ? 0 : width,
-      right: isDisplayedStorageMenu ? 0 : -width,
+      left: isDisplayedStorageMenu ? 8 : constrains.maxWidth + 8,
+      right: isDisplayedStorageMenu ? 0 : -constrains.maxWidth,
       duration: const Duration(milliseconds: 250),
       curve: Curves.ease,
       child: InkWell(
@@ -48,7 +48,7 @@ class DownloadSectionStorageMenu extends ConsumerWidget {
         },
         mouseCursor: MouseCursor.defer,
         child: Container(
-          constraints: const BoxConstraints(minHeight: 200),
+          constraints: BoxConstraints(minHeight: 200, maxHeight: constrains.maxHeight * 0.6),
           decoration: BoxDecoration(
             color: const Color(AppColors.bgDarkBlue1),
             borderRadius: borderRadius10,
@@ -61,6 +61,7 @@ class DownloadSectionStorageMenu extends ConsumerWidget {
             ],
           ),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Container(
                 height: 56,

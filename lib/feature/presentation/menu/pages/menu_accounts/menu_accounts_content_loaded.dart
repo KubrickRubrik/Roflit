@@ -89,7 +89,7 @@ class _AccountsListItem extends HookConsumerWidget {
       rootMenuNavigatorKey.currentContext?.goNamed(
         RouteEndPoints.accounts.account.name,
         extra: MenuAccountDto(
-          isCreateAccount: false,
+          isCreateProccessAccount: false,
           idAccount: account?.idAccount,
         ),
       );

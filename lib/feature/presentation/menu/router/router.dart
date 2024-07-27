@@ -4,6 +4,7 @@ import 'package:roflit/core/page_dto/account_page_dto.dart';
 import 'package:roflit/core/page_dto/login_page_dto.dart';
 import 'package:roflit/core/page_dto/storage_page_dto.dart';
 import 'package:roflit/feature/presentation/menu/pages/menu_account.dart';
+import 'package:roflit/feature/presentation/menu/pages/menu_account_bootloader.dart';
 import 'package:roflit/feature/presentation/menu/pages/menu_account_localization.dart';
 import 'package:roflit/feature/presentation/menu/pages/menu_account_storages.dart';
 import 'package:roflit/feature/presentation/menu/pages/menu_accounts.dart';
@@ -21,7 +22,7 @@ abstract final class MenuSettingsRouter {
     return GoRouter(
       debugLogDiagnostics: false,
       navigatorKey: rootMenuNavigatorKey,
-      // initialLocation: RouteEndPoints.accounts.account.storages.go,
+      // initialLocation: RouteEndPoints.accounts.account.bootloader.go,
       initialLocation: RouteEndPoints.accounts.go,
       routes: [
         GoRoute(
@@ -100,6 +101,13 @@ abstract final class MenuSettingsRouter {
                       ],
                     ),
                   ],
+                ),
+                GoRoute(
+                  name: RouteEndPoints.accounts.account.bootloader.name,
+                  path: RouteEndPoints.accounts.account.bootloader.path,
+                  builder: (context, state) {
+                    return const MenuAccountBootloader();
+                  },
                 ),
               ],
             ),

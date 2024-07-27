@@ -9,12 +9,14 @@ class ActionSectionButton extends HookWidget {
   final VoidCallback onTap;
   final Color bgColor;
   final Color bgHoverColor;
+  final BorderRadiusGeometry? borderRadius;
 
   const ActionSectionButton({
     required this.icon,
     required this.onTap,
     this.bgColor = const Color(AppColors.bgDarkGray1),
     this.bgHoverColor = const Color(AppColors.bgDarkGrayHover),
+    this.borderRadius,
     super.key,
   });
 
@@ -34,7 +36,7 @@ class ActionSectionButton extends HookWidget {
         height: 40,
         width: 40,
         decoration: BoxDecoration(
-          borderRadius: borderRadius8,
+          borderRadius: borderRadius ?? borderRadius12,
           color: isHover.value ? bgHoverColor : bgColor,
         ),
         alignment: Alignment.center,

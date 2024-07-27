@@ -18,8 +18,8 @@ import 'package:roflit/feature/presentation/menu/router/router.dart';
 import 'package:roflit/generated/assets.gen.dart';
 
 class HomeUploadAccountsMenu extends ConsumerWidget {
-  final double width;
-  const HomeUploadAccountsMenu({required this.width, super.key});
+  final BoxConstraints constrains;
+  const HomeUploadAccountsMenu({required this.constrains, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,8 +30,8 @@ class HomeUploadAccountsMenu extends ConsumerWidget {
 
     return AnimatedPositioned(
       top: 0,
-      left: isDisplayedAccountMenu ? 0 : -width,
-      right: isDisplayedAccountMenu ? 0 : width,
+      left: isDisplayedAccountMenu ? 0 : -constrains.maxWidth,
+      right: isDisplayedAccountMenu ? 8 : constrains.maxWidth + 8,
       duration: const Duration(milliseconds: 250),
       curve: Curves.ease,
       child: InkWell(
@@ -45,7 +45,7 @@ class HomeUploadAccountsMenu extends ConsumerWidget {
         },
         mouseCursor: MouseCursor.defer,
         child: Container(
-          constraints: const BoxConstraints(minHeight: 200),
+          constraints: BoxConstraints(minHeight: 200, maxHeight: constrains.maxHeight * 0.6),
           decoration: BoxDecoration(
             color: const Color(AppColors.bgDarkBlue1),
             borderRadius: borderRadius10,
@@ -58,6 +58,7 @@ class HomeUploadAccountsMenu extends ConsumerWidget {
             ],
           ),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Container(
                 height: 56,
@@ -155,7 +156,7 @@ class SectionAccountsMenuContentList extends ConsumerWidget {
                 );
                 rootMenuNavigatorKey.currentContext?.goNamed(
                   RouteEndPoints.accounts.account.name,
-                  extra: MenuAccountDto(isCreateAccount: true),
+                  extra: MenuAccountDto(isCreateProccessAccount: true),
                 );
                 bloc.menuActivity(
                   typeMenu: TypeMenu.main,
@@ -247,7 +248,7 @@ class _AccountsListItem extends HookConsumerWidget {
         rootMenuNavigatorKey.currentContext?.goNamed(
           RouteEndPoints.accounts.account.name,
           extra: MenuAccountDto(
-            isCreateAccount: false,
+            isCreateProccessAccount: false,
             idAccount: account?.idAccount,
           ),
         );

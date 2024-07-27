@@ -56,7 +56,7 @@ class MenuAccounts extends StatelessWidget {
             onTap: () {
               context.pushNamed(
                 RouteEndPoints.accounts.account.name,
-                extra: MenuAccountDto(isCreateAccount: true),
+                extra: MenuAccountDto(isCreateProccessAccount: true),
               );
             },
           ),

@@ -8,7 +8,7 @@ import 'package:roflit/feature/common/widgets/action_section_button.dart';
 import 'package:roflit/generated/assets.gen.dart';
 
 import 'widgets/account_menu.dart';
-import 'widgets/config_button.dart';
+import 'widgets/config_menu.dart';
 import 'widgets/objects_hover.dart';
 import 'widgets/objects_list.dart';
 
@@ -27,78 +27,88 @@ class HomeUpload extends ConsumerWidget {
       });
     }));
 
-    return LayoutBuilder(builder: (context, constr) {
-      return Flex(
-        direction: Axis.vertical,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 64,
-            alignment: Alignment.bottomLeft,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ActionSectionButton(
-                  icon: Assets.icons.profile,
+    return Flex(
+      direction: Axis.vertical,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          height: 64,
+          alignment: Alignment.bottomLeft,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ActionSectionButton(
+                icon: Assets.icons.profile,
+                onTap: () {
+                  blocUI.menuActivity(
+                    typeMenu: TypeMenu.account,
+                    action: ActionMenu.open,
+                  );
+                },
+              ),
+              if (account != null)
+                InkWell(
                   onTap: () {
                     blocUI.menuActivity(
                       typeMenu: TypeMenu.account,
                       action: ActionMenu.open,
                     );
                   },
-                ),
-                if (account != null)
-                  InkWell(
-                    onTap: () {
-                      blocUI.menuActivity(
-                        typeMenu: TypeMenu.account,
-                        action: ActionMenu.open,
-                      );
-                    },
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          account.name,
-                          overflow: TextOverflow.ellipsis,
-                          style: appTheme.textTheme.caption1.bold.onDark1,
-                        ),
-                        Text(
-                          account.localization.name.toUpperCase(),
-                          overflow: TextOverflow.ellipsis,
-                          style: appTheme.textTheme.caption3.bold.onDark1,
-                        ),
-                      ],
-                    ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        account.name,
+                        overflow: TextOverflow.ellipsis,
+                        style: appTheme.textTheme.caption1.bold.onDark1,
+                      ),
+                      Text(
+                        account.localization.name.toUpperCase(),
+                        overflow: TextOverflow.ellipsis,
+                        style: appTheme.textTheme.caption3.bold.onDark1,
+                      ),
+                    ],
                   ),
-              ],
-            ),
+                ),
+            ],
           ),
-          Flexible(
-            flex: 8,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 2, top: 14, bottom: 14),
-              child: LoadingSectionHoverObjects(
+        ),
+        Flexible(
+          flex: 8,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 2, top: 14, bottom: 14),
+            child: LayoutBuilder(builder: (context, constrains) {
+              return LoadingSectionHoverObjects(
                 child: Stack(
                   children: [
                     Center(
                       child: HomeUploadObjectsList(),
                     ),
-                    HomeUploadAccountsMenu(width: constr.maxWidth),
+                    HomeUploadAccountsMenu(constrains: constrains),
+                    HomeUploadConfigMenu(constrains: constrains),
                   ],
                 ),
-              ),
-            ),
-            // child: LoadingSectionEmpty(),
+              );
+            }),
           ),
-          Container(
-            height: 64,
-            alignment: Alignment.topLeft,
-            child: const HomeUploadConfigButton(),
+          // child: LoadingSectionEmpty(),
+        ),
+        Container(
+          height: 64,
+          alignment: Alignment.topLeft,
+          child: ActionSectionButton(
+            icon: Assets.icons.profile,
+            borderRadius: BorderRadius.circular(14),
+            onTap: () {
+              blocUI.menuActivity(
+                typeMenu: TypeMenu.uploadConfig,
+                action: ActionMenu.open,
+              );
+            },
           ),
-        ],
-      );
-    });
+        ),
+      ],
+    );
   }
 }

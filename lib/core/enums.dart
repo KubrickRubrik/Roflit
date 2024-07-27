@@ -132,3 +132,5 @@ enum ActionFirst {
   bool get isUpload => this == upload;
   bool get isDownload => this == download;
 }
+
+enum SearchSource { bucket, object }

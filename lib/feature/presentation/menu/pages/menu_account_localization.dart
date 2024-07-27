@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/extension/estring.dart';
@@ -7,7 +6,7 @@ import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 import 'package:roflit/feature/common/widgets/action_menu_button.dart';
-import 'package:roflit/feature/presentation/menu/widgets/menu_item_button.dart';
+import 'package:roflit/feature/common/widgets/menu_item_button.dart';
 
 class MenuAccountLocalization extends StatelessWidget {
   const MenuAccountLocalization({super.key});
@@ -49,31 +48,20 @@ class MenuAccountLocalization extends StatelessWidget {
             child: ListView.builder(
               itemCount: AppLocalization.values.length,
               itemBuilder: (context, index) {
-                return MainMenuAccountLocalizationItem(index);
+                // return MainMenuAccountLocalizationItem(index);
+                return MainMenuItemButton(
+                  onTap: () {
+                    context.pop(AppLocalization.values[index]);
+                  },
+                  child: Text(
+                    AppLocalization.values[index].title,
+                    style: appTheme.textTheme.title2.onDark1,
+                  ),
+                );
               },
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class MainMenuAccountLocalizationItem extends ConsumerWidget {
-  final int index;
-  const MainMenuAccountLocalizationItem(this.index);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final localization = AppLocalization.values[index];
-
-    return MainMenuItemButton(
-      onTap: () {
-        context.pop(localization);
-      },
-      child: Text(
-        localization.title,
-        style: appTheme.textTheme.title2.onDark1,
       ),
     );
   }

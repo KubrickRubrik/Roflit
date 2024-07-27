@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/extension/estring.dart';
+import 'package:roflit/feature/common/providers/search/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 import 'package:roflit/feature/presentation/home/home_content/home_content_objects.dart';
 
-class HomeContentObjectsHover extends HookWidget {
+class HomeContentObjectsHover extends HookConsumerWidget {
   final HomeContentObjects child;
   const HomeContentObjectsHover({required this.child, super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final stateHover = useState(false);
     return InkWell(
       onTap: () {},
       onHover: (value) {
         stateHover.value = value;
+        ref.read(searchBlocProvider.notifier).onSetObjectSource();
       },
       child: Flex(
         direction: Axis.vertical,

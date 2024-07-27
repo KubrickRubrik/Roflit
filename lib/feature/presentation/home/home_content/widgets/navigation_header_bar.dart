@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:roflit/core/enums.dart';
 import 'package:roflit/feature/common/providers/file_manager/provider.dart';
+import 'package:roflit/feature/common/providers/search/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
@@ -54,27 +57,34 @@ class SectionContentNavigationHeaderBar extends ConsumerWidget {
   }
 }
 
-class _ContentSectionNavigationHEaderBarSearch extends StatefulWidget {
+class _ContentSectionNavigationHEaderBarSearch extends HookConsumerWidget {
   final double maxWidth;
-  const _ContentSectionNavigationHEaderBarSearch({required this.maxWidth});
+
+  const _ContentSectionNavigationHEaderBarSearch({
+    required this.maxWidth,
+  });
+
+  String sourceString(SearchSource source) {
+    return switch (source) {
+      SearchSource.bucket => ':: бакет / ',
+      SearchSource.object => ':: объект / ',
+    };
+  }
 
   @override
-  State<_ContentSectionNavigationHEaderBarSearch> createState() =>
-      __ContentSectionNavigationHEaderBarSearchState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isActiveSeek = useState(false);
+    final stateHover = useState(false);
+    final controller = useTextEditingController();
 
-class __ContentSectionNavigationHEaderBarSearchState
-    extends State<_ContentSectionNavigationHEaderBarSearch> {
-  bool isActiveSeek = false;
-  bool isHover = false;
+    final sourceSearch = ref.watch(searchBlocProvider.select((v) {
+      return v.source;
+    }));
 
-  @override
-  Widget build(BuildContext context) {
     return InkWell(
       onTap: () {},
       onHover: (value) {
-        isHover = value;
-        setState(() {});
+        stateHover.value = value;
       },
       mouseCursor: MouseCursor.defer,
       child: AnimatedContainer(
@@ -82,20 +92,42 @@ class __ContentSectionNavigationHEaderBarSearchState
         curve: Curves.ease,
         margin: const EdgeInsets.only(right: 10, top: 2),
         height: 40,
-        width: isActiveSeek ? widget.maxWidth * 0.5 : 40,
+        width: isActiveSeek.value ? maxWidth * 0.5 : 40,
         decoration: BoxDecoration(
           borderRadius: borderRadius8,
-          color:
-              isHover ? const Color(AppColors.bgDarkGrayHover) : const Color(AppColors.bgDarkGray1),
+          color: stateHover.value
+              ? const Color(AppColors.bgDarkGrayHover)
+              : const Color(AppColors.bgDarkGray1),
         ),
         child: Stack(
           children: [
             Align(
+              alignment: Alignment.centerLeft,
+              child: InkWell(
+                onTap: () {
+                  isActiveSeek.value = !isActiveSeek.value;
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: AnimatedDefaultTextStyle(
+                    style: appTheme.textTheme.title2.copyWith(
+                      color: isActiveSeek.value
+                          ? const Color(AppColors.textOnDark2)
+                          : Colors.transparent,
+                    ),
+                    duration: const Duration(milliseconds: 250),
+                    child: Text(
+                      sourceString(sourceSearch),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Align(
               alignment: Alignment.centerRight,
               child: InkWell(
                 onTap: () {
-                  isActiveSeek = !isActiveSeek;
-                  setState(() {});
+                  isActiveSeek.value = !isActiveSeek.value;
                 },
                 child: SizedBox(
                   height: 48,
@@ -119,6 +151,7 @@ class __ContentSectionNavigationHEaderBarSearchState
               left: 0,
               child: Center(
                 child: TextField(
+                  controller: controller,
                   maxLength: 32,
                   maxLines: 1,
                   style: appTheme.textTheme.title2.onDark1,
@@ -130,8 +163,10 @@ class __ContentSectionNavigationHEaderBarSearchState
                     errorBorder: InputBorder.none,
                     disabledBorder: InputBorder.none,
                     border: InputBorder.none,
+                    prefixText: sourceString(sourceSearch),
+                    prefixStyle: const TextStyle(color: Colors.transparent),
                     counterText: '',
-                    hintText: 'Поиск',
+                    hintText: 'найти',
                     hintStyle: appTheme.textTheme.title2.onDark2,
                   ),
                 ),

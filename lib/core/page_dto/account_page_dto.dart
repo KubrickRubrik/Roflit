@@ -1,13 +1,13 @@
 final class MenuAccountDto {
   final int? idAccount;
-  final bool isCreateAccount;
+  final bool isCreateProccessAccount;
 
   MenuAccountDto({
-    required this.isCreateAccount,
+    required this.isCreateProccessAccount,
     this.idAccount,
   });
 
   MenuAccountDto.empty()
-      : isCreateAccount = true,
+      : isCreateProccessAccount = true,
         idAccount = null;
 }

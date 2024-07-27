@@ -4,6 +4,8 @@ part of 'provider.dart';
 class UiState with _$UiState {
   const factory UiState({
     @Default(false) bool isDisplayedAccountMenu,
+    @Default(false) bool isDisplayedUploadConfigMenu,
+    @Default(false) bool isDisplayedDownloadConfigMenu,
     @Default(false) bool isDisplayedStorageMenu,
     @Default(false) bool isDisplayedMainMenu,
     @Default(false) bool isDisplayBucketMenu,
