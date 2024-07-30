@@ -69,7 +69,7 @@ class MenuLogin extends HookConsumerWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  MainMenuItemButton(
+                  MenusItemButton(
                     child: ContentTextField(
                       controller: passwordController,
                       hint: 'Пароль'.translate,

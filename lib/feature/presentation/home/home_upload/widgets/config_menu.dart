@@ -4,8 +4,11 @@ import 'package:roflit/core/extension/estring.dart';
 import 'package:roflit/feature/common/providers/account_service.dart';
 import 'package:roflit/feature/common/providers/session/provider.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
+import 'package:roflit/feature/common/providers/upload/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
+import 'package:roflit/feature/common/themes/text.dart';
+import 'package:roflit/feature/common/widgets/menu_item_button.dart';
 import 'package:roflit/feature/common/widgets/menu_item_config_switch.dart';
 
 class HomeUploadConfigMenu extends ConsumerWidget {
@@ -81,6 +84,17 @@ class SectionUploadConfigMenuContent extends ConsumerWidget {
               },
             ),
           ],
+          MenusItemButton(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Отменить все',
+              style: appTheme.textTheme.title2.onDark1,
+            ),
+            onTap: () {
+              ref.read(uploadBlocProvider.notifier).removeAllUploads();
+            },
+          ),
         ],
       ),
     );

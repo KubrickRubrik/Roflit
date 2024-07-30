@@ -10,6 +10,7 @@ import 'package:roflit/core/providers/di_service.dart';
 import 'package:roflit/core/providers/roflit_service.dart';
 import 'package:roflit/core/utils/await.dart';
 import 'package:roflit/feature/common/providers/api_observer/provider.dart';
+import 'package:roflit/feature/common/providers/upload/provider.dart';
 import 'package:s3roflit/s3roflit.dart';
 
 part 'provider.freezed.dart';
@@ -165,5 +166,18 @@ final class BootloaderBloc extends _$BootloaderBloc {
     state = state.copyWith(
       bootloaders: bootloaders,
     );
+
+    if (bootloader.action.isUpload) {
+      ref.read(uploadBlocProvider.notifier).updateUploadObjectStatus(
+            bootloader,
+            status: status,
+          );
+    } else {
+      //TODO add status for downloadedBlocProvider
+      // ref.read(uploadBlocProvider.notifier).updateUploadObjectStatus(
+      //       bootloader,
+      //       status: status,
+      //     );
+    }
   }
 }

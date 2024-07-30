@@ -15,7 +15,7 @@ class MainMenuAccountBootloaderConfigItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MainMenuItemButton(
+    return MenusItemButton(
       onTap: () {
         onSwitch(value: !currentValue);
       },

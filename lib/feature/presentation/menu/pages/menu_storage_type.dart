@@ -67,7 +67,7 @@ class MainMenuAccountStorageTypeItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final typeStorage = StorageType.values[index];
 
-    return MainMenuItemButton(
+    return MenusItemButton(
       onTap: () {
         context.pop(typeStorage);
       },

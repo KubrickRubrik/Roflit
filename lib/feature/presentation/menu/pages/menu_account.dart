@@ -95,7 +95,7 @@ class MenuAccount extends HookConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   //! Account name .
-                  MainMenuItemButton(
+                  MenusItemButton(
                     onTap: () {},
                     child: ContentTextField(
                       controller: nameController,
@@ -103,7 +103,7 @@ class MenuAccount extends HookConsumerWidget {
                     ),
                   ),
                   //! Localization.
-                  MainMenuItemButton(
+                  MenusItemButton(
                     onTap: onTapLocalization,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -120,7 +120,7 @@ class MenuAccount extends HookConsumerWidget {
                   ),
                   //! Account storages.
                   if (!menuAccountDto.isCreateProccessAccount) ...{
-                    MainMenuItemButton(
+                    MenusItemButton(
                       onTap: () {
                         context.pushNamed(RouteEndPoints.accounts.account.storages.name);
                       },
@@ -142,7 +142,7 @@ class MenuAccount extends HookConsumerWidget {
                       ),
                     ),
                     //! Password.
-                    MainMenuItemButton(
+                    MenusItemButton(
                       onTap: () {},
                       child: ContentTextField(
                         controller: passwordController,
@@ -161,7 +161,7 @@ class MenuAccount extends HookConsumerWidget {
                       ),
                     ),
                     //! Bootloader.
-                    MainMenuItemButton(
+                    MenusItemButton(
                       onTap: () {
                         context.pushNamed(
                           RouteEndPoints.accounts.account.bootloader.name,

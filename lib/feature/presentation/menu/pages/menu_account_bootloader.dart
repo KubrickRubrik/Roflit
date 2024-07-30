@@ -112,7 +112,7 @@ class MainMenuAccountBootloaderConfigAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MainMenuItemButton(
+    return MenusItemButton(
         onTap: onSwitch,
         child: Stack(
           children: [

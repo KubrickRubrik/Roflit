@@ -117,7 +117,11 @@ final class BucketsBloc extends _$BucketsBloc {
       //TODO add snackbar
       return false;
     }
-    final currentIdStorage = state.activeStorage!.idStorage;
+    if (state.activeStorage == null) {
+      //TODO add snackbar
+      return false;
+    }
+    final currentIdStorage = state.activeStorage?.idStorage;
 
     final roflitService = ref.read(roflitServiceProvider(state.activeStorage));
 

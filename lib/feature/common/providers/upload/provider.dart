@@ -66,4 +66,29 @@ final class UploadBloc extends _$UploadBloc {
       uploads: currentUploads,
     );
   }
+
+  void updateUploadObjectStatus(
+    BootloaderEntity bootloader, {
+    required BootloaderStatus status,
+  }) {
+    final bootloaders = state.uploads.map((v) {
+      if (v.id != bootloader.id) return v;
+      return v.copyWith(status: status);
+    }).toList();
+
+    state = state.copyWith(
+      uploads: bootloaders,
+    );
+  }
+
+  Future<void> removeAllUploads() async {
+    final dao = ref.read(diServiceProvider).apiLocalClient.bootloaderDao;
+    final ids = state.uploads
+        .where(
+          (v) => !v.status.isProccess,
+        )
+        .map((v) => v.id)
+        .toList();
+    await dao.removeBootloader(ids);
+  }
 }

@@ -49,7 +49,7 @@ class MenuAccountLocalization extends StatelessWidget {
               itemCount: AppLocalization.values.length,
               itemBuilder: (context, index) {
                 // return MainMenuAccountLocalizationItem(index);
-                return MainMenuItemButton(
+                return MenusItemButton(
                   onTap: () {
                     context.pop(AppLocalization.values[index]);
                   },

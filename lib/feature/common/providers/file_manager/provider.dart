@@ -83,6 +83,11 @@ final class FileManagerBloc extends _$FileManagerBloc {
       return;
     }
     final idStorage = state.account?.activeStorage?.idStorage;
+    final storage = state.account?.storages.firstOrNull;
+    if (storage == null) {
+      //TODO add snackbar
+      return;
+    }
     final roflitService = ref.read(roflitServiceProvider(state.account?.storages.first));
     final result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
