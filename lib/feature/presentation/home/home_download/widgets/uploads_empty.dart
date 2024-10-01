@@ -3,14 +3,14 @@ import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 
-class DonwloadSectionEmpty extends StatefulWidget {
-  const DonwloadSectionEmpty({super.key});
+class DownloadsSectionEmpty extends StatefulWidget {
+  const DownloadsSectionEmpty({super.key});
 
   @override
-  State<DonwloadSectionEmpty> createState() => _DonwloadSectionEmptyState();
+  State<DownloadsSectionEmpty> createState() => _DownloadsSectionEmptyState();
 }
 
-class _DonwloadSectionEmptyState extends State<DonwloadSectionEmpty> {
+class _DownloadsSectionEmptyState extends State<DownloadsSectionEmpty> {
   bool isHover = false;
 
   @override

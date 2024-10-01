@@ -23,8 +23,10 @@ class MenuSettings extends ConsumerWidget {
       child: AnimatedCrossFade(
         duration: const Duration(milliseconds: 250),
         sizeCurve: Curves.ease,
-        crossFadeState:
-            (!isDisplayedMainMenu) ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+        crossFadeState: switch (!isDisplayedMainMenu) {
+          true => CrossFadeState.showFirst,
+          _ => CrossFadeState.showSecond,
+        },
         firstChild: const SizedBox.shrink(),
         secondChild: const _MenuSettings(),
         layoutBuilder: (topChild, topChildKey, bottomChild, bottomChildKey) {

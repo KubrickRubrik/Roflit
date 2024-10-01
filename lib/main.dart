@@ -12,10 +12,10 @@ import 'package:roflit/feature/common/providers/api_observer/provider.dart';
 import 'package:roflit/feature/common/providers/bootloader/provider.dart';
 import 'package:roflit/feature/common/providers/buckets/provider.dart';
 import 'package:roflit/feature/common/providers/file_manager/provider.dart';
+import 'package:roflit/feature/common/providers/file_upload/provider.dart';
 import 'package:roflit/feature/common/providers/objects/provider.dart';
 import 'package:roflit/feature/common/providers/observer/provider.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
-import 'package:roflit/feature/common/providers/upload/provider.dart';
 import 'package:roflit/feature/presentation/home/home.dart';
 
 import 'core/utils/hooks.dart';

@@ -26,7 +26,7 @@ class _LoadingSectionEmptyState extends State<LoadingSectionEmpty> {
         curve: Curves.ease,
         opacity: isHover ? 1 : 0,
         child: Container(
-          margin: EdgeInsets.only(top: h14, bottom: h14, left: h10),
+          margin: const EdgeInsets.only(left: 2, top: 14, bottom: 14),
           decoration: BoxDecoration(
             borderRadius: borderRadius4,
             color: const Color(AppColors.bgLightGrayOpacity10),
@@ -35,7 +35,7 @@ class _LoadingSectionEmptyState extends State<LoadingSectionEmpty> {
             child: Text(
               'ОЧЕРЕДЬ\r\nЗАГРУЗКИ',
               textAlign: TextAlign.center,
-              style: appTheme.textTheme.title3.bold.onLight1,
+              style: appTheme.textTheme.title3.bold.onDark1,
             ),
           ),
         ),

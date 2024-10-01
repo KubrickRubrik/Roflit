@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:roflit/feature/common/providers/file_download/provider.dart';
 import 'package:roflit/feature/common/providers/session/provider.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 import 'package:roflit/feature/common/widgets/action_section_button.dart';
+import 'package:roflit/feature/presentation/home/home_download/widgets/uploads_empty.dart';
 import 'package:roflit/generated/assets.gen.dart';
 
 import 'widgets/config_menu.dart';
@@ -21,6 +23,10 @@ class HomeDownload extends ConsumerWidget {
 
     final storage = ref.watch(sessionBlocProvider.select((v) {
       return blocSession.getStorage(getActive: true);
+    }));
+
+    final uploadsLength = ref.watch(downloadBlocProvider.select((value) {
+      return value.items.length;
     }));
 
     return Flex(
@@ -78,9 +84,12 @@ class HomeDownload extends ConsumerWidget {
               return DownloadSectionHoverObjects(
                 child: Stack(
                   children: [
-                    Center(
-                      child: HomeDownloadObjectsList(),
-                    ),
+                    switch (uploadsLength) {
+                      0 => const DownloadsSectionEmpty(),
+                      _ => Center(
+                          child: HomeDownloadObjectsList(),
+                        ),
+                    },
                     HomeDownloadStorageMenu(constrains: constrains),
                     HomeDownloadConfigMenu(constrains: constrains),
                   ],

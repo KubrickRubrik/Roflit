@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:roflit/feature/common/providers/upload/provider.dart';
+import 'package:roflit/feature/common/providers/file_upload/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/widgets/upload_object_item.dart';
@@ -15,7 +15,7 @@ class HomeUploadObjectsList extends HookConsumerWidget {
     final controller = useScrollController();
 
     final uploads = ref.watch(uploadBlocProvider.select((value) {
-      return value.uploads;
+      return value.items;
     }));
 
     return ClipRRect(

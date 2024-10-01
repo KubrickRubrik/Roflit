@@ -1,33 +1,22 @@
 {
-  "dart.flutterSdkPath": ".fvm/versions/3.22.2",
+  "dart.flutterSdkPath": ".fvm/versions/3.24.3",
   "actionButtons": {
-    "defaultColor": "#FFFFFF", // Can also use string color names.
-    "loadNpmCommands": false, // Disables automatic generation of actions for npm commands.
-    "reloadButton": "🔄", // Custom reload button text or icon (default ↻). null value enables automatic reload on configuration change
+    "defaultColor": "#FFFFFF",
+    "loadNpmCommands": false,
+    "reloadButton": "🔄",
     "commands": [
       {
         "name": "📂 Root",
         "color": "#ABD2FF",
         "singleInstance": true,
-        "command": "cd .", // This is executed in the terminal.
+        "command": "cd ."
       },
       {
         "name": "⚙️ Build",
         "color": "#ABD2FF",
         "singleInstance": true,
-        "command": " dart run build_runner build --delete-conflicting-outputs", // This is executed in the terminal.
-      },
-      // {
-      //   "name": "$(tools) Build Cargo",
-      //   "color": "green",
-      //   "command": "cargo build ${file}",
-      // },
-      // {
-      //   "name": "$(split-horizontal) Split editor",
-      //   "color": "orange",
-      //   "useVsCodeApi": true,
-      //   "command": "workbench.action.splitEditor"
-      // }
+        "command": " dart run build_runner build --delete-conflicting-outputs"
+      }
     ]
   }
 }

@@ -4,13 +4,14 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:roflit/core/entity/account.dart';
 import 'package:roflit/core/entity/bootloader.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/providers/di_service.dart';
 import 'package:roflit/core/providers/roflit_service.dart';
 import 'package:roflit/core/utils/await.dart';
 import 'package:roflit/feature/common/providers/api_observer/provider.dart';
-import 'package:roflit/feature/common/providers/upload/provider.dart';
+import 'package:roflit/feature/common/providers/file_upload/provider.dart';
 import 'package:s3roflit/s3roflit.dart';
 
 part 'provider.freezed.dart';
@@ -29,11 +30,21 @@ final class BootloaderBloc extends _$BootloaderBloc {
 
   // Removable listeners.
   StreamSubscription<List<BootloaderEntity>>? _listenerBootloaders;
+  StreamSubscription<AccountEntity?>? _listenerActiveAccount;
 
   Future<void> watchBootloader() async {
     final watchingDao = ref.read(diServiceProvider).apiLocalClient.watchingDao;
     await _listenerBootloaders?.cancel();
+    await _listenerActiveAccount?.cancel();
+
     await Await.second(3);
+
+    _listenerActiveAccount = watchingDao.watchActiveAccount().listen((event) {
+      if (event != null) {
+        state = state.copyWith(config: event.config);
+      }
+    });
+
     _listenerBootloaders = watchingDao.watchBootloader().listen((event) {
       state = state.copyWith(bootloaders: event);
       _startBootloaderEngine();
@@ -41,13 +52,11 @@ final class BootloaderBloc extends _$BootloaderBloc {
   }
 
   Future<void> _startBootloaderEngine() async {
-    if (state.config.isActiveProccess) return;
+    if (state.isActiveProccess) return;
     if (state.bootloaders.isEmpty) return;
     if (!state.config.isOn) return;
     state = state.copyWith(
-      config: state.config.copyWith(
-        isActiveProccess: true,
-      ),
+      isActiveProccess: true,
     );
 
     for (var i = 0; i < state.bootloaders.length; i++) {
@@ -81,12 +90,12 @@ final class BootloaderBloc extends _$BootloaderBloc {
       );
     }
 
-    state = state.copyWith(config: state.config.copyWith(isActiveProccess: false));
+    state = state.copyWith(isActiveProccess: false);
   }
 
   BootloaderEntity? _getBootloader() {
     BootloaderEntity? bootloader;
-    if (state.config.first.isUpload) {
+    if (state.config.action.isUpload) {
       bootloader = state.bootloaders.firstWhereOrNull((v) => v.action.isUpload);
       bootloader ??= state.bootloaders.firstWhereOrNull((v) => v.action.isDownload);
     } else {

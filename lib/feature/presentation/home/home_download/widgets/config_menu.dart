@@ -6,6 +6,8 @@ import 'package:roflit/feature/common/providers/session/provider.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
+import 'package:roflit/feature/common/themes/text.dart';
+import 'package:roflit/feature/common/widgets/menu_item_button.dart';
 import 'package:roflit/feature/common/widgets/menu_item_config_switch.dart';
 
 class HomeDownloadConfigMenu extends ConsumerWidget {
@@ -40,7 +42,7 @@ class HomeDownloadConfigMenu extends ConsumerWidget {
         },
         mouseCursor: MouseCursor.defer,
         child: Container(
-          constraints: BoxConstraints(minHeight: 200, maxHeight: constrains.maxHeight * 0.38),
+          constraints: BoxConstraints(minHeight: 100, maxHeight: constrains.maxHeight * 0.38),
           decoration: BoxDecoration(
             color: const Color(AppColors.bgDarkBlue1),
             borderRadius: borderRadius10,
@@ -76,15 +78,26 @@ class SectionDownloadConfigMenuContent extends ConsumerWidget {
           if (account != null) ...[
             MainMenuAccountBootloaderConfigItem(
               label: 'Cкачивание'.translate,
-              currentValue: account.config.isOnUpload,
+              currentValue: account.config.isOnDownload,
               onSwitch: ({required bool value}) {
                 ref.read(accountServiceProvider).setConfig(
                       idAccount: account.idAccount,
-                      isOnUpload: value,
+                      isOnDownload: value,
                     );
               },
             ),
           ],
+          MenusItemButton(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Отменить все',
+              style: appTheme.textTheme.title2.onDark1,
+            ),
+            onTap: () {
+              // ref.read(uploadBlocProvider.notifier).removeAllUploads();
+            },
+          ),
         ],
       ),
     );

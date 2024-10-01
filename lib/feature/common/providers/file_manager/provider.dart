@@ -16,8 +16,8 @@ import 'package:roflit/core/providers/di_service.dart';
 import 'package:roflit/core/providers/roflit_service.dart';
 import 'package:roflit/core/utils/await.dart';
 import 'package:roflit/data/local/api_db.dart';
+import 'package:roflit/feature/common/providers/file_upload/provider.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
-import 'package:roflit/feature/common/providers/upload/provider.dart';
 
 part 'provider.freezed.dart';
 part 'provider.g.dart';
@@ -199,7 +199,7 @@ final class FileManagerBloc extends _$FileManagerBloc {
       return;
     }
 
-    final uploads = ref.read(uploadBlocProvider).uploads;
+    final uploads = ref.read(uploadBlocProvider).items;
     final bootloader = uploads.firstWhereIndexedOrNull((currentIndex, v) {
       return index == currentIndex;
     });
@@ -261,7 +261,7 @@ final class FileManagerBloc extends _$FileManagerBloc {
         objectKey: v.object.objectKey,
         bucket: storage!.activeBucket!,
         type: v.object.type.name,
-        storageType: storage!.storageType.name,
+        storageType: storage.storageType.name,
         localPath: drift.Value(v.object.localPath),
       );
     }).toList();

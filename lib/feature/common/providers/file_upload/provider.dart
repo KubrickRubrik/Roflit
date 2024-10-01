@@ -63,7 +63,7 @@ final class UploadBloc extends _$UploadBloc {
     }
 
     state = state.copyWith(
-      uploads: currentUploads,
+      items: currentUploads,
     );
   }
 
@@ -71,19 +71,19 @@ final class UploadBloc extends _$UploadBloc {
     BootloaderEntity bootloader, {
     required BootloaderStatus status,
   }) {
-    final bootloaders = state.uploads.map((v) {
+    final bootloaders = state.items.map((v) {
       if (v.id != bootloader.id) return v;
       return v.copyWith(status: status);
     }).toList();
 
     state = state.copyWith(
-      uploads: bootloaders,
+      items: bootloaders,
     );
   }
 
   Future<void> removeAllUploads() async {
     final dao = ref.read(diServiceProvider).apiLocalClient.bootloaderDao;
-    final ids = state.uploads
+    final ids = state.items
         .where(
           (v) => !v.status.isProccess,
         )

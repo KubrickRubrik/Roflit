@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/extension/estring.dart';
 import 'package:roflit/feature/common/providers/account_service.dart';
+import 'package:roflit/feature/common/providers/file_upload/provider.dart';
 import 'package:roflit/feature/common/providers/session/provider.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
-import 'package:roflit/feature/common/providers/upload/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
@@ -39,7 +39,7 @@ class HomeUploadConfigMenu extends ConsumerWidget {
         },
         mouseCursor: MouseCursor.defer,
         child: Container(
-          constraints: BoxConstraints(minHeight: 200, maxHeight: constrains.maxHeight * 0.38),
+          constraints: BoxConstraints(minHeight: 100, maxHeight: constrains.maxHeight * 0.38),
           decoration: BoxDecoration(
             color: const Color(AppColors.bgDarkBlue1),
             borderRadius: borderRadius10,
@@ -75,11 +75,11 @@ class SectionUploadConfigMenuContent extends ConsumerWidget {
           if (account != null) ...[
             MainMenuAccountBootloaderConfigItem(
               label: 'Загрузка'.translate,
-              currentValue: account.config.isOnDownload,
+              currentValue: account.config.isOnUpload,
               onSwitch: ({required bool value}) {
                 ref.read(accountServiceProvider).setConfig(
                       idAccount: account.idAccount,
-                      isOnDownload: value,
+                      isOnUpload: value,
                     );
               },
             ),

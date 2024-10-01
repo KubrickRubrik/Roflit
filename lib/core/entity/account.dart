@@ -66,4 +66,8 @@ class AccountConfigEntity with _$AccountConfigEntity {
     @Default(true) bool isOnDownload,
     @Default(ActionFirst.upload) ActionFirst action,
   }) = _AccountConfigEntity;
+
+  const AccountConfigEntity._();
+
+  bool get isOn => isOnUpload && action.isUpload || isOnDownload && action.isDownload;
 }

@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/services/bite_converter.dart';
 import 'package:roflit/feature/common/providers/api_observer/provider.dart';
 import 'package:roflit/feature/common/providers/file_manager/provider.dart';
-import 'package:roflit/feature/common/providers/upload/provider.dart';
+import 'package:roflit/feature/common/providers/file_upload/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
@@ -21,7 +21,7 @@ class UploadObjectItem extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final bloc = ref.watch(fileManagerBlocProvider.notifier);
     final uploadObject = ref.watch(uploadBlocProvider.select((v) {
-      return v.uploads.elementAtOrNull(index);
+      return v.items.elementAtOrNull(index);
     }));
 
     final stateHover = useState(false);
