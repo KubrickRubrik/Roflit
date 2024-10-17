@@ -107,6 +107,7 @@ enum IconSourceType {
   other;
 
   bool get isFolder => this == folder;
+  bool get isImage => this == image;
 }
 
 enum BucketCreateAccess {

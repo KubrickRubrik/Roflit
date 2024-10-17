@@ -85,7 +85,7 @@ class MenuFileList extends HookConsumerWidget {
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    child: switch ((managerState)) {
+                    child: switch (managerState) {
                       (isEdit: _, isEmpty: true, title: _) => MainMenuButton(
                           title: 'Добавить'.translate,
                           onTap: bloc.onAddMoreFiles,

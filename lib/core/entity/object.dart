@@ -17,6 +17,7 @@ class ObjectEntity with _$ObjectEntity {
     String? lastModified,
     String? remotePath,
     String? localPath,
+    String? signedUrl,
   }) = _ObjectEntity;
 
   factory ObjectEntity.fromDto(ObjectDto dto) {

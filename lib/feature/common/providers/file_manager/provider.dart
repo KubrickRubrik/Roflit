@@ -226,7 +226,7 @@ final class FileManagerBloc extends _$FileManagerBloc {
 
   Future<void> onNextEditBootloader() async {
     final storage = state.account?.activeStorage;
-    final storageType = state.account?.activeStorage?.storageType;
+    // final storageType = state.account?.activeStorage?.storageType;
 
     if (storage?.activeBucket?.isNotEmpty != true || storage?.storageType == null) {
       //TODO: snackbar
@@ -251,7 +251,7 @@ final class FileManagerBloc extends _$FileManagerBloc {
         objectKey: drift.Value(v.object.objectKey),
         bucket: drift.Value(storage!.activeBucket!),
         type: drift.Value(v.object.type.name),
-        storageType: drift.Value(storage!.storageType.name),
+        storageType: drift.Value(storage.storageType.name),
         localPath: drift.Value(v.object.localPath),
       );
     }).toList();

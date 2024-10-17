@@ -152,7 +152,7 @@ final class SessionBloc extends _$SessionBloc {
 
     if (!response) {
       //TODO: добавление снэкбара
-      return null;
+      return;
     }
   }
 

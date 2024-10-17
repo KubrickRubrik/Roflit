@@ -10,7 +10,7 @@ import 'package:roflit/core/entity/storage.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/providers/di_service.dart';
 import 'package:roflit/core/providers/roflit_service.dart';
-import 'package:s3roflit/s3roflit.dart';
+import 'package:roflit_s3/roflit_s3.dart';
 
 part 'provider.freezed.dart';
 part 'provider.g.dart';

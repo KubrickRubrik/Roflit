@@ -17,14 +17,14 @@ class HomeContentObjects extends ConsumerWidget {
     }));
 
     switch (state) {
+      case ContentStatus.empty:
+      case ContentStatus.error:
+        return const HomeContentObjectsEmpty();
       case ContentStatus.loading:
         return const HomeContentObjectsLoading();
       case ContentStatus.loaded:
       case ContentStatus.total:
         return const HomeContentObjectsLoaded();
-      case ContentStatus.empty:
-      case ContentStatus.error:
-        return const HomeContentObjectsEmpty();
     }
   }
 }

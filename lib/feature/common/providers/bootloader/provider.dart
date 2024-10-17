@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
@@ -12,7 +13,7 @@ import 'package:roflit/core/providers/roflit_service.dart';
 import 'package:roflit/core/utils/await.dart';
 import 'package:roflit/feature/common/providers/api_observer/provider.dart';
 import 'package:roflit/feature/common/providers/file_upload/provider.dart';
-import 'package:s3roflit/s3roflit.dart';
+import 'package:roflit_s3/roflit_s3.dart';
 
 part 'provider.freezed.dart';
 part 'provider.g.dart';
@@ -73,10 +74,10 @@ final class BootloaderBloc extends _$BootloaderBloc {
       if (!response) {
         if (bootloader.action.isUpload) {
           //TODO add snackbar
-          print('>>>> Error 1');
+          log('Error');
         } else {
           //TODO add snackbar
-          print('>>>> Error 2');
+          log('Error');
         }
         break;
       }

@@ -8,8 +8,7 @@ import 'package:roflit/core/entity/object.dart';
 import 'package:roflit/core/entity/storage.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/services/format_converter.dart';
-import 'package:s3roflit/interface/storage_interface.dart';
-import 'package:s3roflit/s3roflit.dart';
+import 'package:roflit_s3/roflit_s3.dart';
 import 'package:xml2json/xml2json.dart';
 
 part 'roflit_service.g.dart';
@@ -20,41 +19,48 @@ RoflitService roflitService(RoflitServiceRef ref, StorageEntity? storage) {
 }
 
 final class RoflitService {
-  final StorageEntity? _storage;
-  RoflitService(StorageEntity? storage) : _storage = storage;
+  final StorageEntity? _cloudStorage;
+  RoflitService(StorageEntity? storage) : _cloudStorage = storage;
 
-  StorageInterface get roflit {
-    return switch (_storage?.storageType) {
-      StorageType.yxCloud => S3Roflit.yandex(
-          accessKey: _storage!.accessKey,
-          secretKey: _storage.secretKey,
-          region: _storage.region,
+  RoflitS3 get roflit {
+    return switch (_cloudStorage?.storageType) {
+      StorageType.yxCloud => RoflitS3.yandex(
+          accessKeyId: _cloudStorage!.accessKey,
+          secretAccessKey: _cloudStorage.secretKey,
+          region: _cloudStorage.region,
+          useLog: true,
         ),
-      StorageType.vkCloud => S3Roflit.vkontakte(
-          accessKey: _storage!.accessKey,
-          secretKey: _storage.secretKey,
+      StorageType.vkCloud => RoflitS3(
+          accessKeyId: _cloudStorage!.accessKey,
+          secretAccessKey: _cloudStorage.secretKey,
+          host: '',
+          region: '',
         ),
-      _ => S3Roflit.yandex(
-          accessKey: '',
-          secretKey: '',
+      _ => RoflitS3.yandex(
+          accessKeyId: '',
+          secretAccessKey: '',
           region: '',
         ),
     };
   }
 
   StorageSerializerInterface get serizalizer {
-    return switch (_storage?.storageType) {
-      StorageType.yxCloud => _YCSerializer(host: roflit.host),
-      StorageType.vkCloud => _VKSerializer(host: roflit.host),
-      _ => _YCSerializer(host: roflit.host),
+    return switch (_cloudStorage?.storageType) {
+      StorageType.yxCloud => _YCSerializer(
+          roflit: roflit,
+        ),
+      StorageType.vkCloud => _VKSerializer(
+          roflit: roflit,
+        ),
+      _ => _YCSerializer(roflit: roflit),
     };
   }
 }
 
 final class _YCSerializer implements StorageSerializerInterface {
-  final String host;
+  final RoflitS3 roflit;
 
-  _YCSerializer({required this.host});
+  _YCSerializer({required this.roflit});
 
   final _parser = Xml2Json();
 
@@ -64,7 +70,16 @@ final class _YCSerializer implements StorageSerializerInterface {
       _parser.parse(value as String);
       final json = jsonDecode(_parser.toParker());
       final document = json['ListAllMyBucketsResult'];
-      final buckets = document['Buckets']['Bucket'] as List?;
+      final buckets = document['Buckets']['Bucket'];
+
+      if (buckets is Map) {
+        return [
+          BucketEntity(
+            bucket: buckets['Name'],
+            creationDate: buckets['CreationDate'],
+          )
+        ];
+      }
 
       final newBuckets = List.generate(buckets?.length ?? 0, (index) {
         final bucket = buckets![index];
@@ -92,14 +107,20 @@ final class _YCSerializer implements StorageSerializerInterface {
 
       final newObjects = List.generate(objects?.length ?? 0, (index) {
         final object = objects![index];
+
+        final signedUrl = roflit.objects
+            .get(bucketName: bucket, objectKey: object['Key'], useSignedUrl: true)
+            .url;
+
         return ObjectEntity(
           objectKey: object['Key'],
           bucket: bucket,
           type: FormatConverter.converter(object['Key']),
           nesting: FormatConverter.nesting(object['Key']),
-          remotePath: '$host/$bucket/${object['Key']}',
+          remotePath: '${roflit.host}/$bucket/${object['Key']}',
           size: int.tryParse(object['Size']) ?? 0,
           lastModified: object['LastModified'],
+          signedUrl: signedUrl.toString(),
         );
       });
 
@@ -153,9 +174,9 @@ final class _YCSerializer implements StorageSerializerInterface {
 }
 
 final class _VKSerializer implements StorageSerializerInterface {
-  final String host;
+  final RoflitS3 roflit;
 
-  _VKSerializer({required this.host});
+  _VKSerializer({required this.roflit});
 
   @override
   List<BucketEntity> buckets(Object? value) {

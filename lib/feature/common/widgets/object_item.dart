@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -7,8 +8,9 @@ import 'package:roflit/feature/common/providers/objects/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
+import 'package:roflit/feature/common/widgets/label_banner_item.dart';
 
-import 'label_banner_item.dart';
+int i = 0;
 
 class ObjectItem extends HookConsumerWidget {
   final int index;
@@ -20,8 +22,6 @@ class ObjectItem extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bloc = ref.watch(objectsBlocProvider.notifier);
-
     final object = ref.watch(objectsBlocProvider.select((v) {
       return v.objects.elementAtOrNull(index);
     }));
@@ -41,6 +41,7 @@ class ObjectItem extends HookConsumerWidget {
     );
 
     if (object == null) return const SizedBox();
+
     return InkWell(
       onTap: () {},
       onHover: (value) {
@@ -61,15 +62,38 @@ class ObjectItem extends HookConsumerWidget {
               SizedBox(
                 width: object.nesting * 38,
               ),
-            Container(
-              height: 30,
-              width: 30,
-              margin: const EdgeInsets.only(left: 6),
-              child: ObjectItemBunner(
-                type: object.type,
-                remotePath: object.remotePath ?? '',
+            if (object.type.isImage) ...[
+              CachedNetworkImage(
+                imageUrl: object.signedUrl ?? '',
+                fit: BoxFit.cover,
+                height: 30,
+                width: 39,
+                placeholder: (context, _) {
+                  return const DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Color(AppColors.bgPlaceholder1),
+                    ),
+                  );
+                },
+                errorWidget: (_, mes, obj) {
+                  return const DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Color(AppColors.bgPlaceholder1),
+                    ),
+                  );
+                },
               ),
-            ),
+            ] else ...[
+              Container(
+                height: 30,
+                width: 30,
+                margin: const EdgeInsets.only(left: 6),
+                child: ObjectItemBunner(
+                  type: object.type,
+                  remotePath: object.remotePath ?? '',
+                ),
+              ),
+            ],
             const SizedBox(width: 8),
             Expanded(
               child: Align(

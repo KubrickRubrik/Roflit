@@ -1,11 +1,8 @@
 import 'package:dio/dio.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:http/http.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:roflit/core/entity/result.dart';
 import 'package:roflit/feature/common/providers/api_observer/provider.dart';
-import 'package:s3roflit/interface/storage_interface.dart';
-import 'package:s3roflit/src/config/s3/request_type.dart';
+import 'package:roflit_s3/roflit_s3.dart';
 
 part 'api_remote_client.g.dart';
 
@@ -21,7 +18,7 @@ final class ApiRemoteClient {
   final _dio = Dio();
 
   Future<Result> send(
-    StorageBucketRequestsDtoInterface client,
+    RoflitRequest client,
   ) async {
     // try {
     Response<dynamic>? response;
@@ -89,9 +86,19 @@ final class ApiRemoteClient {
         print('>>>> POST ${response.data}');
     }
 
-    return Result.success(
-      statusCode: response.statusCode,
-      success: response.data,
-    );
+    final statusCode = response.statusCode ?? 400;
+
+    if (statusCode < 200 || statusCode >= 300) {
+      return Result.failuer(
+        statusCode: response.statusCode,
+        success: response.data,
+        message: response.statusMessage,
+      );
+    } else {
+      return Result.success(
+        statusCode: response.statusCode,
+        success: response.data,
+      );
+    }
   }
 }
