@@ -3,15 +3,9 @@ abstract final class ServiceAccount {
   static const accessKeyId = 'YCAJEdYevr7Tvi9FKigATTnbu';
   static const secretAccessKey = 'YCOOUs-3lwxLmntjxZFaf6xWCcaf3i2k6EmP4F-d';
   static const region = 'ru-central1';
-  // static const idAccount = 'ajep2ma0d8h9oumgiuuq';
-  // static const accessKey = 'YCAJEaMLYzPhn7JxOyfpZbkwO';
-  // static const secretKey = 'YCMBvSRN8WPbLmpYc8XjPDiX9rugF2ckOABASUSl';
+
+  static const vkAccessKeyId = 'iC6nuVb173c4EFobHSiD4';
+  static const vksecretAccessKey = 'aWaCh4TkYq7SDaZXZsghTQvQjiGFn5ZFHgvxEkwoWoh5';
+  static const vkRegion = 'ru-msk';
+  // static const vkRegion = 'kz-ast';
 }
-
-
-// YCAJEHN-y-hO6Bh_rlBIYoYc2
-// YCOWvWgFJN3f0VUsjhjh_9DSKj9Gu9SOMVV33J9Y
-
-
-// aje05diptjo4dj0chalg
-// AQVNwCtlns8EbMDIqrDI0GSy74xnP3LSuKPdk_fX

@@ -24,9 +24,9 @@ final class ApiRemoteClient {
     Response<dynamic>? response;
     switch (client.typeRequest) {
       case RequestType.get:
-        // print('>>>> GET URL ${client.url.origin}');
-        // print('>>>> GET HEADERS ${client.headers}');
-        // print('>>>> GET BODY ${client.body}');
+        print('>>>> GET URL ${client.url.origin}');
+        print('>>>> GET HEADERS ${client.headers}');
+        print('>>>> GET BODY ${client.body}');
 
         response = await _dio
             .get<dynamic>(
@@ -85,7 +85,10 @@ final class ApiRemoteClient {
         print('>>>> POST CODE ${response.statusCode}');
         print('>>>> POST ${response.data}');
     }
-
+    // return Result.success(
+    //   statusCode: 101,
+    //   success: null,
+    // );
     final statusCode = response.statusCode ?? 400;
 
     if (statusCode < 200 || statusCode >= 300) {

@@ -71,7 +71,7 @@ final class BucketsBloc extends _$BucketsBloc {
 
     final dto = roflitService.roflit.buckets.get();
 
-    final response = await ref.watch(diServiceProvider).apiRemoteClient.send(dto);
+    final response = await ref.read(diServiceProvider).apiRemoteClient.send(dto);
 
     state = state.copyWith(loaderPage: ContentStatus.loaded);
 

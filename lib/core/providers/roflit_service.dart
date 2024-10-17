@@ -30,11 +30,11 @@ final class RoflitService {
           region: _cloudStorage.region,
           useLog: true,
         ),
-      StorageType.vkCloud => RoflitS3(
+      StorageType.vkCloud => RoflitS3.vk(
           accessKeyId: _cloudStorage!.accessKey,
           secretAccessKey: _cloudStorage.secretKey,
-          host: '',
-          region: '',
+          region: _cloudStorage.region,
+          useLog: true,
         ),
       _ => RoflitS3.yandex(
           accessKeyId: '',
@@ -49,7 +49,7 @@ final class RoflitService {
       StorageType.yxCloud => _YCSerializer(
           roflit: roflit,
         ),
-      StorageType.vkCloud => _VKSerializer(
+      StorageType.vkCloud => _YCSerializer(
           roflit: roflit,
         ),
       _ => _YCSerializer(roflit: roflit),
@@ -103,7 +103,26 @@ final class _YCSerializer implements StorageSerializerInterface {
       final document = json['ListBucketResult'];
 
       final bucket = document['Name'];
-      final objects = document['Contents'] as List?;
+      final objects = document['Contents'];
+
+      if (objects is Map) {
+        final signedUrl = roflit.objects
+            .get(bucketName: bucket, objectKey: objects['Key'], useSignedUrl: true)
+            .url;
+
+        return [
+          ObjectEntity(
+            objectKey: objects['Key'],
+            bucket: bucket,
+            type: FormatConverter.converter(objects['Key']),
+            nesting: FormatConverter.nesting(objects['Key']),
+            remotePath: '${roflit.host}/$bucket/${objects['Key']}',
+            size: int.tryParse(objects['Size']) ?? 0,
+            lastModified: objects['LastModified'],
+            signedUrl: signedUrl.toString(),
+          )
+        ];
+      }
 
       final newObjects = List.generate(objects?.length ?? 0, (index) {
         final object = objects![index];
