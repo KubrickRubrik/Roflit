@@ -3,10 +3,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/extension/estring.dart';
 import 'package:roflit/feature/common/providers/search/provider.dart';
+import 'package:roflit/feature/common/providers/ui/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
-import 'package:roflit/feature/presentation/home/home_content/home_content_objects.dart';
+import 'package:roflit/feature/presentation/home_content/home_content_objects.dart';
 
 class HomeContentObjectsHover extends HookConsumerWidget {
   final HomeContentObjects child;
@@ -15,6 +16,11 @@ class HomeContentObjectsHover extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final stateHover = useState(false);
+
+    final isDisplayObjectMenu = ref.watch(uiBlocProvider.select((v) {
+      return v.isDisplayObjectMenu;
+    }));
+
     return InkWell(
       onTap: () {},
       onHover: (value) {
@@ -39,8 +45,10 @@ class HomeContentObjectsHover extends HookConsumerWidget {
           AnimatedCrossFade(
             duration: const Duration(milliseconds: 300),
             sizeCurve: Curves.ease,
-            crossFadeState:
-                (!stateHover.value) ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+            crossFadeState: switch (isDisplayObjectMenu) {
+              false => CrossFadeState.showFirst,
+              true => CrossFadeState.showSecond,
+            },
             firstChild: const SizedBox.shrink(),
             secondChild: const HomeContentObjectSettings(),
           ),

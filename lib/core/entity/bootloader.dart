@@ -16,14 +16,14 @@ class BootloaderEntity with _$BootloaderEntity {
   }) = _BootloaderEntity;
 
   factory BootloaderEntity.fromDto({
-    required BootloaderDto uploadDto,
+    required BootloaderDto bootloaderDto,
     required ObjectDto objectDto,
   }) {
     return BootloaderEntity(
-      id: uploadDto.id,
-      idStorage: uploadDto.idStorage,
+      id: bootloaderDto.id,
+      idStorage: bootloaderDto.idStorage,
       object: ObjectEntity.fromDto(objectDto),
-      action: ActionBootloader.values.byName(uploadDto.action.name),
+      action: ActionBootloader.values.byName(bootloaderDto.action.name),
     );
   }
 }

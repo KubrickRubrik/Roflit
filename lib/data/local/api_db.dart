@@ -25,7 +25,6 @@ part 'daos/test.dart';
 part 'daos/watching_dao.dart';
 part 'tables/account_table.dart';
 part 'tables/bootloader_table.dart';
-part 'tables/object_download_table.dart';
 part 'tables/object_table.dart';
 part 'tables/session_table.dart';
 part 'tables/storage_table.dart';

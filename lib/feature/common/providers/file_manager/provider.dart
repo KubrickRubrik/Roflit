@@ -82,6 +82,7 @@ final class FileManagerBloc extends _$FileManagerBloc {
       closMenu();
       return;
     }
+
     final idStorage = state.account?.activeStorage?.idStorage;
     final storage = state.account?.storages.firstOrNull;
     if (storage == null) {
@@ -100,6 +101,17 @@ final class FileManagerBloc extends _$FileManagerBloc {
     }
 
     final files = result.paths.map((path) => File(path!)).toList();
+
+    if (files.isEmpty) return;
+
+    final localPath = files.first.path.substring(0, files.first.path.lastIndexOf('/'));
+
+    await ref.read(diServiceProvider).apiLocalClient.storageDao.updateStorage(
+          storage: StorageTableCompanion(
+            idStorage: drift.Value(idStorage),
+            pathSelectFiles: drift.Value(localPath),
+          ),
+        );
 
     final objects = await roflitService.serizalizer.objectsFromFiles(files);
     final bootloaders = objects.mapIndexed((index, object) {
@@ -318,5 +330,39 @@ final class FileManagerBloc extends _$FileManagerBloc {
     state = state.copyWith(
       bootloaders: currentBootloaders,
     );
+  }
+
+  Future<String> setPathToUploadFiles(int idStorage) async {
+    String? path;
+    do {
+      path = await FilePicker.platform.getDirectoryPath(
+        lockParentWindow: true,
+      );
+    } while (path == null);
+
+    await ref.read(diServiceProvider).apiLocalClient.storageDao.updateStorage(
+          storage: StorageTableCompanion(
+            idStorage: drift.Value(idStorage),
+            pathSelectFiles: drift.Value(path),
+          ),
+        );
+    return path;
+  }
+
+  Future<String> setPathToSaveFiles(int idStorage) async {
+    String? path;
+    do {
+      path = await FilePicker.platform.getDirectoryPath(
+        lockParentWindow: true,
+      );
+    } while (path == null);
+
+    await ref.read(diServiceProvider).apiLocalClient.storageDao.updateStorage(
+          storage: StorageTableCompanion(
+            idStorage: drift.Value(idStorage),
+            pathSaveFiles: drift.Value(path),
+          ),
+        );
+    return path;
   }
 }

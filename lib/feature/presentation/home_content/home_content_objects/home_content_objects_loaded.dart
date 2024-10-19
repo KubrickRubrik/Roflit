@@ -5,7 +5,7 @@ import 'package:roflit/feature/common/providers/objects/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/widgets/object_item.dart';
-import 'package:roflit/feature/presentation/home/home_content/home_content_buckets/home_content_buckets_empty.dart';
+import 'package:roflit/feature/presentation/home_content/home_content_buckets/home_content_buckets_empty.dart';
 
 class HomeContentObjectsLoaded extends HookConsumerWidget {
   const HomeContentObjectsLoaded({super.key});

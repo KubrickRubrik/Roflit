@@ -5,7 +5,7 @@ import 'package:roflit/feature/common/providers/session/provider.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 import 'package:roflit/feature/common/widgets/action_section_button.dart';
-import 'package:roflit/feature/presentation/home/home_download/widgets/uploads_empty.dart';
+import 'package:roflit/feature/presentation/home_download/widgets/uploads_empty.dart';
 import 'package:roflit/generated/assets.gen.dart';
 
 import 'widgets/config_menu.dart';

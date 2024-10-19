@@ -14,10 +14,19 @@ class SectionContentNavigationBottomBar extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bloc = ref.watch(uiBlocProvider.notifier);
+    final blocUI = ref.watch(uiBlocProvider.notifier);
+
     final stateLeftButtonHover = useState(false);
     final stateCenterButtonHover = useState(false);
     final stateRightButtonHover = useState(false);
+
+    final isDisplayBucketMenu = ref.watch(uiBlocProvider.select((v) {
+      return v.isDisplayBucketMenu;
+    }));
+
+    final isDisplayObjectMenu = ref.watch(uiBlocProvider.select((v) {
+      return v.isDisplayObjectMenu;
+    }));
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
@@ -26,7 +35,7 @@ class SectionContentNavigationBottomBar extends HookConsumerWidget {
         children: [
           const SizedBox(width: 10),
           InkWell(
-            onTap: bloc.menuBucket,
+            onTap: blocUI.menuBucket,
             onHover: (value) {
               stateLeftButtonHover.value = value;
             },
@@ -36,8 +45,17 @@ class SectionContentNavigationBottomBar extends HookConsumerWidget {
               decoration: BoxDecoration(
                 borderRadius: borderRadius10,
                 color: stateLeftButtonHover.value
-                    ? const Color(AppColors.bgDarkGrayHover)
+                    ? const Color(AppColors.bgDarkHover)
                     : const Color(AppColors.bgDarkGray1),
+              ),
+              alignment: Alignment.center,
+              child: RotatedBox(
+                quarterTurns: isDisplayBucketMenu ? 2 : 0,
+                child: const Icon(
+                  Icons.keyboard_arrow_up,
+                  size: 24,
+                  color: Color(AppColors.textOnDark1),
+                ),
               ),
             ),
           ),
@@ -78,7 +96,7 @@ class SectionContentNavigationBottomBar extends HookConsumerWidget {
           ),
           const SizedBox(width: 8),
           InkWell(
-            onTap: () {},
+            onTap: blocUI.menuObject,
             onHover: (value) {
               stateRightButtonHover.value = value;
             },
@@ -90,6 +108,15 @@ class SectionContentNavigationBottomBar extends HookConsumerWidget {
                 color: stateRightButtonHover.value
                     ? const Color(AppColors.bgDarkGrayHover)
                     : const Color(AppColors.bgDarkGray1),
+              ),
+              alignment: Alignment.center,
+              child: RotatedBox(
+                quarterTurns: isDisplayObjectMenu ? 2 : 0,
+                child: const Icon(
+                  Icons.keyboard_arrow_up,
+                  size: 24,
+                  color: Color(AppColors.textOnDark1),
+                ),
               ),
             ),
           ),

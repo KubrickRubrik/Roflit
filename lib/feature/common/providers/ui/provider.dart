@@ -205,6 +205,24 @@ final class UiBloc extends _$UiBloc {
     }
   }
 
+  void menuObject({
+    ActionMenu? action,
+  }) {
+    var currentAction = action;
+    currentAction ??= state.isDisplayObjectMenu ? ActionMenu.close : ActionMenu.open;
+    switch (currentAction) {
+      case ActionMenu.open:
+        state = state.copyWith(isDisplayObjectMenu: true);
+        break;
+      case ActionMenu.hoverLeave:
+        state = state.copyWith(isDisplayObjectMenu: false);
+        break;
+      case ActionMenu.close:
+        state = state.copyWith(isDisplayObjectMenu: false);
+        break;
+    }
+  }
+
   void menuFileManager({
     ActionMenu? action,
   }) {

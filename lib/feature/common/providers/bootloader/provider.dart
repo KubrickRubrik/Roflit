@@ -12,6 +12,7 @@ import 'package:roflit/core/providers/di_service.dart';
 import 'package:roflit/core/providers/roflit_service.dart';
 import 'package:roflit/core/utils/await.dart';
 import 'package:roflit/feature/common/providers/api_observer/provider.dart';
+import 'package:roflit/feature/common/providers/file_manager/provider.dart';
 import 'package:roflit/feature/common/providers/file_upload/provider.dart';
 import 'package:roflit_s3/roflit_s3.dart';
 
@@ -62,10 +63,10 @@ final class BootloaderBloc extends _$BootloaderBloc {
 
     for (var i = 0; i < state.bootloaders.length; i++) {
       if (!state.config.isOn || state.bootloaders.isEmpty) return;
-      // Формирование списка активности
-      final bootloader = _getBootloader();
+      // Forming an activity list.
+      final bootloader = _getPriorityBootloader();
       if (bootloader == null) break;
-      // Выполнение активности над списком.
+      // Performing an activity on a list.
       final response = await switch (bootloader.action) {
         ActionBootloader.upload => _uploadObject(bootloader),
         ActionBootloader.download => _downloadObject(bootloader),
@@ -94,8 +95,9 @@ final class BootloaderBloc extends _$BootloaderBloc {
     state = state.copyWith(isActiveProccess: false);
   }
 
-  BootloaderEntity? _getBootloader() {
+  BootloaderEntity? _getPriorityBootloader() {
     BootloaderEntity? bootloader;
+    // Priority loading of objects, if enabled.
     if (state.config.action.isUpload) {
       bootloader = state.bootloaders.firstWhereOrNull((v) => v.action.isUpload);
       bootloader ??= state.bootloaders.firstWhereOrNull((v) => v.action.isDownload);
@@ -133,6 +135,7 @@ final class BootloaderBloc extends _$BootloaderBloc {
     final observer = ref.watch(apiObserverBlocProvider.notifier);
 
     observer.createUploadObserver(bootloader.id);
+
     final roflitService = ref.read(roflitServiceProvider(storage));
 
     final dto = roflitService.roflit.objects.upload(
@@ -161,6 +164,21 @@ final class BootloaderBloc extends _$BootloaderBloc {
   }
 
   Future<bool> _downloadObject(BootloaderEntity bootloader) async {
+    var storage = await ref.read(diServiceProvider).apiLocalClient.storageDao.get(
+          bootloader.idStorage,
+        );
+
+    if (storage == null) return false;
+
+    if (storage.pathSaveFiles?.isNotEmpty != true) {
+      final pathSaveFiles = await ref.read(fileManagerBlocProvider.notifier).setPathToSaveFiles(
+            storage.idStorage,
+          );
+      storage = storage.copyWith(
+        pathSaveFiles: pathSaveFiles,
+      );
+    }
+
     return false;
   }
 

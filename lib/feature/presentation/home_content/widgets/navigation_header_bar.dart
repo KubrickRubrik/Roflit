@@ -1,9 +1,11 @@
+import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:roflit/feature/common/providers/file_manager/provider.dart';
 import 'package:roflit/feature/common/providers/search/provider.dart';
+import 'package:roflit/feature/common/providers/session/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
@@ -14,11 +16,10 @@ class SectionContentNavigationHeaderBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final defaultDirectory = ref.watch(fileManagerBlocProvider.select((v) {
-      return (
-        pathSelectFiles: v.account?.activeStorage?.pathSelectFiles,
-        pathSaveFiles: v.account?.activeStorage?.pathSaveFiles,
-      );
+    final blocSession = ref.watch(sessionBlocProvider.notifier);
+
+    final storage = ref.watch(sessionBlocProvider.select((v) {
+      return blocSession.getStorage(getActive: true);
     }));
 
     return LayoutBuilder(builder: (context, constr) {
@@ -32,20 +33,97 @@ class SectionContentNavigationHeaderBar extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (defaultDirectory.pathSelectFiles != null) ...[
-                    Text(
-                      'CD: ${defaultDirectory.pathSelectFiles ?? ''}',
-                      overflow: TextOverflow.ellipsis,
-                      style: appTheme.textTheme.title2.bold.onDark2,
+                  InkWell(
+                    onTap: () {
+                      if (storage != null) {
+                        EasyThrottle.throttle(
+                          'select_upload_files',
+                          const Duration(seconds: 2),
+                          () {
+                            ref.read(fileManagerBlocProvider.notifier).setPathToUploadFiles(
+                                  storage.idStorage,
+                                );
+                          },
+                        );
+                      }
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          height: 22,
+                          width: 22,
+                          decoration: BoxDecoration(
+                            color: const Color(AppColors.bgOnRed),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          alignment: Alignment.center,
+                          child: const Icon(
+                            Icons.upload_rounded,
+                            size: 16,
+                            color: Color(AppColors.textOnLight1),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            switch (storage?.pathSelectFiles?.isNotEmpty == true) {
+                              true => 'CD: ${storage?.pathSelectFiles ?? ''}',
+                              _ => 'CD: Каталог для загрузки',
+                            },
+                            overflow: TextOverflow.ellipsis,
+                            style: appTheme.textTheme.title3.bold.onDark2,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                  if (defaultDirectory.pathSaveFiles != null) ...[
-                    Text(
-                      'CD: ${defaultDirectory.pathSaveFiles ?? ''}',
-                      overflow: TextOverflow.ellipsis,
-                      style: appTheme.textTheme.title2.bold.onDark2,
+                  ),
+                  const SizedBox(height: 4),
+                  InkWell(
+                    onTap: () {
+                      if (storage != null) {
+                        EasyThrottle.throttle(
+                          'select_upload_files',
+                          const Duration(seconds: 2),
+                          () {
+                            ref.read(fileManagerBlocProvider.notifier).setPathToSaveFiles(
+                                  storage.idStorage,
+                                );
+                          },
+                        );
+                      }
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          height: 22,
+                          width: 22,
+                          decoration: BoxDecoration(
+                            color: const Color(AppColors.bgOnOrange),
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                          alignment: Alignment.center,
+                          child: const Icon(
+                            Icons.download,
+                            size: 16,
+                            color: Color(AppColors.textOnLight1),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            switch (storage?.pathSaveFiles?.isNotEmpty == true) {
+                              true => 'CD: ${storage?.pathSaveFiles ?? ''}',
+                              _ => 'CD: Каталог для скачивания',
+                            },
+                            overflow: TextOverflow.ellipsis,
+                            style: appTheme.textTheme.title3.bold.onDark2,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ],
               ),
             ),

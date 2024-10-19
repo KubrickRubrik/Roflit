@@ -12,6 +12,9 @@ abstract final class AppColors {
   static const bgDarkGray4 = 0xFF585858;
   static const bgSuccess = 0xFF67EA10;
 
+  static const bgOnRed = 0xFFFF49AD;
+  static const bgOnOrange = 0xFFFFB700;
+
   static const bgDarkSelected1 = 0xFFC7C7C7;
 
   static const bgDarkBlue1 = 0xFF1D2536;
@@ -46,6 +49,7 @@ abstract final class AppColors {
 
   static const textSelected0 = 0xFFA4DAFF;
   static const textSelected1 = 0xFFF5B1AF;
+
   // static const textSecondary = 0xFFEF7B6E;
   // static const textSecondary2 = 0xFFF5B1AF;
   // static const textPrimary = 0xFFB41866;

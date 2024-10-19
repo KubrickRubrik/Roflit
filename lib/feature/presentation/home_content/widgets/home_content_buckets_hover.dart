@@ -4,8 +4,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/feature/common/providers/search/provider.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
-import 'package:roflit/feature/presentation/home/home_content/home_content_buckets.dart';
-import 'package:roflit/feature/presentation/home/home_content/widgets/home_content_buckets_create.dart';
+import 'package:roflit/feature/presentation/home_content/home_content_buckets.dart';
+import 'package:roflit/feature/presentation/home_content/widgets/home_content_buckets_create.dart';
 
 class HomeContentBucketsHover extends HookConsumerWidget {
   final HomeContentBuckets child;
@@ -40,8 +40,10 @@ class HomeContentBucketsHover extends HookConsumerWidget {
           AnimatedCrossFade(
             duration: const Duration(milliseconds: 300),
             sizeCurve: Curves.ease,
-            crossFadeState:
-                (!isDisplayBucketMenu) ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+            crossFadeState: switch (isDisplayBucketMenu) {
+              false => CrossFadeState.showFirst,
+              true => CrossFadeState.showSecond,
+            },
             firstChild: const SizedBox.shrink(),
             secondChild: const HomeContentCreateBucket(),
           ),

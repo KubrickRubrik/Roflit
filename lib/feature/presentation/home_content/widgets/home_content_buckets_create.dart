@@ -32,6 +32,8 @@ class HomeContentCreateBucket extends HookConsumerWidget {
 
     final stateCreateButtonHover = useState(false);
     final stateDeleteButtonHover = useState(false);
+    final stateCopyButtonHover = useState(false);
+    final stateDownloadButtonHover = useState(false);
     final stateActiveStatus = useState(BucketCreateAccess.private);
     final stateOpenSubMenu = useState(false);
 
@@ -89,6 +91,14 @@ class HomeContentCreateBucket extends HookConsumerWidget {
         _HomeContentDeleteBucket(
           stateOpenSubMenu: stateOpenSubMenu,
           stateDeleteButtonHover: stateDeleteButtonHover,
+        ),
+        _HomeContentCopyBucket(
+          stateOpenSubMenu: stateOpenSubMenu,
+          stateCopyButtonHover: stateCopyButtonHover,
+        ),
+        _HomeContentDownloadBucket(
+          stateOpenSubMenu: stateOpenSubMenu,
+          stateDownloadButtonHover: stateDownloadButtonHover,
         ),
       ],
     );
@@ -242,7 +252,116 @@ class _HomeContentDeleteBucket extends ConsumerWidget {
           ),
           alignment: Alignment.center,
           child: Text(
-            'Удалить бакет'.translate,
+            'Удалить'.translate,
+            style: appTheme.textTheme.control2.onDark1,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HomeContentCopyBucket extends ConsumerWidget {
+  final ValueNotifier<bool> stateOpenSubMenu;
+  final ValueNotifier<bool> stateCopyButtonHover;
+
+  const _HomeContentCopyBucket({
+    required this.stateOpenSubMenu,
+    required this.stateCopyButtonHover,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final blocUI = ref.watch(uiBlocProvider.notifier);
+    final bloc = ref.watch(bucketsBlocProvider.notifier);
+    final isActiveBucket = ref.watch(bucketsBlocProvider.select((v) {
+      return v.activeStorage?.activeBucket?.isNotEmpty == true;
+    }));
+
+    return AnimatedCrossFade(
+      duration: const Duration(milliseconds: 300),
+      sizeCurve: Curves.ease,
+      crossFadeState: (!stateOpenSubMenu.value && isActiveBucket)
+          ? CrossFadeState.showSecond
+          : CrossFadeState.showFirst,
+      firstChild: const SizedBox.shrink(),
+      secondChild: InkWell(
+        onTap: () async {
+          // final result = await bloc.deleteBucket();
+          // if (result) {
+          //   blocUI.menuBucket(action: ActionMenu.close);
+          // }
+        },
+        onHover: (value) {
+          stateCopyButtonHover.value = value;
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.ease,
+          height: 40,
+          margin: const EdgeInsets.only(left: 8, right: 8, top: 8),
+          decoration: BoxDecoration(
+            color: stateCopyButtonHover.value ? const Color(AppColors.bgLightGrayOpacity10) : null,
+            borderRadius: borderRadius4,
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            'Копировать'.translate,
+            style: appTheme.textTheme.control2.onDark1,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HomeContentDownloadBucket extends ConsumerWidget {
+  final ValueNotifier<bool> stateOpenSubMenu;
+  final ValueNotifier<bool> stateDownloadButtonHover;
+
+  const _HomeContentDownloadBucket({
+    required this.stateOpenSubMenu,
+    required this.stateDownloadButtonHover,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final blocUI = ref.watch(uiBlocProvider.notifier);
+    final bloc = ref.watch(bucketsBlocProvider.notifier);
+    final isActiveBucket = ref.watch(bucketsBlocProvider.select((v) {
+      return v.activeStorage?.activeBucket?.isNotEmpty == true;
+    }));
+
+    return AnimatedCrossFade(
+      duration: const Duration(milliseconds: 300),
+      sizeCurve: Curves.ease,
+      crossFadeState: (!stateOpenSubMenu.value && isActiveBucket)
+          ? CrossFadeState.showSecond
+          : CrossFadeState.showFirst,
+      firstChild: const SizedBox.shrink(),
+      secondChild: InkWell(
+        onTap: () async {
+          // final result = await bloc.deleteBucket();
+          // if (result) {
+          //   blocUI.menuBucket(action: ActionMenu.close);
+          // }
+        },
+        onHover: (value) {
+          stateDownloadButtonHover.value = value;
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.ease,
+          height: 40,
+          margin: const EdgeInsets.only(left: 8, right: 8, top: 8),
+          decoration: BoxDecoration(
+            color:
+                stateDownloadButtonHover.value ? const Color(AppColors.bgLightGrayOpacity10) : null,
+            borderRadius: borderRadius4,
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            'Скачать'.translate,
             style: appTheme.textTheme.control2.onDark1,
           ),
         ),

@@ -132,7 +132,7 @@ class WatchingDao extends DatabaseAccessor<ApiDatabase> with _$WatchingDaoMixin 
         final object = row.readTableOrNull(objectTable);
         if (uploadDto != null && object != null) {
           listResult.add(BootloaderEntity.fromDto(
-            uploadDto: uploadDto,
+            bootloaderDto: uploadDto,
             objectDto: object,
           ));
         }

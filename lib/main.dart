@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:desktop_window/desktop_window.dart';
@@ -11,12 +10,13 @@ import 'package:roflit/core/providers/di_service.dart';
 import 'package:roflit/feature/common/providers/api_observer/provider.dart';
 import 'package:roflit/feature/common/providers/bootloader/provider.dart';
 import 'package:roflit/feature/common/providers/buckets/provider.dart';
+import 'package:roflit/feature/common/providers/file_download/provider.dart';
 import 'package:roflit/feature/common/providers/file_manager/provider.dart';
 import 'package:roflit/feature/common/providers/file_upload/provider.dart';
 import 'package:roflit/feature/common/providers/objects/provider.dart';
 import 'package:roflit/feature/common/providers/observer/provider.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
-import 'package:roflit/feature/presentation/home/home.dart';
+import 'package:roflit/feature/presentation/home.dart';
 
 import 'core/utils/hooks.dart';
 import 'feature/common/providers/session/provider.dart';
@@ -24,12 +24,9 @@ import 'feature/common/providers/session/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
-  if (Platform.isWindows) {
-    await DesktopWindow.setMinWindowSize(Constants.minimumSizeWindow);
-    await DesktopWindow.setMaxWindowSize(Constants.maximumSizeWindow);
-
-    // DesktopWindow.setFullScreen(true);
-  }
+  await DesktopWindow.setMinWindowSize(Constants.minimumSizeWindow);
+  // await DesktopWindow.setFullScreen(true);
+  await DesktopWindow.focus();
 
   final observer = BlocObserver(isUsed: false);
   runApp(
@@ -83,6 +80,7 @@ class _EagerInitialization extends HookConsumerWidget {
     final objectsBloc = ref.watch(objectsBlocProvider.notifier);
     final fileManagerBloc = ref.watch(fileManagerBlocProvider.notifier);
     final uploadBloc = ref.watch(uploadBlocProvider.notifier);
+    final downloadBloc = ref.watch(downloadBlocProvider.notifier);
     final bootloaderBloc = ref.watch(bootloaderBlocProvider.notifier);
     ref.watch(apiObserverBlocProvider.notifier);
 
@@ -93,6 +91,7 @@ class _EagerInitialization extends HookConsumerWidget {
         objectsBloc.watchStorages();
         fileManagerBloc.watchStorages();
         uploadBloc.watchUploadObjects();
+        downloadBloc.watchUploadObjects();
         bootloaderBloc.watchBootloader();
       },
     );
