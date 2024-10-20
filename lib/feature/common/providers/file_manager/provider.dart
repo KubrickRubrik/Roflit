@@ -17,6 +17,7 @@ import 'package:roflit/core/providers/roflit_service.dart';
 import 'package:roflit/core/utils/await.dart';
 import 'package:roflit/data/local/api_db.dart';
 import 'package:roflit/feature/common/providers/file_upload/provider.dart';
+import 'package:roflit/feature/common/providers/objects/provider.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
 
 part 'provider.freezed.dart';
@@ -163,11 +164,13 @@ final class FileManagerBloc extends _$FileManagerBloc {
     state = state.copyWith(bootloaders: currentBootloaders.toSet().toList());
   }
 
-  Future<void> onNextBootloader() async {
+  Future<void> onNextUploadBootloader() async {
     final storage = state.account?.activeStorage;
     final storageType = state.account?.activeStorage?.storageType;
 
-    if (storage?.activeBucket?.isNotEmpty != true || storageType == null) {
+    if (storage == null) return;
+
+    if (storage.activeBucket?.isNotEmpty != true || storageType == null) {
       //TODO: snackbar
       return;
     }
@@ -175,7 +178,7 @@ final class FileManagerBloc extends _$FileManagerBloc {
     final objects = state.bootloaders.map((v) {
       return ObjectTableCompanion.insert(
         objectKey: v.object.objectKey,
-        bucket: storage!.activeBucket!,
+        bucket: storage.activeBucket!,
         type: v.object.type.name,
         storageType: storageType.name,
         localPath: drift.Value(v.object.localPath),
@@ -332,13 +335,18 @@ final class FileManagerBloc extends _$FileManagerBloc {
     );
   }
 
-  Future<String> setPathToUploadFiles(int idStorage) async {
+  Future<String> setPathToUploadFiles({
+    required int idStorage,
+    bool isRequiredInstallation = true,
+  }) async {
     String? path;
     do {
       path = await FilePicker.platform.getDirectoryPath(
         lockParentWindow: true,
       );
-    } while (path == null);
+    } while (path == null && isRequiredInstallation);
+
+    if (path == null) return '';
 
     await ref.read(diServiceProvider).apiLocalClient.storageDao.updateStorage(
           storage: StorageTableCompanion(
@@ -349,13 +357,18 @@ final class FileManagerBloc extends _$FileManagerBloc {
     return path;
   }
 
-  Future<String> setPathToSaveFiles(int idStorage) async {
+  Future<String> setPathToSaveFiles({
+    required int idStorage,
+    bool isRequiredInstallation = true,
+  }) async {
     String? path;
     do {
       path = await FilePicker.platform.getDirectoryPath(
         lockParentWindow: true,
       );
-    } while (path == null);
+    } while (path == null && isRequiredInstallation);
+
+    if (path == null) return '';
 
     await ref.read(diServiceProvider).apiLocalClient.storageDao.updateStorage(
           storage: StorageTableCompanion(
@@ -364,5 +377,53 @@ final class FileManagerBloc extends _$FileManagerBloc {
           ),
         );
     return path;
+  }
+
+  Future<void> onDownloadBootloader() async {
+    var storage = state.account?.activeStorage;
+    final storageType = state.account?.activeStorage?.storageType;
+
+    if (storage == null) return;
+
+    if (storage.activeBucket?.isNotEmpty != true || storageType == null) {
+      //TODO: snackbar
+      return;
+    }
+
+    if (storage.pathSaveFiles?.isNotEmpty != true) {
+      final pathSaveFiles = await ref.read(fileManagerBlocProvider.notifier).setPathToSaveFiles(
+            idStorage: storage.idStorage,
+          );
+      storage = storage.copyWith(
+        pathSaveFiles: pathSaveFiles,
+      );
+    }
+
+    final selectedObjects = ref.read(objectsBlocProvider).items.where((v) {
+      return v.isSelected && !v.objectKey.endsWith('/');
+    });
+
+    if (selectedObjects.isEmpty) return;
+
+    final objects = selectedObjects.map((v) {
+      return ObjectTableCompanion.insert(
+        objectKey: v.objectKey,
+        bucket: storage!.activeBucket!,
+        type: v.type.name,
+        storageType: storageType.name,
+        localPath: drift.Value(v.localPath),
+      );
+    }).toList();
+
+    final response = await ref.read(diServiceProvider).apiLocalClient.bootloaderDao.saveBootloader(
+          idStorage: storage.idStorage,
+          objects: objects,
+          action: ActionBootloader.download,
+        );
+
+    if (!response) {
+      //TODO: snackbar
+      return;
+    }
   }
 }

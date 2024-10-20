@@ -20,6 +20,14 @@ final class ApiObserverBloc extends _$ApiObserverBloc {
     );
   }
 
+  void createDownloadObserver(int idBootloader) {
+    state = state.copyWith(
+      download: ApiObjectObserver.addObserve(
+        idBootloader: idBootloader,
+      ),
+    );
+  }
+
   void removeUploadObserver() {
     state = state.copyWith(upload: null);
   }
@@ -28,6 +36,13 @@ final class ApiObserverBloc extends _$ApiObserverBloc {
     if (state.upload == null) return;
     state = state.copyWith(
       upload: state.upload?.copyWith(observe: value),
+    );
+  }
+
+  void onReceiveDownloadProgress(ApiObjectValue value) {
+    if (state.download == null) return;
+    state = state.copyWith(
+      download: state.download?.copyWith(observe: value),
     );
   }
 }

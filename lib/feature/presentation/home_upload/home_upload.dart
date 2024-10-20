@@ -29,7 +29,7 @@ class HomeUpload extends ConsumerWidget {
       });
     }));
 
-    final uploadsLength = ref.watch(uploadBlocProvider.select((value) {
+    final itemsLength = ref.watch(uploadBlocProvider.select((value) {
       return value.items.length;
     }));
 
@@ -89,9 +89,9 @@ class HomeUpload extends ConsumerWidget {
                 return LoadingSectionHoverObjects(
                   child: Stack(
                     children: [
-                      switch (uploadsLength) {
+                      switch (itemsLength) {
                         0 => const LoadingSectionEmpty(),
-                        _ => Center(
+                        _ => const Center(
                             child: HomeUploadObjectsList(),
                           ),
                       },

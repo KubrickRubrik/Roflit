@@ -18,6 +18,7 @@ class ObjectEntity with _$ObjectEntity {
     String? remotePath,
     String? localPath,
     String? signedUrl,
+    @Default(false) bool isSelected,
   }) = _ObjectEntity;
 
   factory ObjectEntity.fromDto(ObjectDto dto) {

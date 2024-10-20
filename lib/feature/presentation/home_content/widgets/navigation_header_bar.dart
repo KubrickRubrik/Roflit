@@ -41,7 +41,8 @@ class SectionContentNavigationHeaderBar extends ConsumerWidget {
                           const Duration(seconds: 2),
                           () {
                             ref.read(fileManagerBlocProvider.notifier).setPathToUploadFiles(
-                                  storage.idStorage,
+                                  idStorage: storage.idStorage,
+                                  isRequiredInstallation: false,
                                 );
                           },
                         );
@@ -87,7 +88,8 @@ class SectionContentNavigationHeaderBar extends ConsumerWidget {
                           const Duration(seconds: 2),
                           () {
                             ref.read(fileManagerBlocProvider.notifier).setPathToSaveFiles(
-                                  storage.idStorage,
+                                  idStorage: storage.idStorage,
+                                  isRequiredInstallation: false,
                                 );
                           },
                         );

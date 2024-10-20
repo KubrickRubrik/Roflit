@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:roflit/feature/common/providers/file_download/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
-import 'package:roflit/feature/common/themes/text.dart';
+import 'package:roflit/feature/common/widgets/download_object_item.dart';
 
-class HomeDownloadObjectsList extends StatelessWidget {
-  HomeDownloadObjectsList({super.key});
-  final controller = ScrollController();
+class HomeDownloadObjectsList extends HookConsumerWidget {
+  const HomeDownloadObjectsList({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = useScrollController();
+
+    final items = ref.watch(downloadBlocProvider.select((value) {
+      return value.items;
+    }));
+
     return ClipRRect(
       borderRadius: borderRadius8,
       child: RawScrollbar(
@@ -32,81 +40,12 @@ class HomeDownloadObjectsList extends StatelessWidget {
             controller: controller,
             shrinkWrap: true,
             primary: false,
-            itemCount: 3,
+            itemCount: items.length,
             padding: const EdgeInsets.only(left: 3, right: 3, bottom: 10),
             itemBuilder: (context, index) {
-              return ContenteSectionBucketsListItem(index);
+              return DownloadObjectItem(index: index);
             },
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class ContenteSectionBucketsListItem extends StatefulWidget {
-  final int index;
-  const ContenteSectionBucketsListItem(this.index, {super.key});
-
-  @override
-  State<ContenteSectionBucketsListItem> createState() => _ContenteSectionBucketsListItemState();
-}
-
-class _ContenteSectionBucketsListItemState extends State<ContenteSectionBucketsListItem> {
-  bool isHover = false;
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {},
-      onHover: (value) {
-        isHover = value;
-        setState(() {});
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.ease,
-        height: 56,
-        decoration: BoxDecoration(
-          borderRadius: borderRadius12,
-          color: isHover ? const Color(AppColors.bgDarkGray2) : null,
-        ),
-        child: Flex(
-          direction: Axis.horizontal,
-          children: [
-            Expanded(
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      'Название объкта',
-                      overflow: TextOverflow.ellipsis,
-                      style: appTheme.textTheme.caption1.bold.onDark1,
-                    ),
-                    Text(
-                      '2.5 Mb',
-                      overflow: TextOverflow.ellipsis,
-                      style: appTheme.textTheme.caption2.onDark1,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Container(
-              height: 40,
-              width: 40,
-              margin: const EdgeInsets.only(right: 6),
-              decoration: BoxDecoration(
-                borderRadius: borderRadius8,
-                color: const Color(
-                  AppColors.bgDarkGray1,
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );

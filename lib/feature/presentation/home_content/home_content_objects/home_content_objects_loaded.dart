@@ -15,7 +15,7 @@ class HomeContentObjectsLoaded extends HookConsumerWidget {
     final controller = useScrollController();
 
     final objects = ref.watch(objectsBlocProvider.select((value) {
-      return value.objects;
+      return value.items;
     }));
 
     if (objects.isEmpty) {

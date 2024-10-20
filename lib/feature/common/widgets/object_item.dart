@@ -10,8 +10,6 @@ import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 import 'package:roflit/feature/common/widgets/label_banner_item.dart';
 
-int i = 0;
-
 class ObjectItem extends HookConsumerWidget {
   final int index;
 
@@ -22,8 +20,9 @@ class ObjectItem extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final bloc = ref.read(objectsBlocProvider.notifier);
     final object = ref.watch(objectsBlocProvider.select((v) {
-      return v.objects.elementAtOrNull(index);
+      return v.items.elementAtOrNull(index);
     }));
 
     final stateHover = useState(false);
@@ -32,18 +31,22 @@ class ObjectItem extends HookConsumerWidget {
       () {
         if (stateHover.value) {
           return const Color(AppColors.bgDarkGray2).withOpacity(0.4);
+        } else if (object?.isSelected == true) {
+          return const Color(AppColors.bgDarkGray2).withOpacity(0.8);
         } else if (index.isOdd) {
           return const Color(AppColors.bgDarkGray2).withOpacity(0.1);
         }
         return null;
       },
-      [stateHover.value],
+      [stateHover.value, object?.isSelected, index.isOdd],
     );
 
     if (object == null) return const SizedBox();
 
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        bloc.selectObject(objectKey: object.objectKey);
+      },
       onHover: (value) {
         stateHover.value = value;
       },
@@ -58,10 +61,12 @@ class ObjectItem extends HookConsumerWidget {
         child: Flex(
           direction: Axis.horizontal,
           children: [
+            // Directory gaps
             if (object.nesting >= 1)
               SizedBox(
                 width: object.nesting * 38,
               ),
+            // Object bunner
             if (object.type.isImage) ...[
               CachedNetworkImage(
                 imageUrl: object.signedUrl ?? '',
@@ -95,6 +100,7 @@ class ObjectItem extends HookConsumerWidget {
               ),
             ],
             const SizedBox(width: 8),
+            // Object label
             Expanded(
               child: Align(
                 alignment: Alignment.centerLeft,

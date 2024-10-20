@@ -12,6 +12,7 @@ import 'package:roflit/core/providers/di_service.dart';
 import 'package:roflit/core/providers/roflit_service.dart';
 import 'package:roflit/core/utils/await.dart';
 import 'package:roflit/feature/common/providers/api_observer/provider.dart';
+import 'package:roflit/feature/common/providers/file_download/provider.dart';
 import 'package:roflit/feature/common/providers/file_manager/provider.dart';
 import 'package:roflit/feature/common/providers/file_upload/provider.dart';
 import 'package:roflit_s3/roflit_s3.dart';
@@ -132,7 +133,7 @@ final class BootloaderBloc extends _$BootloaderBloc {
 
     setBootloadersStatus(bootloader, status: BootloaderStatus.proccess);
 
-    final observer = ref.watch(apiObserverBlocProvider.notifier);
+    final observer = ref.read(apiObserverBlocProvider.notifier);
 
     observer.createUploadObserver(bootloader.id);
 
@@ -172,14 +173,42 @@ final class BootloaderBloc extends _$BootloaderBloc {
 
     if (storage.pathSaveFiles?.isNotEmpty != true) {
       final pathSaveFiles = await ref.read(fileManagerBlocProvider.notifier).setPathToSaveFiles(
-            storage.idStorage,
+            idStorage: storage.idStorage,
           );
       storage = storage.copyWith(
         pathSaveFiles: pathSaveFiles,
       );
     }
 
-    return false;
+    setBootloadersStatus(bootloader, status: BootloaderStatus.proccess);
+
+    final observer = ref.read(apiObserverBlocProvider.notifier);
+
+    observer.createDownloadObserver(bootloader.id);
+
+    final roflitService = ref.read(roflitServiceProvider(storage));
+
+    final dto = roflitService.roflit.objects.get(
+      bucketName: bootloader.object.bucket,
+      objectKey: bootloader.object.objectKey,
+      useSignedUrl: true,
+    );
+    final savedStr = '${storage.pathSaveFiles!}/${bootloader.object.objectKey}';
+
+    final response = await ref.read(diServiceProvider).apiRemoteClient.download(dto, savedStr);
+    if (!response.sendOk) {
+      setBootloadersStatus(bootloader, status: BootloaderStatus.error);
+      return false;
+    }
+
+    setBootloadersStatus(bootloader, status: BootloaderStatus.done);
+    await ref
+        .read(diServiceProvider)
+        .apiLocalClient
+        .bootloaderDao
+        .removeBootloader([bootloader.id]);
+
+    return true;
   }
 
   void setBootloadersStatus(
@@ -196,16 +225,15 @@ final class BootloaderBloc extends _$BootloaderBloc {
     );
 
     if (bootloader.action.isUpload) {
-      ref.read(uploadBlocProvider.notifier).updateUploadObjectStatus(
+      ref.read(uploadBlocProvider.notifier).updateObjectStatus(
             bootloader,
             status: status,
           );
     } else {
-      //TODO add status for downloadedBlocProvider
-      // ref.read(uploadBlocProvider.notifier).updateUploadObjectStatus(
-      //       bootloader,
-      //       status: status,
-      //     );
+      ref.read(downloadBlocProvider.notifier).updateObjectStatus(
+            bootloader,
+            status: status,
+          );
     }
   }
 }

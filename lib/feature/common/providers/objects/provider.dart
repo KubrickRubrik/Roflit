@@ -55,14 +55,14 @@ final class ObjectsBloc extends _$ObjectsBloc {
     final currentActiveBucket = state.activeStorage?.activeBucket;
     if (currentActiveBucket == null) {
       state = state.copyWith(
-        objects: [],
+        items: [],
       );
       return;
     }
 
     state = state.copyWith(
       loaderPage: ContentStatus.loading,
-      objects: [],
+      items: [],
     );
 
     final dto = roflitService.roflit.buckets.getObjects(
@@ -76,8 +76,8 @@ final class ObjectsBloc extends _$ObjectsBloc {
     if (currentIdStorage != state.activeStorage?.idStorage ||
         currentActiveBucket != state.activeStorage?.activeBucket) return;
 
-    final objects = roflitService.serizalizer.objects(response.success);
-    state = state.copyWith(objects: objects);
+    final items = roflitService.serizalizer.objects(response.success);
+    state = state.copyWith(items: items);
   }
 
   Future<bool?> deleteAllObject({required String activeBucket}) async {
@@ -151,6 +151,49 @@ final class ObjectsBloc extends _$ObjectsBloc {
       }
     } while (conditionToDelete);
 
+    return result;
+  }
+
+  void selectObject({required String objectKey}) {
+    final list = state.items.toList();
+    final indexObject = list.indexWhere((v) {
+      return v.objectKey == objectKey;
+    });
+    if (indexObject == -1) return;
+
+    state = state.copyWith(
+      items: getDirectoryObjects(
+        objectKey: objectKey,
+        list: list,
+        isSelected: !list[indexObject].isSelected,
+      ),
+    );
+    if (objectKey.endsWith('/')) {
+    } else {
+      list[indexObject] = list[indexObject].copyWith(
+        isSelected: !list[indexObject].isSelected,
+      );
+
+      state = state.copyWith(
+        items: list,
+      );
+    }
+  }
+
+  List<ObjectEntity> getDirectoryObjects({
+    required String objectKey,
+    required List<ObjectEntity> list,
+    required bool isSelected,
+  }) {
+    final result = <ObjectEntity>[];
+    for (final object in list) {
+      final isExist = object.objectKey.startsWith(objectKey);
+      if (!isExist) {
+        result.add(object);
+      } else {
+        result.add(object.copyWith(isSelected: isSelected));
+      }
+    }
     return result;
   }
 }

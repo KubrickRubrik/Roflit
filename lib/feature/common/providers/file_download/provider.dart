@@ -35,7 +35,7 @@ final class DownloadBloc extends _$DownloadBloc {
     state = state.copyWith(items: downloads);
   }
 
-  void updateDownloadsObjectStatus(
+  void updateObjectStatus(
     BootloaderEntity bootloader, {
     required BootloaderStatus status,
   }) {

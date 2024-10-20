@@ -33,7 +33,7 @@ final class BucketsBloc extends _$BucketsBloc {
 
   bool isActiveBucket({int? getByIndex}) {
     if (getByIndex != null) {
-      final bucket = state.buckets.firstWhereIndexedOrNull((index, element) {
+      final bucket = state.items.firstWhereIndexedOrNull((index, element) {
         return index == getByIndex;
       });
       return bucket != null && bucket.bucket == state.activeStorage?.activeBucket;
@@ -66,7 +66,7 @@ final class BucketsBloc extends _$BucketsBloc {
     final currentIdStorage = state.activeStorage!.idStorage;
     state = state.copyWith(
       loaderPage: ContentStatus.loading,
-      buckets: [],
+      items: [],
     );
 
     final dto = roflitService.roflit.buckets.get();
@@ -77,16 +77,16 @@ final class BucketsBloc extends _$BucketsBloc {
 
     if (currentIdStorage != state.activeStorage?.idStorage) return;
 
-    final buckets = roflitService.serizalizer.buckets(response.success);
-    state = state.copyWith(buckets: buckets);
+    final items = roflitService.serizalizer.buckets(response.success);
+    state = state.copyWith(items: items);
 
-    if (buckets.isNotEmpty && state.activeStorage?.activeBucket?.isNotEmpty != true) {
+    if (items.isNotEmpty && state.activeStorage?.activeBucket?.isNotEmpty != true) {
       await setActiveBucket(0);
     }
   }
 
   Future<void> setActiveBucket(int indexBucket) async {
-    final bucket = state.buckets.elementAt(indexBucket);
+    final bucket = state.items.elementAt(indexBucket);
     if (state.loaderPage.isLoading) return;
 
     final updatedStorage = StorageTableCompanion(
@@ -151,10 +151,10 @@ final class BucketsBloc extends _$BucketsBloc {
 
     if (currentIdStorage != state.activeStorage?.idStorage) return false;
 
-    final buckets = roflitService.serizalizer.buckets(responseBucket.success);
+    final items = roflitService.serizalizer.buckets(responseBucket.success);
 
-    state = state.copyWith(buckets: buckets);
-    final indexBucket = state.buckets.indexWhere((bucket) {
+    state = state.copyWith(items: items);
+    final indexBucket = state.items.indexWhere((bucket) {
       return bucket.bucket == bucketName;
     });
     unawaited(setActiveBucket(indexBucket));
@@ -208,14 +208,14 @@ final class BucketsBloc extends _$BucketsBloc {
       return false;
     }
 
-    final bucketList = state.buckets.toList();
-    bucketList.removeWhere((v) => v.bucket == activeBucket);
+    final items = state.items.toList();
+    items.removeWhere((v) => v.bucket == activeBucket);
 
     state = state.copyWith(
       activeStorage: state.activeStorage!.copyWith(
         activeBucket: null,
       ),
-      buckets: bucketList,
+      items: items,
     );
     return true;
   }

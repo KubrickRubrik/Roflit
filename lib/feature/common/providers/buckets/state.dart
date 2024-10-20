@@ -4,7 +4,7 @@ part of 'provider.dart';
 class BucketsState with _$BucketsState {
   const factory BucketsState({
     @Default(null) StorageEntity? activeStorage,
-    @Default([]) List<BucketEntity> buckets,
+    @Default([]) List<BucketEntity> items,
     @Default(ContentStatus.loading) ContentStatus loaderPage,
     @Default(ContentStatus.loading) ContentStatus loaderScroll,
   }) = _BucketsState;

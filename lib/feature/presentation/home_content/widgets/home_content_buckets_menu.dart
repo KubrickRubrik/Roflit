@@ -11,8 +11,8 @@ import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 import 'package:roflit/feature/common/widgets/content_text_field.dart';
 
-class HomeContentCreateBucket extends HookConsumerWidget {
-  const HomeContentCreateBucket();
+class HomeContentBucketMenu extends HookConsumerWidget {
+  const HomeContentBucketMenu();
 
   String title({required bool isOpen}) {
     if (isOpen) return 'Создать бакет'.translate;
@@ -285,29 +285,32 @@ class _HomeContentCopyBucket extends ConsumerWidget {
           ? CrossFadeState.showSecond
           : CrossFadeState.showFirst,
       firstChild: const SizedBox.shrink(),
-      secondChild: InkWell(
-        onTap: () async {
-          // final result = await bloc.deleteBucket();
-          // if (result) {
-          //   blocUI.menuBucket(action: ActionMenu.close);
-          // }
-        },
-        onHover: (value) {
-          stateCopyButtonHover.value = value;
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.ease,
-          height: 40,
-          margin: const EdgeInsets.only(left: 8, right: 8, top: 8),
-          decoration: BoxDecoration(
-            color: stateCopyButtonHover.value ? const Color(AppColors.bgLightGrayOpacity10) : null,
-            borderRadius: borderRadius4,
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            'Копировать'.translate,
-            style: appTheme.textTheme.control2.onDark1,
+      secondChild: MouseRegion(
+        cursor: SystemMouseCursors.forbidden,
+        child: InkWell(
+          onTap: () {},
+          mouseCursor: MouseCursor.defer,
+          onHover: (value) {
+            stateCopyButtonHover.value = value;
+          },
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.ease,
+            height: 40,
+            margin: const EdgeInsets.only(left: 8, right: 8, top: 8),
+            decoration: BoxDecoration(
+              color:
+                  stateCopyButtonHover.value ? const Color(AppColors.bgLightGrayOpacity10) : null,
+              borderRadius: borderRadius4,
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              'Копировать'.translate,
+              style: appTheme.textTheme.control2.copyWith(
+                decoration: TextDecoration.lineThrough,
+                color: const Color(AppColors.textOnDark1),
+              ),
+            ),
           ),
         ),
       ),
@@ -339,30 +342,34 @@ class _HomeContentDownloadBucket extends ConsumerWidget {
           ? CrossFadeState.showSecond
           : CrossFadeState.showFirst,
       firstChild: const SizedBox.shrink(),
-      secondChild: InkWell(
-        onTap: () async {
-          // final result = await bloc.deleteBucket();
-          // if (result) {
-          //   blocUI.menuBucket(action: ActionMenu.close);
-          // }
-        },
-        onHover: (value) {
-          stateDownloadButtonHover.value = value;
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.ease,
-          height: 40,
-          margin: const EdgeInsets.only(left: 8, right: 8, top: 8),
-          decoration: BoxDecoration(
-            color:
-                stateDownloadButtonHover.value ? const Color(AppColors.bgLightGrayOpacity10) : null,
-            borderRadius: borderRadius4,
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            'Скачать'.translate,
-            style: appTheme.textTheme.control2.onDark1,
+      secondChild: MouseRegion(
+        cursor: SystemMouseCursors.forbidden,
+        child: InkWell(
+          onTap: () {},
+          mouseCursor: MouseCursor.defer,
+          onHover: (value) {
+            stateDownloadButtonHover.value = value;
+          },
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.ease,
+            height: 40,
+            margin: const EdgeInsets.only(left: 8, right: 8, top: 8),
+            decoration: BoxDecoration(
+              color: switch (stateDownloadButtonHover.value) {
+                true => const Color(AppColors.bgLightGrayOpacity10),
+                _ => null,
+              },
+              borderRadius: borderRadius4,
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              'Скачать'.translate,
+              style: appTheme.textTheme.control2.copyWith(
+                decoration: TextDecoration.lineThrough,
+                color: const Color(AppColors.textOnDark1),
+              ),
+            ),
           ),
         ),
       ),

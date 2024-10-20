@@ -192,49 +192,6 @@ final class _YCSerializer implements StorageSerializerInterface {
   }
 }
 
-final class _VKSerializer implements StorageSerializerInterface {
-  final RoflitS3 roflit;
-
-  _VKSerializer({required this.roflit});
-
-  @override
-  List<BucketEntity> buckets(Object? value) {
-    // try {
-    //   // print('>>>> 1 $value');
-    //   final listBucket = XmlDocument.parse(value as String).findAllElements('Bucket').toList();
-    //   // print('>>>> 2 $listBucket');
-    //   if (listBucket.isEmpty) return [];
-
-    //   final buckets = List.generate(listBucket.length, (index) {
-    //     final bucket = listBucket[index];
-    //     return BucketEntity(
-    //       bucket: bucket.findElements('Name').single.innerText,
-    //       countObjects: 5,
-    //       creationDate: bucket.findElements('CreationDate').single.innerText,
-    //     );
-    //   });
-    //   return buckets;
-    // } catch (e) {
-    return [];
-    // }
-  }
-
-  @override
-  List<ObjectEntity> objects(Object? value) {
-    return [];
-  }
-
-  @override
-  Future<List<ObjectEntity>> objectsFromFiles(List<File>? value) async {
-    return [];
-  }
-
-  @override
-  MetaObjectEntity metaObjects(Object? value) {
-    return MetaObjectEntity.empty();
-  }
-}
-
 abstract interface class StorageSerializerInterface {
   List<BucketEntity> buckets(Object? value);
   List<ObjectEntity> objects(Object? value);

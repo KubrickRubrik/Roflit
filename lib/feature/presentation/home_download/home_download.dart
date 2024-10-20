@@ -25,7 +25,7 @@ class HomeDownload extends ConsumerWidget {
       return blocSession.getStorage(getActive: true);
     }));
 
-    final uploadsLength = ref.watch(downloadBlocProvider.select((value) {
+    final itemsLength = ref.watch(downloadBlocProvider.select((value) {
       return value.items.length;
     }));
 
@@ -84,9 +84,9 @@ class HomeDownload extends ConsumerWidget {
               return DownloadSectionHoverObjects(
                 child: Stack(
                   children: [
-                    switch (uploadsLength) {
+                    switch (itemsLength) {
                       0 => const DownloadsSectionEmpty(),
-                      _ => Center(
+                      _ => const Center(
                           child: HomeDownloadObjectsList(),
                         ),
                     },

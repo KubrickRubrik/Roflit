@@ -5,7 +5,7 @@ import 'package:roflit/feature/common/providers/search/provider.dart';
 import 'package:roflit/feature/common/providers/ui/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/presentation/home_content/home_content_buckets.dart';
-import 'package:roflit/feature/presentation/home_content/widgets/home_content_buckets_create.dart';
+import 'package:roflit/feature/presentation/home_content/widgets/home_content_buckets_menu.dart';
 
 class HomeContentBucketsHover extends HookConsumerWidget {
   final HomeContentBuckets child;
@@ -45,7 +45,7 @@ class HomeContentBucketsHover extends HookConsumerWidget {
               true => CrossFadeState.showSecond,
             },
             firstChild: const SizedBox.shrink(),
-            secondChild: const HomeContentCreateBucket(),
+            secondChild: const HomeContentBucketMenu(),
           ),
         ],
       ),

@@ -24,7 +24,7 @@ class BucketItem extends HookConsumerWidget {
     final bloc = ref.watch(bucketsBlocProvider.notifier);
 
     final bucket = ref.watch(bucketsBlocProvider.select((value) {
-      return value.buckets.elementAtOrNull(index);
+      return value.items.elementAtOrNull(index);
     }));
 
     final isActiveBucket = ref.watch(bucketsBlocProvider.select((v) {

@@ -7,14 +7,13 @@ import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/widgets/upload_object_item.dart';
 
 class HomeUploadObjectsList extends HookConsumerWidget {
-  HomeUploadObjectsList({super.key});
-  final controller = ScrollController();
+  const HomeUploadObjectsList({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = useScrollController();
 
-    final uploads = ref.watch(uploadBlocProvider.select((value) {
+    final items = ref.watch(uploadBlocProvider.select((value) {
       return value.items;
     }));
 
@@ -41,7 +40,7 @@ class HomeUploadObjectsList extends HookConsumerWidget {
             controller: controller,
             shrinkWrap: true,
             primary: false,
-            itemCount: uploads.length,
+            itemCount: items.length,
             padding: const EdgeInsets.only(left: 3, right: 3, bottom: 10),
             itemBuilder: (context, index) {
               return UploadObjectItem(index: index);

@@ -67,7 +67,7 @@ final class UploadBloc extends _$UploadBloc {
     );
   }
 
-  void updateUploadObjectStatus(
+  void updateObjectStatus(
     BootloaderEntity bootloader, {
     required BootloaderStatus status,
   }) {

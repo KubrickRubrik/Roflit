@@ -3,37 +3,34 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:roflit/core/services/bite_converter.dart';
 import 'package:roflit/feature/common/providers/api_observer/provider.dart';
-import 'package:roflit/feature/common/providers/file_manager/provider.dart';
-import 'package:roflit/feature/common/providers/file_upload/provider.dart';
+import 'package:roflit/feature/common/providers/file_download/provider.dart';
 import 'package:roflit/feature/common/themes/colors.dart';
 import 'package:roflit/feature/common/themes/sizes.dart';
 import 'package:roflit/feature/common/themes/text.dart';
 import 'package:roflit/feature/common/widgets/label_banner_item.dart';
 
-class UploadObjectItem extends HookConsumerWidget {
+class DownloadObjectItem extends HookConsumerWidget {
   final int index;
-  const UploadObjectItem({
+  const DownloadObjectItem({
     required this.index,
     super.key,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bloc = ref.watch(fileManagerBlocProvider.notifier);
-    final uploadObject = ref.watch(uploadBlocProvider.select((v) {
+    // final bloc = ref.watch(fileManagerBlocProvider.notifier);
+    final downloadObject = ref.watch(downloadBlocProvider.select((v) {
       return v.items.elementAtOrNull(index);
     }));
 
     final stateHover = useState(false);
 
-    if (uploadObject == null) return const SizedBox();
+    if (downloadObject == null) return const SizedBox();
 
-    return UploaderProgressBar(
-      idBootloader: uploadObject.id,
+    return DownloadProgressBar(
+      idBootloader: downloadObject.id,
       child: InkWell(
-        onTap: () {
-          bloc.onEditBootloader(index);
-        },
+        onTap: () {},
         onHover: (value) {
           stateHover.value = value;
         },
@@ -59,8 +56,8 @@ class UploadObjectItem extends HookConsumerWidget {
                   ),
                 ),
                 child: ObjectItemBunner(
-                  type: uploadObject.object.type,
-                  localPath: uploadObject.object.localPath ?? '',
+                  type: downloadObject.object.type,
+                  localPath: downloadObject.object.localPath ?? '',
                 ),
               ),
               const SizedBox(width: 10),
@@ -72,12 +69,12 @@ class UploadObjectItem extends HookConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        uploadObject.object.objectKey,
+                        downloadObject.object.objectKey,
                         overflow: TextOverflow.ellipsis,
                         style: appTheme.textTheme.caption1.bold.onDark1,
                       ),
                       Text(
-                        ByteConverter.fromBytes(uploadObject.object.size).toHumanReadable(),
+                        ByteConverter.fromBytes(downloadObject.object.size).toHumanReadable(),
                         overflow: TextOverflow.ellipsis,
                         style: appTheme.textTheme.caption2.onDark1,
                       ),
@@ -93,10 +90,10 @@ class UploadObjectItem extends HookConsumerWidget {
   }
 }
 
-class UploaderProgressBar extends ConsumerWidget {
+class DownloadProgressBar extends ConsumerWidget {
   final int idBootloader;
   final Widget child;
-  const UploaderProgressBar({
+  const DownloadProgressBar({
     required this.child,
     required this.idBootloader,
     super.key,
@@ -105,8 +102,8 @@ class UploaderProgressBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final percentage = ref.watch(apiObserverBlocProvider.select((v) {
-      if (v.upload?.idBootloader == idBootloader) {
-        return v.upload?.observe.percentage;
+      if (v.download?.idBootloader == idBootloader) {
+        return v.download?.observe.percentage;
       }
       return null;
     }));
@@ -120,15 +117,20 @@ class UploaderProgressBar extends ConsumerWidget {
             decoration: BoxDecoration(borderRadius: borderRadius8),
             child: Flex(
               direction: Axis.horizontal,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                Flexible(
+                  flex: 100 - percentage,
+                  child: const SizedBox.shrink(),
+                ),
                 Flexible(
                   flex: percentage,
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: borderRadius8,
                       gradient: const LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
+                        begin: Alignment.centerRight,
+                        end: Alignment.centerLeft,
                         colors: [
                           Color(0x42000000),
                           Color(0x0A000000),
@@ -136,10 +138,6 @@ class UploaderProgressBar extends ConsumerWidget {
                       ),
                     ),
                   ),
-                ),
-                Flexible(
-                  flex: 100 - percentage,
-                  child: const SizedBox.shrink(),
                 ),
               ],
             ),

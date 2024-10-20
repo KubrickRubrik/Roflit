@@ -4,7 +4,7 @@ part of 'provider.dart';
 class ObjectsState with _$ObjectsState {
   const factory ObjectsState({
     @Default(null) StorageEntity? activeStorage,
-    @Default([]) List<ObjectEntity> objects,
+    @Default([]) List<ObjectEntity> items,
     @Default(ContentStatus.loading) ContentStatus loaderPage,
     @Default(ContentStatus.loading) ContentStatus loaderScroll,
   }) = _ObjectsState;

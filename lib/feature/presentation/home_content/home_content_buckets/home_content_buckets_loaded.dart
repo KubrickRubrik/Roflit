@@ -16,7 +16,7 @@ class HomeContentBucketsLoaded extends HookConsumerWidget {
     final controller = useScrollController();
 
     final buckets = ref.watch(bucketsBlocProvider.select((value) {
-      return value.buckets;
+      return value.items;
     }));
 
     if (buckets.isEmpty) {
