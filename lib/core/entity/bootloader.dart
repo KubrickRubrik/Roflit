@@ -12,6 +12,7 @@ class BootloaderEntity with _$BootloaderEntity {
     required int idStorage,
     required ObjectEntity object,
     required ActionBootloader action,
+    @Default(null) BootloaderCopy? copy,
     @Default(BootloaderStatus.none) BootloaderStatus status,
   }) = _BootloaderEntity;
 
@@ -26,6 +27,18 @@ class BootloaderEntity with _$BootloaderEntity {
       action: ActionBootloader.values.byName(bootloaderDto.action.name),
     );
   }
+}
+
+@freezed
+class BootloaderCopy with _$BootloaderCopy {
+  const factory BootloaderCopy({
+    required int originIdStorage,
+    required String originBucket,
+    required StorageType originStorageType,
+    @Default(null) int? recipientIdStorage,
+    @Default(null) String? recipientBucket,
+    @Default(null) StorageType? recipientStorageType,
+  }) = _BootloaderCopy;
 }
 
 enum BootloaderStatus {

@@ -50,6 +50,7 @@ abstract final class FormatConverter {
         case 'avi':
         case 'flv':
         case '3gp':
+        case 'mov':
           return IconSourceType.video;
         default:
           return IconSourceType.other;

@@ -32,7 +32,7 @@ class MainMenuButton extends HookWidget {
             borderRadius: borderRadius8,
             color: stateHover.value
                 ? const Color(AppColors.bgDarkGrayHover)
-                : const Color(AppColors.bgDarkGray1),
+                : const Color(AppColors.bgDarkGray2),
           ),
           alignment: Alignment.center,
           child: Text(

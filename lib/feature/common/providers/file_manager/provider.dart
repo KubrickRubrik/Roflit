@@ -195,7 +195,7 @@ final class FileManagerBloc extends _$FileManagerBloc {
     }
 
     final response = await ref.read(diServiceProvider).apiLocalClient.bootloaderDao.saveBootloader(
-          idStorage: storage!.idStorage,
+          idStorage: storage.idStorage,
           objects: objects,
           action: ActionBootloader.upload,
         );
@@ -241,9 +241,9 @@ final class FileManagerBloc extends _$FileManagerBloc {
 
   Future<void> onNextEditBootloader() async {
     final storage = state.account?.activeStorage;
-    // final storageType = state.account?.activeStorage?.storageType;
+    final storageType = storage?.storageType;
 
-    if (storage?.activeBucket?.isNotEmpty != true || storage?.storageType == null) {
+    if (storage?.activeBucket?.isNotEmpty != true || storageType == null) {
       //TODO: snackbar
       return;
     }
@@ -266,7 +266,7 @@ final class FileManagerBloc extends _$FileManagerBloc {
         objectKey: drift.Value(v.object.objectKey),
         bucket: drift.Value(storage!.activeBucket!),
         type: drift.Value(v.object.type.name),
-        storageType: drift.Value(storage.storageType.name),
+        storageType: drift.Value(storageType.name),
         localPath: drift.Value(v.object.localPath),
       );
     }).toList();
@@ -276,7 +276,7 @@ final class FileManagerBloc extends _$FileManagerBloc {
         objectKey: v.object.objectKey,
         bucket: storage!.activeBucket!,
         type: v.object.type.name,
-        storageType: storage.storageType.name,
+        storageType: storageType.name,
         localPath: drift.Value(v.object.localPath),
       );
     }).toList();
@@ -335,7 +335,7 @@ final class FileManagerBloc extends _$FileManagerBloc {
     );
   }
 
-  Future<String> setPathToUploadFiles({
+  Future<String> setPathToSelectFiles({
     required int idStorage,
     bool isRequiredInstallation = true,
   }) async {
@@ -381,7 +381,7 @@ final class FileManagerBloc extends _$FileManagerBloc {
 
   Future<void> onDownloadBootloader() async {
     var storage = state.account?.activeStorage;
-    final storageType = state.account?.activeStorage?.storageType;
+    final storageType = storage?.storageType;
 
     if (storage == null) return;
 
@@ -420,6 +420,96 @@ final class FileManagerBloc extends _$FileManagerBloc {
           objects: objects,
           action: ActionBootloader.download,
         );
+
+    if (!response) {
+      //TODO: snackbar
+      return;
+    }
+  }
+
+  Future<void> onCopyBootloader() async {
+    final storage = state.account?.activeStorage;
+    final storageType = storage?.storageType;
+
+    if (storage == null) return;
+
+    if (storage.activeBucket?.isNotEmpty != true || storageType == null) {
+      //TODO: snackbar
+      return;
+    }
+
+    final selectedObjects = ref.read(objectsBlocProvider).items.where((v) {
+      return v.isSelected && !v.objectKey.endsWith('/');
+    });
+
+    if (selectedObjects.isEmpty) return;
+
+    final copyBootloaders = selectedObjects.map((v) {
+      return BootloaderEntity(
+        id: 0,
+        idStorage: storage.idStorage,
+        object: v,
+        action: ActionBootloader.copyDownload,
+        copy: BootloaderCopy(
+          originIdStorage: storage.idStorage,
+          originBucket: storage.activeBucket!,
+          originStorageType: storageType,
+        ),
+      );
+    }).toList();
+
+    state = state.copyWith(copyBootloaders: copyBootloaders);
+  }
+
+  Future<void> onInsertBootloader() async {
+    var storage = state.account?.activeStorage;
+    final storageType = storage?.storageType;
+
+    if (storage == null) return;
+
+    if (storage.activeBucket?.isNotEmpty != true || storageType == null) {
+      //TODO: snackbar
+      return;
+    }
+
+    if (state.copyBootloaders.isEmpty) return;
+
+    if (storage.pathSaveFiles?.isNotEmpty != true || storage.pathSelectFiles?.isNotEmpty != true) {
+      if (storage.pathSaveFiles?.isNotEmpty != true) {
+        final pathSaveFiles = await ref.read(fileManagerBlocProvider.notifier).setPathToSaveFiles(
+              idStorage: storage.idStorage,
+            );
+        storage = storage.copyWith(
+          pathSaveFiles: pathSaveFiles,
+        );
+      }
+      //
+      if (storage.pathSelectFiles?.isNotEmpty != true) {
+        final pathSelectFiles =
+            await ref.read(fileManagerBlocProvider.notifier).setPathToSelectFiles(
+                  idStorage: storage.idStorage,
+                );
+        storage = storage.copyWith(
+          pathSelectFiles: pathSelectFiles,
+        );
+      }
+    }
+
+    final bootloaders = state.copyBootloaders.map((v) {
+      return v.copyWith(
+        copy: v.copy!.copyWith(
+          recipientIdStorage: storage!.idStorage,
+          recipientBucket: storage.activeBucket,
+          recipientStorageType: storageType,
+        ),
+      );
+    }).toList();
+
+    final response =
+        await ref.read(diServiceProvider).apiLocalClient.bootloaderDao.saveCopyBootloader(
+              idStorage: storage.idStorage,
+              bootloaders: bootloaders,
+            );
 
     if (!response) {
       //TODO: snackbar

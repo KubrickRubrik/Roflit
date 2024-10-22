@@ -120,10 +120,14 @@ enum BucketCreateAccess {
 
 enum ActionBootloader {
   upload,
-  download;
+  download,
+  copyDownload,
+  copyUpload;
 
   bool get isUpload => this == upload;
   bool get isDownload => this == download;
+  bool get isCopyDownload => this == copyDownload;
+  bool get isCopyUpload => this == copyUpload;
 }
 
 enum ActionFirst {

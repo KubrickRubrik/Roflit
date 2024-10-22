@@ -11,8 +11,10 @@ class BootloaderDao extends DatabaseAccessor<ApiDatabase> with _$BootloaderDaoMi
   }) async {
     return transaction<bool>(() async {
       final uploadObject = <BootloaderTableCompanion>[];
+
       for (final object in objects) {
         final idObject = await into(objectTable).insert(object);
+
         uploadObject.add(
           BootloaderTableCompanion.insert(
             idStorage: idStorage,
@@ -23,6 +25,47 @@ class BootloaderDao extends DatabaseAccessor<ApiDatabase> with _$BootloaderDaoMi
       }
 
       if (uploadObject.isEmpty || uploadObject.length != objects.length) {
+        throw Exception('Abort transaction');
+      }
+
+      await batch((batch) {
+        batch.insertAll(bootloaderTable, uploadObject);
+      });
+      return true;
+    });
+  }
+
+  Future<bool> saveCopyBootloader({
+    required int idStorage,
+    required List<BootloaderEntity> bootloaders,
+  }) async {
+    return transaction<bool>(() async {
+      final uploadObject = <BootloaderTableCompanion>[];
+
+      for (final bootloader in bootloaders) {
+        final idObject = await into(objectTable).insert(
+          ObjectTableCompanion.insert(
+            bucket: bootloader.object.bucket,
+            objectKey: bootloader.object.objectKey,
+            type: bootloader.object.type.name,
+            storageType: bootloader.copy!.originStorageType.name,
+          ),
+        );
+
+        uploadObject.add(
+          BootloaderTableCompanion.insert(
+            idStorage: idStorage,
+            idObject: idObject,
+            action: bootloader.action,
+            originIdStorage: Value(bootloader.copy!.originIdStorage),
+            originBucket: Value(bootloader.copy!.originBucket),
+            recipientIdStorage: Value(bootloader.copy!.recipientIdStorage),
+            recipientBucket: Value(bootloader.copy!.recipientBucket),
+          ),
+        );
+      }
+
+      if (uploadObject.isEmpty || uploadObject.length != bootloaders.length) {
         throw Exception('Abort transaction');
       }
 

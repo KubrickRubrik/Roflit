@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:drift/drift.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:roflit/core/config/account.dart';
 import 'package:roflit/core/entity/account.dart';
 import 'package:roflit/core/enums.dart';
 import 'package:roflit/core/providers/di_service.dart';
 import 'package:roflit/data/local/api_db.dart';
 import 'package:roflit/feature/common/providers/session/provider.dart';
+import 'package:roflit/feature/common/providers/storage_service.dart';
 
 part 'account_service.g.dart';
 
@@ -14,6 +16,7 @@ part 'account_service.g.dart';
 AccountService accountService(AccountServiceRef ref) {
   return AccountService(
     sessionBloc: ref.watch(sessionBlocProvider.notifier),
+    storageService: ref.watch(storageServiceProvider),
     apiLocalClient: ref.watch(diServiceProvider).apiLocalClient.accountsDao,
     test: ref.watch(diServiceProvider).apiLocalClient.watchingDao,
   );
@@ -21,11 +24,13 @@ AccountService accountService(AccountServiceRef ref) {
 
 final class AccountService {
   final SessionBloc sessionBloc;
+  final StorageService storageService;
   final AccountDao apiLocalClient;
   final WatchingDao test;
 
   AccountService({
     required this.sessionBloc,
+    required this.storageService,
     required this.apiLocalClient,
     required this.test,
   });
@@ -56,9 +61,9 @@ final class AccountService {
       return false;
       //TODO snackbar
     }
-    // await Future.delayed(Duration(seconds: 3), () {});
+
     await sessionBloc.loginFreeAccount(responseAccount);
-    // });
+
     //TODO snackbar
     return true;
   }
@@ -133,5 +138,68 @@ final class AccountService {
     }
     //TODO snackbar
     return true;
+  }
+
+  Future<void> createDefaultAccount() async {
+    await createAccount(
+      name: 'Account Test 1',
+      localization: AppLocalization.ru,
+      password: '',
+    );
+    await createAccount(
+      name: 'Account Test 2',
+      localization: AppLocalization.ru,
+      password: '',
+    );
+
+    var accounts = sessionBloc.accounts();
+
+    if (accounts.isEmpty) return;
+    final testAccount1 = accounts.first;
+
+    await storageService.createStorage(
+      idAccount: testAccount1.idAccount,
+      title: ServiceAccount.yandexCloud1.title,
+      storageType: StorageType.yxCloud,
+      accessKey: ServiceAccount.yandexCloud1.accessKeyId,
+      secretKey: ServiceAccount.yandexCloud1.secretAccessKey,
+      region: ServiceAccount.yandexCloud1.region,
+    );
+
+    await storageService.createStorage(
+      idAccount: testAccount1.idAccount,
+      title: ServiceAccount.vkCloud1.title,
+      storageType: StorageType.vkCloud,
+      accessKey: ServiceAccount.vkCloud1.accessKeyId,
+      secretKey: ServiceAccount.vkCloud1.secretAccessKey,
+      region: ServiceAccount.vkCloud1.region,
+    );
+
+    final testAccount2 = accounts.last;
+    await storageService.createStorage(
+      idAccount: testAccount2.idAccount,
+      title: ServiceAccount.yandexCloud2.title,
+      storageType: StorageType.yxCloud,
+      accessKey: ServiceAccount.yandexCloud2.accessKeyId,
+      secretKey: ServiceAccount.yandexCloud2.secretAccessKey,
+      region: ServiceAccount.yandexCloud2.region,
+    );
+
+    await storageService.createStorage(
+      idAccount: testAccount2.idAccount,
+      title: ServiceAccount.vkCloud2.title,
+      storageType: StorageType.vkCloud,
+      accessKey: ServiceAccount.vkCloud2.accessKeyId,
+      secretKey: ServiceAccount.vkCloud2.secretAccessKey,
+      region: ServiceAccount.vkCloud2.region,
+    );
+
+    await sessionBloc.loginFreeAccount(testAccount1);
+
+    accounts = sessionBloc.accounts();
+
+    if (accounts.first.storages.isEmpty) return;
+
+    await sessionBloc.setActiveStorage(accounts.first.storages.first.idStorage);
   }
 }

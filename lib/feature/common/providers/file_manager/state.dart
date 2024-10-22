@@ -5,6 +5,7 @@ class FileManagerState with _$FileManagerState {
   const factory FileManagerState({
     @Default(null) AccountEntity? account,
     @Default([]) List<BootloaderEntity> bootloaders,
+    @Default([]) List<BootloaderEntity> copyBootloaders,
     @Default(ContentStatus.loading) ContentStatus loaderPage,
     @Default(FileManagerAction.addBootloader) FileManagerAction action,
   }) = _FileManagerState;

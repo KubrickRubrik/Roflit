@@ -51,6 +51,11 @@ final class SessionBloc extends _$SessionBloc {
     });
   }
 
+  List<AccountEntity> accounts() => state.maybeWhen(
+        orElse: () => [],
+        loaded: (_, accounts) => accounts,
+      );
+
   AccountEntity? getAccount({
     required bool getActive,
     int? getByIndex,

@@ -40,7 +40,7 @@ class SectionContentNavigationHeaderBar extends ConsumerWidget {
                           'select_upload_files',
                           const Duration(seconds: 2),
                           () {
-                            ref.read(fileManagerBlocProvider.notifier).setPathToUploadFiles(
+                            ref.read(fileManagerBlocProvider.notifier).setPathToSelectFiles(
                                   idStorage: storage.idStorage,
                                   isRequiredInstallation: false,
                                 );

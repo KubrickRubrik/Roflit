@@ -71,6 +71,8 @@ final class BootloaderBloc extends _$BootloaderBloc {
       final response = await switch (bootloader.action) {
         ActionBootloader.upload => _uploadObject(bootloader),
         ActionBootloader.download => _downloadObject(bootloader),
+        ActionBootloader.copyDownload => _copyDownloadObject(bootloader),
+        ActionBootloader.copyUpload => _copyUploadObject(bootloader),
       };
 
       if (!response) {
@@ -208,6 +210,14 @@ final class BootloaderBloc extends _$BootloaderBloc {
         .bootloaderDao
         .removeBootloader([bootloader.id]);
 
+    return true;
+  }
+
+  Future<bool> _copyDownloadObject(BootloaderEntity bootloader) async {
+    return true;
+  }
+
+  Future<bool> _copyUploadObject(BootloaderEntity bootloader) async {
     return true;
   }
 

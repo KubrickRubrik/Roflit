@@ -1,16 +1,22 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:roflit/core/entity/account.dart';
 import 'package:roflit/core/extension/estring.dart';
+import 'package:roflit/feature/common/providers/session/provider.dart';
 import 'package:roflit/feature/common/themes/text.dart';
-import 'package:roflit/feature/presentation/menu/router/router.dart';
 
 class MenuAccountContentEmpty extends ConsumerWidget {
   const MenuAccountContentEmpty({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final accounts = ref.watch(sessionBlocProvider.select((v) {
+      return v.maybeWhen(
+        orElse: () => <AccountEntity>[],
+        loaded: (_, accounts) => accounts,
+      );
+    }));
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -29,26 +35,30 @@ class MenuAccountContentEmpty extends ConsumerWidget {
               textAlign: TextAlign.center,
               style: appTheme.textTheme.title2.onDark1,
             ),
-            const SizedBox(height: 16),
-            RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                text: 'За подробной информацией обратитесь в раздел '.translate,
-                style: appTheme.textTheme.title2.onDark1.copyWith(
-                  height: 1.4,
-                ),
-                children: [
-                  TextSpan(
-                    text: 'Инфо'.translate,
-                    style: appTheme.textTheme.body2.bold.selected1,
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        context.goNamed(RouteEndPoints.info.name);
-                      },
+            if (accounts.isEmpty) ...[
+              const SizedBox(height: 40),
+              RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  text: 'Или используйте '.translate,
+                  style: appTheme.textTheme.title2.onDark1.copyWith(
+                    height: 1.4,
                   ),
-                ],
+                  children: [
+                    TextSpan(
+                      text: 'дефолтные'.translate,
+                      style: appTheme.textTheme.title2.bold.selected1,
+                    ),
+                    TextSpan(
+                      text: ' аккаунты'.translate,
+                      style: appTheme.textTheme.title2.onDark1.copyWith(
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
+            ],
           ],
         ),
       ),
