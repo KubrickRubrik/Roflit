@@ -196,13 +196,13 @@ final class AccountService {
       region: _getData(ServiceAccount.vkCloud2.region),
     );
 
-    await sessionBloc.loginFreeAccount(testAccount1);
+    // await sessionBloc.loginFreeAccount(testAccount1);
 
-    accounts = sessionBloc.accounts();
+    // accounts = sessionBloc.accounts();
 
-    if (accounts.first.storages.isEmpty) return;
+    // if (accounts.first.storages.isEmpty) return;
 
-    await sessionBloc.setActiveStorage(accounts.first.storages.first.idStorage);
+    // await sessionBloc.setActiveStorage(accounts.first.storages.first.idStorage);
   }
 
   String _getData(String data) {
