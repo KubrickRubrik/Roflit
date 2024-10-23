@@ -1,3 +1,5 @@
+// ignore_for_file: inference_failure_on_instance_creation, depend_on_referenced_packages
+
 import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -93,9 +95,9 @@ class Home extends HookConsumerWidget {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         height: 100,
-                        decoration: const BoxDecoration(color: Colors.red),
+                        decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
                         alignment: Alignment.center,
-                        child: const Text('Смотреть базу'),
+                        child: const Text('DB'),
                       ),
                     ),
                   ],

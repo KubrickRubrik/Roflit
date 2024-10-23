@@ -44,8 +44,8 @@ class _HomeContentCopyObject extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final blocUI = ref.watch(uiBlocProvider.notifier);
-    final bloc = ref.watch(fileManagerBlocProvider.notifier);
+    // final blocUI = ref.watch(uiBlocProvider.notifier);
+    // final bloc = ref.watch(fileManagerBlocProvider.notifier);
 
     return MouseRegion(
       cursor: SystemMouseCursors.forbidden,

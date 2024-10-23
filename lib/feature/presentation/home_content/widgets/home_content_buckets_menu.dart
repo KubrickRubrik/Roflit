@@ -272,8 +272,8 @@ class _HomeContentCopyBucket extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final blocUI = ref.watch(uiBlocProvider.notifier);
-    final bloc = ref.watch(bucketsBlocProvider.notifier);
+    // final blocUI = ref.watch(uiBlocProvider.notifier);
+    // final bloc = ref.watch(bucketsBlocProvider.notifier);
     final isActiveBucket = ref.watch(bucketsBlocProvider.select((v) {
       return v.activeStorage?.activeBucket?.isNotEmpty == true;
     }));
@@ -329,8 +329,8 @@ class _HomeContentDownloadBucket extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final blocUI = ref.watch(uiBlocProvider.notifier);
-    final bloc = ref.watch(bucketsBlocProvider.notifier);
+    // final blocUI = ref.watch(uiBlocProvider.notifier);
+    // final bloc = ref.watch(bucketsBlocProvider.notifier);
     final isActiveBucket = ref.watch(bucketsBlocProvider.select((v) {
       return v.activeStorage?.activeBucket?.isNotEmpty == true;
     }));

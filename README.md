@@ -2,6 +2,13 @@
 
 Roflit project for test S3 by Yandex Cloud Api
 
+## First start
+
+```
+- dart pub get
+- dart run build_runner build --delete-conflicting-outputs
+```
+
 ## Project settings
 
 - If you are using VS Code, consider using [Flutter Riverpod Snippets](https://riverpod.dev/assets/images/greetingProvider-47179931ef18184e7ab68f4e701ca916.gif)

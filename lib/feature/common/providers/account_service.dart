@@ -1,4 +1,6 @@
+// ignore_for_file: functional_ref
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:drift/drift.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -161,18 +163,18 @@ final class AccountService {
       idAccount: testAccount1.idAccount,
       title: ServiceAccount.yandexCloud1.title,
       storageType: StorageType.yxCloud,
-      accessKey: ServiceAccount.yandexCloud1.accessKeyId,
-      secretKey: ServiceAccount.yandexCloud1.secretAccessKey,
-      region: ServiceAccount.yandexCloud1.region,
+      accessKey: _getData(ServiceAccount.yandexCloud1.accessKeyId),
+      secretKey: _getData(ServiceAccount.yandexCloud1.secretAccessKey),
+      region: _getData(ServiceAccount.yandexCloud1.region),
     );
 
     await storageService.createStorage(
       idAccount: testAccount1.idAccount,
       title: ServiceAccount.vkCloud1.title,
       storageType: StorageType.vkCloud,
-      accessKey: ServiceAccount.vkCloud1.accessKeyId,
-      secretKey: ServiceAccount.vkCloud1.secretAccessKey,
-      region: ServiceAccount.vkCloud1.region,
+      accessKey: _getData(ServiceAccount.vkCloud1.accessKeyId),
+      secretKey: _getData(ServiceAccount.vkCloud1.secretAccessKey),
+      region: _getData(ServiceAccount.vkCloud1.region),
     );
 
     final testAccount2 = accounts.last;
@@ -180,18 +182,18 @@ final class AccountService {
       idAccount: testAccount2.idAccount,
       title: ServiceAccount.yandexCloud2.title,
       storageType: StorageType.yxCloud,
-      accessKey: ServiceAccount.yandexCloud2.accessKeyId,
-      secretKey: ServiceAccount.yandexCloud2.secretAccessKey,
-      region: ServiceAccount.yandexCloud2.region,
+      accessKey: _getData(ServiceAccount.yandexCloud2.accessKeyId),
+      secretKey: _getData(ServiceAccount.yandexCloud2.secretAccessKey),
+      region: _getData(ServiceAccount.yandexCloud2.region),
     );
 
     await storageService.createStorage(
       idAccount: testAccount2.idAccount,
       title: ServiceAccount.vkCloud2.title,
       storageType: StorageType.vkCloud,
-      accessKey: ServiceAccount.vkCloud2.accessKeyId,
-      secretKey: ServiceAccount.vkCloud2.secretAccessKey,
-      region: ServiceAccount.vkCloud2.region,
+      accessKey: _getData(ServiceAccount.vkCloud2.accessKeyId),
+      secretKey: _getData(ServiceAccount.vkCloud2.secretAccessKey),
+      region: _getData(ServiceAccount.vkCloud2.region),
     );
 
     await sessionBloc.loginFreeAccount(testAccount1);
@@ -201,5 +203,9 @@ final class AccountService {
     if (accounts.first.storages.isEmpty) return;
 
     await sessionBloc.setActiveStorage(accounts.first.storages.first.idStorage);
+  }
+
+  String _getData(String data) {
+    return utf8.decode(base64Decode(data));
   }
 }

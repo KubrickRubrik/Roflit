@@ -1,3 +1,4 @@
+// ignore_for_file: functional_ref
 import 'dart:convert';
 import 'dart:io';
 

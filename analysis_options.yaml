@@ -13,6 +13,7 @@ analyzer:
     todo: ignore
     dead_code: info
     invalid_annotation_target: ignore
+    inference_failure_on_instance_creation: ignore
 rules:
     - prefer-conditional-expressions
     - avoid-global-state
